@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class ObjectWriter {
@@ -76,76 +77,64 @@ public class ObjectWriter {
         if (value == null) {
             return;
         }
-        if (value instanceof String) {
-            node.put(key, (String) value);
-        } else if (value instanceof JsonNode) {
-            node.set(key, (JsonNode) value);
-        } else if (value instanceof BigDecimal) {
-            node.put(key, (BigDecimal) value);
-        } else if (value instanceof BigInteger) {
-            node.put(key, new BigDecimal((BigInteger) value));
-        } else if (value instanceof Boolean) {
-            node.put(key, (Boolean) value);
-        } else if (value instanceof Double) {
-            node.put(key, (Double) value);
-        } else if (value instanceof Float) {
-            node.put(key, (Float) value);
-        } else if (value instanceof Integer) {
-            node.put(key, (Integer) value);
-        } else if (value instanceof Long) {
-            node.put(key, (Long) value);
-        } else if (value instanceof List) {
-            ArrayNode array = node.putArray(key);
-            for (Object valueItem : List.class.cast(value)) {
-                addObject(array, valueItem);
-            }
-        } else if (value instanceof Map) {
-            ObjectNode objNode = node.putObject(key);
-            @SuppressWarnings("unchecked")
-            Map<String, Object> values = (Map<String, Object>) value;
-            for (Map.Entry<String, Object> entry : values.entrySet()) {
-                String propertyName = entry.getKey();
-                writeObject(objNode, propertyName, entry.getValue());
-            }
-        } else {
-            node.put(key, (String) null);
-        }
+        node.set(key, convertObjectToNode(node, value));
     }
 
-    private static void addObject(ArrayNode node, Object value) {
+    /**
+     * Add an object into a JSON array
+     * 
+     * @param node the array
+     * @param value the object to add
+     */
+    public static void addObject(ArrayNode node, Object value) {
+        node.add(convertObjectToNode(node, value));
+    }
+    
+    /**
+     * Convert an object to a JsonNode
+     * 
+     * @param nodeCreator the factory to use to create the new JsonNode
+     * @param value the object to convert
+     * @return the JSON representation of the object
+     */
+    public static JsonNode convertObjectToNode(JsonNodeCreator nodeCreator, Object value) {
+        JsonNode result;
         if (value instanceof String) {
-            node.add((String) value);
+            result = nodeCreator.textNode((String) value);
         } else if (value instanceof JsonNode) {
-            node.add((JsonNode) value);
+            result = (JsonNode) value;
         } else if (value instanceof BigDecimal) {
-            node.add((BigDecimal) value);
+            result = nodeCreator.numberNode((BigDecimal) value);
         } else if (value instanceof BigInteger) {
-            node.add(new BigDecimal((BigInteger) value));
+            result = nodeCreator.numberNode((BigInteger) value);
         } else if (value instanceof Boolean) {
-            node.add((Boolean) value);
+            result = nodeCreator.booleanNode((Boolean) value);
         } else if (value instanceof Double) {
-            node.add((Double) value);
+            result = nodeCreator.numberNode((Double) value);
         } else if (value instanceof Float) {
-            node.add((Float) value);
+            result = nodeCreator.numberNode((Float) value);
         } else if (value instanceof Integer) {
-            node.add((Integer) value);
+            result = nodeCreator.numberNode((Integer) value);
         } else if (value instanceof Long) {
-            node.add((Long) value);
+            result = nodeCreator.numberNode((Long) value);
         } else if (value instanceof List) {
-            ArrayNode array = node.addArray();
+            ArrayNode array = nodeCreator.arrayNode(((List<?>) value).size());
             for (Object valueItem : List.class.cast(value)) {
                 addObject(array, valueItem);
             }
+            result = array;
         } else if (value instanceof Map) {
-            ObjectNode objNode = node.addObject();
+            ObjectNode objNode = nodeCreator.objectNode();
             @SuppressWarnings("unchecked")
             Map<String, Object> values = (Map<String, Object>) value;
             for (Map.Entry<String, Object> entry : values.entrySet()) {
                 String propertyName = entry.getKey();
                 writeObject(objNode, propertyName, entry.getValue());
             }
+            result = objNode;
         } else {
-            node.add((String) null);
+            result = nodeCreator.nullNode();
         }
+        return result;
     }
 }

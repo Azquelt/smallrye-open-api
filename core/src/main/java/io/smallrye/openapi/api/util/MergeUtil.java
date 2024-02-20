@@ -27,6 +27,7 @@ import org.eclipse.microprofile.openapi.models.security.SecurityRequirement;
 import org.eclipse.microprofile.openapi.models.servers.Server;
 import org.eclipse.microprofile.openapi.models.tags.Tag;
 
+import io.smallrye.openapi.api.models.JsonWrappingImpl;
 import io.smallrye.openapi.api.models.ModelImpl;
 import io.smallrye.openapi.runtime.OpenApiRuntimeException;
 
@@ -92,6 +93,12 @@ public class MergeUtil {
         // be different types.  In this case, just take the 2nd one (the override).
         if (!object1.getClass().equals(object2.getClass())) {
             return object2;
+        }
+        
+        // Some model objects are just wrappers around JSON data and need merged differently
+        if (object1 instanceof JsonWrappingImpl) {
+            ((JsonWrappingImpl) object1).mergeFrom((JsonWrappingImpl) object2);
+            return object1;
         }
 
         try {

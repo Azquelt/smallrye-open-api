@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.UncheckedIOException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.BaseStream;
@@ -251,16 +252,16 @@ public class OpenApiDataObjectScanner {
 
             if (currentSchema.getType() == null) {
                 // If not schema has yet been set, consider this an "object"
-                currentSchema.setType(Schema.SchemaType.OBJECT);
+                currentSchema.setType(Collections.singletonList(Schema.SchemaType.OBJECT));
             } else {
                 // Ignore the returned ref, the currentSchema will be further modified with added properties
                 Schema ref = SchemaFactory.schemaRegistration(context, currentType, currentSchema);
-                if (currentSchema.getType() != Schema.SchemaType.OBJECT) {
+                if (!currentSchema.getType().contains(Schema.SchemaType.OBJECT)) {
                     entrySchema.setRef(ref.getRef());
                 }
             }
 
-            if (currentSchema.getType() == Schema.SchemaType.OBJECT) {
+            if (currentSchema.getType().contains(Schema.SchemaType.OBJECT)) {
                 // Only 'object' type schemas should have properties of their own
                 ScannerLogging.logger.gettingFields(currentType, currentClass);
 

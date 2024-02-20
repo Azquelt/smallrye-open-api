@@ -2,6 +2,8 @@ package io.smallrye.openapi.runtime.io.discriminator;
 
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.smallrye.openapi.runtime.io.JsonUtil;
@@ -32,9 +34,14 @@ public class DiscriminatorWriter {
         if (model == null) {
             return;
         }
-        ObjectNode node = parent.putObject(SchemaConstant.PROP_DISCRIMINATOR);
+        parent.set(SchemaConstant.PROP_DISCRIMINATOR, convertDiscriminatorToNode(parent, model));
+    }
+    
+    public static JsonNode convertDiscriminatorToNode(JsonNodeCreator creator, Discriminator model) {
+        ObjectNode node = creator.objectNode();
         JsonUtil.stringProperty(node, DiscriminatorConstant.PROP_PROPERTY_NAME, model.getPropertyName());
         ObjectWriter.writeStringMap(node, model.getMapping(), DiscriminatorConstant.PROP_MAPPING);
+        return node;
     }
 
 }

@@ -180,10 +180,12 @@ public class SchemaFactory {
         AnnotationInstance externalDocsAnnotation = Annotations.value(annotation, ExternalDocsConstant.PROP_EXTERNAL_DOCS);
         schema.setExternalDocs(ExternalDocsReader.readExternalDocs(context, externalDocsAnnotation));
         schema.setDeprecated(readAttr(annotation, SchemaConstant.PROP_DEPRECATED, defaults));
-        schema.setType(readSchemaType(annotation, schema, defaults));
-        schema.setExample(parseSchemaAttr(context, annotation, SchemaConstant.PROP_EXAMPLE, defaults, schema.getType()));
+        
+        final SchemaType type = readSchemaType(annotation, schema, defaults);
+        schema.setType(type);
+        schema.setExample(parseSchemaAttr(context, annotation, SchemaConstant.PROP_EXAMPLE, defaults, type));
         schema.setDefaultValue(
-                parseSchemaAttr(context, annotation, SchemaConstant.PROP_DEFAULT_VALUE, defaults, schema.getType()));
+                parseSchemaAttr(context, annotation, SchemaConstant.PROP_DEFAULT_VALUE, defaults, type));
         schema.setDiscriminator(
                 readDiscriminator(context,
                         Annotations.value(annotation, SchemaConstant.PROP_DISCRIMINATOR_PROPERTY),
@@ -219,8 +221,6 @@ public class SchemaFactory {
                 schema.setAdditionalPropertiesSchema(readClassSchema(context, additionalProperties, true));
             }
         }
-
-        final Schema.SchemaType type = schema.getType();
 
         List<Object> enumeration = readAttr(annotation, SchemaConstant.PROP_ENUMERATION, (Object[] values) -> {
             List<Object> parsed = new ArrayList<>(values.length);
@@ -269,7 +269,7 @@ public class SchemaFactory {
             implSchema = readClassSchema(context, type, false);
         }
 
-        if (schema.getType() == Schema.SchemaType.ARRAY && implSchema != null) {
+        if (schema.getType().contains(Schema.SchemaType.ARRAY) && implSchema != null) {
             // If the @Schema annotation indicates an array type, then use the Schema
             // generated from the implementation Class as the "items" for the array.
             schema.setItems(implSchema);
@@ -407,7 +407,14 @@ public class SchemaFactory {
      */
     static SchemaType readSchemaType(AnnotationInstance annotation, Schema schema, Map<String, Object> defaults) {
         SchemaType type = readAttr(annotation, SchemaConstant.PROP_TYPE, SchemaFactory::parseSchemaType, defaults);
-        return type != null ? type : schema.getType();
+        if (type != null) {
+            return type;
+        }
+        List<SchemaType> types = schema.getType();
+        if (types != null && !types.isEmpty()) {
+            return types.get(0);
+        }
+        return null;
     }
 
     /**

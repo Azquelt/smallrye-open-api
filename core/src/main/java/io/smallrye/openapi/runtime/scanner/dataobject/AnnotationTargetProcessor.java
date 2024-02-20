@@ -226,7 +226,7 @@ public class AnnotationTargetProcessor implements RequirementHandler {
                 typeProcessor.pushObjectStackInput();
                 Schema registeredTypeSchema;
 
-                if (typeSchema.getType() != SchemaType.ARRAY) {
+                if (!typeSchema.getType().contains(SchemaType.ARRAY)) {
                     // Only register a reference to the type schema. The full schema will be added by subsequent
                     // items on the stack (if not already present in the registry).
                     registeredTypeSchema = SchemaRegistry.registerReference(registrationType, context.getJsonViews(),

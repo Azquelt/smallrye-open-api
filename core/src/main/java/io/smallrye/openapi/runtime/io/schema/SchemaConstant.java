@@ -30,6 +30,7 @@ public class SchemaConstant {
     public static final String PROP_FORMAT = "format";
     public static final String PROP_PATTERN = "pattern";
     public static final String PROP_EXAMPLE = "example";
+    public static final String PROP_EXAMPLES = "examples";
 
     public static final String PROP_MIN_PROPERTIES = "minProperties";
     public static final String PROP_ALL_OF = "allOf";
@@ -53,6 +54,26 @@ public class SchemaConstant {
     public static final String PROP_UNIQUE_ITEMS = "uniqueItems";
     public static final String PROP_DESCRIPTION = "description";
     public static final String PROP_MIN_LENGTH = "minLength";
+    
+    public static final String PROP_SCHEMA_DIALECT = "$schema";
+    public static final String PROP_COMMENT = "$comment";
+    
+    public static final String PROP_IF = "if";
+    public static final String PROP_THEN = "then";
+    public static final String PROP_ELSE = "else";
+    public static final String PROP_DEPENDENT_SCHEMAS = "dependentSchemas";
+    public static final String PROP_PROPERTY_NAMES = "propertyNames";
+    public static final String PROP_UNEVALUATED_ITEMS = "unevaluatedItems";
+    public static final String PROP_UNEVALUATED_PROPERTIES = "unevaluatedProperties";
+    
+    public static final String PROP_CONST = "const";
+    public static final String PROP_MAX_CONTAINS = "maxContains";
+    public static final String PROP_MIN_CONTAINS = "minContains";
+    public static final String PROP_DEPENDENT_REQUIRED = "dependentRequired";
+    
+    public static final String PROP_CONTENT_ENCODING = "contentEncoding";
+    public static final String PROP_CONTENT_MEDIA_TYPE = "contentMediaType";
+    public static final String PROP_CONTENT_SCHEMA = "contentSchema";
 
     // for annotations (reserved words in Java)
     public static final String PROP_ENUMERATION = "enumeration";
@@ -65,6 +86,9 @@ public class SchemaConstant {
     public static final String PROP_ONE_OF = "oneOf";
     public static final String PROP_ITEMS = "items";
     public static final String PROP_MAX_PROPERTIES = "maxProperties";
+    public static final String PROP_PREFIX_ITEMS = "prefixItems";
+    public static final String PROP_CONTAINS = "contains";
+    public static final String PROP_PATTERN_PROPERTIES = "patternProperties";
 
     // Only in SchemaFactory ?
     public static final String PROP_REQUIRED_PROPERTIES = "requiredProperties";

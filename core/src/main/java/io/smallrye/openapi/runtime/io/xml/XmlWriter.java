@@ -2,6 +2,7 @@ package io.smallrye.openapi.runtime.io.xml;
 
 import org.eclipse.microprofile.openapi.models.media.XML;
 
+import com.fasterxml.jackson.databind.node.JsonNodeCreator;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
 import io.smallrye.openapi.runtime.io.JsonUtil;
@@ -31,12 +32,17 @@ public class XmlWriter {
         if (model == null) {
             return;
         }
-        ObjectNode node = parent.putObject(SchemaConstant.PROP_XML);
+        parent.set(SchemaConstant.PROP_XML, createXMLNode(parent, model));
+    }
+    
+    public static ObjectNode createXMLNode(JsonNodeCreator creator, XML model) {
+        ObjectNode node = creator.objectNode();
         JsonUtil.stringProperty(node, XmlConstant.PROP_NAME, model.getName());
         JsonUtil.stringProperty(node, XmlConstant.PROP_NAMESPACE, model.getNamespace());
         JsonUtil.stringProperty(node, XmlConstant.PROP_PREFIX, model.getPrefix());
         JsonUtil.booleanProperty(node, XmlConstant.PROP_ATTRIBUTE, model.getAttribute());
         JsonUtil.booleanProperty(node, XmlConstant.PROP_WRAPPED, model.getWrapped());
         ExtensionWriter.writeExtensions(node, model);
+        return node;
     }
 }

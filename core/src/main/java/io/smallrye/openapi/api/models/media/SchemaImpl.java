@@ -1,72 +1,139 @@
 package io.smallrye.openapi.api.models.media;
 
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_ADDITIONAL_PROPERTIES;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_ALL_OF;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_ANY_OF;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_COMMENT;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_CONST;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_CONTAINS;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_CONTENT_ENCODING;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_CONTENT_MEDIA_TYPE;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_CONTENT_SCHEMA;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_DEFAULT;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_DEPENDENT_REQUIRED;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_DEPENDENT_SCHEMAS;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_DEPRECATED;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_DESCRIPTION;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_DISCRIMINATOR;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_ELSE;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_ENUM;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_EXAMPLE;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_EXAMPLES;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_EXCLUSIVE_MAXIMUM;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_EXCLUSIVE_MINIMUM;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_FORMAT;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_IF;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_ITEMS;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_MAXIMUM;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_MAX_CONTAINS;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_MAX_ITEMS;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_MAX_LENGTH;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_MAX_PROPERTIES;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_MINIMUM;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_MIN_CONTAINS;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_MIN_ITEMS;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_MIN_LENGTH;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_MIN_PROPERTIES;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_MULTIPLE_OF;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_NOT;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_ONE_OF;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_PATTERN;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_PATTERN_PROPERTIES;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_PREFIX_ITEMS;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_PROPERTIES;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_PROPERTY_NAMES;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_READ_ONLY;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_REQUIRED;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_SCHEMA_DIALECT;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_THEN;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_TYPE;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_UNEVALUATED_ITEMS;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_UNEVALUATED_PROPERTIES;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_UNIQUE_ITEMS;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_WRITE_ONLY;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_XML;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.Map.Entry;
 
 import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.XML;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.JsonNodeFactory;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 import io.smallrye.openapi.api.constants.OpenApiConstants;
-import io.smallrye.openapi.api.models.ExtensibleImpl;
-import io.smallrye.openapi.api.models.ExternalDocumentationImpl;
+import io.smallrye.openapi.api.models.JsonWrappingImpl;
 import io.smallrye.openapi.api.models.ModelImpl;
-import io.smallrye.openapi.api.util.MergeUtil;
+import io.smallrye.openapi.runtime.io.JsonUtil;
+import io.smallrye.openapi.runtime.io.Referenceable;
+import io.smallrye.openapi.runtime.io.discriminator.DiscriminatorReader;
+import io.smallrye.openapi.runtime.io.discriminator.DiscriminatorWriter;
+import io.smallrye.openapi.runtime.io.externaldocs.ExternalDocsConstant;
+import io.smallrye.openapi.runtime.io.externaldocs.ExternalDocsReader;
+import io.smallrye.openapi.runtime.io.externaldocs.ExternalDocsWriter;
+import io.smallrye.openapi.runtime.io.schema.SchemaConstant;
+import io.smallrye.openapi.runtime.io.xml.XmlReader;
+import io.smallrye.openapi.runtime.io.xml.XmlWriter;
 import io.smallrye.openapi.runtime.util.ModelUtil;
 
 /**
  * An implementation of the {@link Schema} OpenAPI model interface.
  */
-public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelImpl {
-
-    private String ref;
-    private String format;
-    private final String name;
-    private String title;
-    private String description;
-    private Object defaultValue;
-    private BigDecimal multipleOf;
-    private BigDecimal maximum;
-    private Boolean exclusiveMaximum;
-    private BigDecimal minimum;
-    private Boolean exclusiveMinimum;
-    private Integer maxLength;
-    private Integer minLength;
-    private String pattern;
-    private Integer maxItems;
-    private Integer minItems;
-    private Boolean uniqueItems;
-    private Integer maxProperties;
-    private Integer minProperties;
-    private List<String> required;
-    private List<Object> enumeration;
-    private SchemaType type;
-    private Schema items;
-    private List<Schema> allOf;
-    private Map<String, Schema> properties;
-    private Schema additionalPropertiesSchema;
-    private Boolean additionalPropertiesBoolean;
-    private Boolean readOnly;
-    private XML xml;
-    private ExternalDocumentation externalDocs;
-    private Object example;
-    private List<Schema> oneOf;
-    private List<Schema> anyOf;
-    private Schema not;
-    private Discriminator discriminator;
-    private Boolean nullable;
-    private Boolean writeOnly;
-    private Boolean deprecated;
-
+public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
+    
     // Non-standard
+    private String name;
     private int modCount;
     private List<Schema> typeObservers;
+    
+    /**
+     * The boolean value of this schema. {@code null} in most cases where the schema is an object
+     */
+    private Boolean booleanValue;
+    
+    @Override
+    public void mergeFrom(JsonWrappingImpl other) {
+        SchemaImpl otherSchema = null;
+        if (other instanceof SchemaImpl) {
+            otherSchema = (SchemaImpl) other;
+            if (isBooleanSchema()) {
+                if (otherSchema.isBooleanSchema()) {
+                    booleanValue = otherSchema.booleanValue;
+                } else {
+                    // We're a boolean schema but they're not, just copy everything
+                    setBooleanSchema(null);
+                    super.mergeFrom(otherSchema);
+                }
+            } else {
+                if (otherSchema.isBooleanSchema()) {
+                    // They're a boolean schema, overwrite everything
+                    setBooleanSchema(otherSchema.getBooleanSchema());
+                } else {
+                    // Normal case, do a merge
+                    super.mergeFrom(otherSchema);
+                }
+            }
+        } else {
+            // Other object is not a schema (weird)
+            if (isBooleanSchema()) {
+                // Can't merge if we're a boolean schema
+                // so set back to object schema before merging
+                setBooleanSchema(null);
+            }
+            super.mergeFrom(other);
+        }
+    }
 
     public static boolean isNamed(Schema schema) {
         return schema instanceof SchemaImpl && ((SchemaImpl) schema).name != null;
@@ -86,61 +153,99 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     }
 
     public static SchemaImpl copyOf(Schema other) {
-        SchemaImpl clone = (SchemaImpl) MergeUtil.mergeObjects(new SchemaImpl(), other);
-        clone.required = copy(clone.required, () -> new ArrayList<>(clone.required));
-        clone.enumeration = copy(clone.enumeration, () -> new ArrayList<>(clone.enumeration));
-        clone.items = copy(clone.items, () -> copyOf(clone.items));
-
-        clone.allOf = copy(clone.allOf, () -> clone.allOf
-                .stream()
-                .map(SchemaImpl::copyOf)
-                .collect(Collectors.toList()));
-
-        clone.properties = copy(clone.properties, () -> clone.properties.entrySet()
-                .stream()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        e -> copyOf(e.getValue()),
-                        (u, v) -> {
-                            throw new IllegalStateException(String.format("Duplicate key %s", u));
-                        },
-                        LinkedHashMap::new)));
-
-        clone.additionalPropertiesSchema = copy(clone.additionalPropertiesSchema,
-                () -> copyOf(clone.additionalPropertiesSchema));
-
-        clone.xml = copy(clone.xml, () -> MergeUtil.mergeObjects(new XMLImpl(), clone.xml));
-        clone.externalDocs = copy(clone.externalDocs,
-                () -> MergeUtil.mergeObjects(new ExternalDocumentationImpl(), clone.externalDocs));
-
-        clone.oneOf = copy(clone.oneOf, () -> clone.oneOf
-                .stream()
-                .map(SchemaImpl::copyOf)
-                .collect(Collectors.toList()));
-
-        clone.anyOf = copy(clone.anyOf, () -> clone.anyOf
-                .stream()
-                .map(SchemaImpl::copyOf)
-                .collect(Collectors.toList()));
-
-        clone.not = copy(clone.not, () -> copyOf(clone.not));
-
-        return clone;
-    }
-
-    private static <T> T copy(T property, Supplier<T> copySupplier) {
-        if (property != null) {
-            return copySupplier.get();
+        if (other == null) {
+            return new SchemaImpl();
         }
-        return null;
+        if (other instanceof SchemaImpl) {
+            SchemaImpl otherImpl = (SchemaImpl) other;
+            SchemaImpl clone = new SchemaImpl(otherImpl.name);
+            clone.booleanValue = otherImpl.booleanValue;
+            if (otherImpl.node != null) {
+                clone.node = otherImpl.node.deepCopy();
+            }
+            return clone;
+        }
+        throw new UnsupportedOperationException("Can't copy a different impl");
+//        SchemaImpl clone = (SchemaImpl) MergeUtil.mergeObjects(new SchemaImpl(), other);
+//        clone.required = copy(clone.required, () -> new ArrayList<>(clone.required));
+//        clone.enumeration = copy(clone.enumeration, () -> new ArrayList<>(clone.enumeration));
+//        clone.items = copy(clone.items, () -> copyOf(clone.items));
+//
+//        clone.allOf = copy(clone.allOf, () -> clone.allOf
+//                .stream()
+//                .map(SchemaImpl::copyOf)
+//                .collect(Collectors.toList()));
+//
+//        clone.properties = copy(clone.properties, () -> clone.properties.entrySet()
+//                .stream()
+//                .collect(Collectors.toMap(
+//                        Map.Entry::getKey,
+//                        e -> copyOf(e.getValue()),
+//                        (u, v) -> {
+//                            throw new IllegalStateException(String.format("Duplicate key %s", u));
+//                        },
+//                        LinkedHashMap::new)));
+//
+//        clone.additionalPropertiesSchema = copy(clone.additionalPropertiesSchema,
+//                () -> copyOf(clone.additionalPropertiesSchema));
+//
+//        clone.xml = copy(clone.xml, () -> MergeUtil.mergeObjects(new XMLImpl(), clone.xml));
+//        clone.externalDocs = copy(clone.externalDocs,
+//                () -> MergeUtil.mergeObjects(new ExternalDocumentationImpl(), clone.externalDocs));
+//
+//        clone.oneOf = copy(clone.oneOf, () -> clone.oneOf
+//                .stream()
+//                .map(SchemaImpl::copyOf)
+//                .collect(Collectors.toList()));
+//
+//        clone.anyOf = copy(clone.anyOf, () -> clone.anyOf
+//                .stream()
+//                .map(SchemaImpl::copyOf)
+//                .collect(Collectors.toList()));
+//
+//        clone.not = copy(clone.not, () -> copyOf(clone.not));
+//
+//        return clone;
     }
 
+//    private static <T> T copy(T property, Supplier<T> copySupplier) {
+//        if (property != null) {
+//            return copySupplier.get();
+//        }
+//        return null;
+//    }
+    
+    /**
+     * Create an empty named schema
+     * @param name the name
+     */
     public SchemaImpl(String name) {
+        super(JsonUtil.objectNode());
         this.name = name;
     }
 
+    /**
+     * Create an empty schema
+     */
     public SchemaImpl() {
-        this(null);
+        this((String) null);
+    }
+    
+    /**
+     * Create a schema from a boolean value
+     * @param booleanValue the boolean value
+     */
+    public SchemaImpl(boolean booleanValue) {
+        super(null);
+        this.booleanValue = booleanValue;
+    }
+    
+    /**
+     * Create a schema from a JSON object
+     * @param node the json object
+     */
+    public SchemaImpl(ObjectNode node) {
+        super(node);
     }
 
     public String getName() {
@@ -150,13 +255,21 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     private void incrementModCount() {
         modCount++;
     }
+    
+    public JsonNode getJsonNode() {
+        if (isBooleanSchema()) {
+            return JsonNodeFactory.instance.booleanNode(booleanValue);
+        } else {
+            return node;
+        }
+    }
 
     /**
      * @see org.eclipse.microprofile.openapi.models.Reference#getRef()
      */
     @Override
     public String getRef() {
-        return this.ref;
+        return getProperty(Referenceable.PROP_$REF, STRING_CONVERTER);
     }
 
     /**
@@ -168,7 +281,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
             ref = OpenApiConstants.REF_PREFIX_SCHEMA + ref;
         }
         incrementModCount();
-        this.ref = ref;
+        setProperty(Referenceable.PROP_$REF, ref, STRING_CONVERTER);
     }
 
     /**
@@ -176,7 +289,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Discriminator getDiscriminator() {
-        return this.discriminator;
+        return getProperty(PROP_DISCRIMINATOR, DISCRIMINATOR_CONVERTER);
     }
 
     /**
@@ -185,7 +298,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setDiscriminator(Discriminator discriminator) {
         incrementModCount();
-        this.discriminator = discriminator;
+        setProperty(PROP_DISCRIMINATOR, discriminator, DISCRIMINATOR_CONVERTER);
     }
 
     /**
@@ -193,7 +306,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public String getTitle() {
-        return this.title;
+        return getProperty(SchemaConstant.PROP_TITLE, STRING_CONVERTER);
     }
 
     /**
@@ -202,7 +315,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setTitle(String title) {
         incrementModCount();
-        this.title = title;
+        setProperty(SchemaConstant.PROP_TITLE, title, STRING_CONVERTER);
     }
 
     /**
@@ -210,7 +323,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Object getDefaultValue() {
-        return this.defaultValue;
+        return getProperty(PROP_DEFAULT, OBJECT_CONVERTER);
     }
 
     /**
@@ -219,7 +332,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setDefaultValue(Object defaultValue) {
         incrementModCount();
-        this.defaultValue = defaultValue;
+        setProperty(SchemaConstant.PROP_DEFAULT, defaultValue, OBJECT_CONVERTER);
     }
 
     /**
@@ -227,7 +340,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public List<Object> getEnumeration() {
-        return ModelUtil.unmodifiableList(this.enumeration);
+        return getListProperty(PROP_ENUM, OBJECT_CONVERTER);
     }
 
     /**
@@ -236,7 +349,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setEnumeration(List<Object> enumeration) {
         incrementModCount();
-        this.enumeration = ModelUtil.replace(enumeration, ArrayList<Object>::new);
+        setListProperty(PROP_ENUM, enumeration, OBJECT_CONVERTER);
     }
 
     /**
@@ -245,7 +358,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public Schema addEnumeration(Object enumeration) {
         incrementModCount();
-        this.enumeration = ModelUtil.add(enumeration, this.enumeration, ArrayList<Object>::new);
+        addToListProperty(PROP_ENUM, enumeration, OBJECT_CONVERTER);
         return this;
     }
 
@@ -255,7 +368,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void removeEnumeration(Object enumeration) {
         incrementModCount();
-        ModelUtil.remove(this.enumeration, enumeration);
+        removeFromListProperty(PROP_ENUM, enumeration, OBJECT_CONVERTER);
     }
 
     /**
@@ -263,7 +376,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public BigDecimal getMultipleOf() {
-        return this.multipleOf;
+        return getProperty(PROP_MULTIPLE_OF, NUMBER_CONVERTER);
     }
 
     /**
@@ -272,7 +385,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setMultipleOf(BigDecimal multipleOf) {
         incrementModCount();
-        this.multipleOf = multipleOf;
+        setProperty(PROP_MULTIPLE_OF, multipleOf, NUMBER_CONVERTER);
     }
 
     /**
@@ -280,7 +393,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public BigDecimal getMaximum() {
-        return this.maximum;
+        return getProperty(PROP_MAXIMUM, NUMBER_CONVERTER);
     }
 
     /**
@@ -289,24 +402,24 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setMaximum(BigDecimal maximum) {
         incrementModCount();
-        this.maximum = maximum;
+        setProperty(PROP_MAXIMUM, maximum, NUMBER_CONVERTER);
     }
 
     /**
      * @see org.eclipse.microprofile.openapi.models.media.Schema#getExclusiveMaximum()
      */
     @Override
-    public Boolean getExclusiveMaximum() {
-        return this.exclusiveMaximum;
+    public BigDecimal getExclusiveMaximum() {
+        return getProperty(PROP_EXCLUSIVE_MAXIMUM, NUMBER_CONVERTER);
     }
 
     /**
      * @see org.eclipse.microprofile.openapi.models.media.Schema#setExclusiveMaximum(java.lang.Boolean)
      */
     @Override
-    public void setExclusiveMaximum(Boolean exclusiveMaximum) {
+    public void setExclusiveMaximum(BigDecimal exclusiveMaximum) {
         incrementModCount();
-        this.exclusiveMaximum = exclusiveMaximum;
+        setProperty(PROP_EXCLUSIVE_MAXIMUM, exclusiveMaximum, NUMBER_CONVERTER);
     }
 
     /**
@@ -314,7 +427,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public BigDecimal getMinimum() {
-        return this.minimum;
+        return getProperty(PROP_MINIMUM, NUMBER_CONVERTER);
     }
 
     /**
@@ -323,24 +436,24 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setMinimum(BigDecimal minimum) {
         incrementModCount();
-        this.minimum = minimum;
+        setProperty(PROP_MINIMUM, minimum, NUMBER_CONVERTER);
     }
 
     /**
      * @see org.eclipse.microprofile.openapi.models.media.Schema#getExclusiveMinimum()
      */
     @Override
-    public Boolean getExclusiveMinimum() {
-        return this.exclusiveMinimum;
+    public BigDecimal getExclusiveMinimum() {
+        return getProperty(PROP_EXCLUSIVE_MINIMUM, NUMBER_CONVERTER);
     }
 
     /**
      * @see org.eclipse.microprofile.openapi.models.media.Schema#setExclusiveMinimum(java.lang.Boolean)
      */
     @Override
-    public void setExclusiveMinimum(Boolean exclusiveMinimum) {
+    public void setExclusiveMinimum(BigDecimal exclusiveMinimum) {
         incrementModCount();
-        this.exclusiveMinimum = exclusiveMinimum;
+        setProperty(PROP_EXCLUSIVE_MINIMUM, exclusiveMinimum, NUMBER_CONVERTER);
     }
 
     /**
@@ -348,7 +461,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Integer getMaxLength() {
-        return this.maxLength;
+        return getProperty(PROP_MAX_LENGTH, INT_CONVERTER);
     }
 
     /**
@@ -357,7 +470,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setMaxLength(Integer maxLength) {
         incrementModCount();
-        this.maxLength = maxLength;
+        setProperty(PROP_MAX_LENGTH, maxLength, INT_CONVERTER);
     }
 
     /**
@@ -365,7 +478,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Integer getMinLength() {
-        return this.minLength;
+        return getProperty(PROP_MIN_LENGTH, INT_CONVERTER);
     }
 
     /**
@@ -374,7 +487,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setMinLength(Integer minLength) {
         incrementModCount();
-        this.minLength = minLength;
+        setProperty(PROP_MIN_LENGTH, minLength, INT_CONVERTER);
     }
 
     /**
@@ -382,7 +495,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public String getPattern() {
-        return this.pattern;
+        return getProperty(PROP_PATTERN, STRING_CONVERTER);
     }
 
     /**
@@ -391,7 +504,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setPattern(String pattern) {
         incrementModCount();
-        this.pattern = pattern;
+        setProperty(PROP_PATTERN, pattern, STRING_CONVERTER);
     }
 
     /**
@@ -399,7 +512,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Integer getMaxItems() {
-        return this.maxItems;
+        return getProperty(PROP_MAX_ITEMS, INT_CONVERTER);
     }
 
     /**
@@ -408,7 +521,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setMaxItems(Integer maxItems) {
         incrementModCount();
-        this.maxItems = maxItems;
+        setProperty(PROP_MAX_ITEMS, maxItems, INT_CONVERTER);
     }
 
     /**
@@ -416,7 +529,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Integer getMinItems() {
-        return this.minItems;
+        return getProperty(PROP_MIN_ITEMS, INT_CONVERTER);
     }
 
     /**
@@ -425,7 +538,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setMinItems(Integer minItems) {
         incrementModCount();
-        this.minItems = minItems;
+        setProperty(PROP_MIN_ITEMS, minItems, INT_CONVERTER);
     }
 
     /**
@@ -433,7 +546,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Boolean getUniqueItems() {
-        return this.uniqueItems;
+        return getProperty(PROP_UNIQUE_ITEMS, BOOLEAN_CONVERTER);
     }
 
     /**
@@ -442,7 +555,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setUniqueItems(Boolean uniqueItems) {
         incrementModCount();
-        this.uniqueItems = uniqueItems;
+        setProperty(PROP_UNIQUE_ITEMS, uniqueItems, BOOLEAN_CONVERTER);
     }
 
     /**
@@ -450,7 +563,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Integer getMaxProperties() {
-        return this.maxProperties;
+        return getProperty(PROP_MAX_PROPERTIES, INT_CONVERTER);
     }
 
     /**
@@ -459,7 +572,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setMaxProperties(Integer maxProperties) {
         incrementModCount();
-        this.maxProperties = maxProperties;
+        setProperty(PROP_MAX_PROPERTIES, maxProperties, INT_CONVERTER);
     }
 
     /**
@@ -467,7 +580,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Integer getMinProperties() {
-        return this.minProperties;
+        return getProperty(PROP_MIN_PROPERTIES, INT_CONVERTER);
     }
 
     /**
@@ -476,7 +589,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setMinProperties(Integer minProperties) {
         incrementModCount();
-        this.minProperties = minProperties;
+        setProperty(PROP_MIN_PROPERTIES, minProperties, INT_CONVERTER);
     }
 
     /**
@@ -484,7 +597,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public List<String> getRequired() {
-        return ModelUtil.unmodifiableList(this.required);
+        return getListProperty(PROP_REQUIRED, STRING_CONVERTER);
     }
 
     /**
@@ -493,7 +606,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setRequired(List<String> required) {
         incrementModCount();
-        this.required = ModelUtil.replace(required, ArrayList<String>::new);
+        setListProperty(PROP_REQUIRED, required, STRING_CONVERTER);
     }
 
     /**
@@ -502,7 +615,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public Schema addRequired(String required) {
         incrementModCount();
-        this.required = ModelUtil.add(required, this.required, ArrayList<String>::new);
+        addToListProperty(PROP_REQUIRED, required, STRING_CONVERTER);
         return this;
     }
 
@@ -512,24 +625,71 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void removeRequired(String required) {
         incrementModCount();
-        ModelUtil.remove(this.required, required);
+        removeFromListProperty(PROP_REQUIRED, required, STRING_CONVERTER);
     }
 
     /**
      * @see org.eclipse.microprofile.openapi.models.media.Schema#getType()
      */
     @Override
-    public SchemaType getType() {
-        return this.type;
+    public List<SchemaType> getType() {
+        List<SchemaType> resultList = getListProperty(PROP_TYPE, SCHEMA_TYPE_CONVERTER);
+        if (resultList != null) {
+            return resultList;
+        }
+        
+        SchemaType result = getProperty(PROP_TYPE, SCHEMA_TYPE_CONVERTER);
+        if (result != null) {
+            return Collections.singletonList(result);
+        }
+        
+        return null;
+    }
+
+    @Override
+    public void setType(List<SchemaType> types) {
+        incrementModCount();
+        setListProperty(PROP_TYPE, types, SCHEMA_TYPE_CONVERTER);
+        
+        if (typeObservers != null) {
+            typeObservers.forEach(o -> o.setType(types));
+        }
+    }
+
+    @Override
+    public Schema addType(SchemaType type) {
+        incrementModCount();
+        addToListProperty(PROP_TYPE, type, SCHEMA_TYPE_CONVERTER);
+        
+        if (typeObservers != null) {
+            typeObservers.forEach(o -> o.addType(type));
+        }
+        return this;
+    }
+
+    @Override
+    public void removeType(SchemaType type) {
+        incrementModCount();
+        removeFromListProperty(PROP_TYPE, type, SCHEMA_TYPE_CONVERTER);
+        
+        if (typeObservers != null) {
+            typeObservers.forEach(o -> o.removeType(type));
+        }
     }
 
     /**
      * @see org.eclipse.microprofile.openapi.models.media.Schema#setType(org.eclipse.microprofile.openapi.models.media.Schema.SchemaType)
      */
+    @SuppressWarnings("deprecation")
     @Override
     public void setType(SchemaType type) {
         incrementModCount();
-        this.type = type;
+        List<SchemaType> currentValue = getListProperty(PROP_TYPE, SCHEMA_TYPE_CONVERTER);
+        if (currentValue != null && currentValue.contains(SchemaType.NULL)) {
+            setListProperty(PROP_TYPE, Arrays.asList(type, SchemaType.NULL), SCHEMA_TYPE_CONVERTER);
+        } else {
+            setListProperty(PROP_TYPE, Collections.singletonList(type), SCHEMA_TYPE_CONVERTER);
+        }
 
         if (typeObservers != null) {
             typeObservers.forEach(o -> o.setType(type));
@@ -541,7 +701,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Schema getNot() {
-        return this.not;
+        return getProperty(PROP_NOT, SCHEMA_CONVERTER);
     }
 
     /**
@@ -550,7 +710,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setNot(Schema not) {
         incrementModCount();
-        this.not = not;
+        setProperty(PROP_NOT, not, SCHEMA_CONVERTER);
     }
 
     /**
@@ -558,7 +718,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Map<String, Schema> getProperties() {
-        return ModelUtil.unmodifiableMap(this.properties);
+        return getMapProperty(PROP_PROPERTIES, SCHEMA_CONVERTER);
     }
 
     /**
@@ -567,7 +727,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setProperties(Map<String, Schema> properties) {
         incrementModCount();
-        this.properties = ModelUtil.replace(properties, LinkedHashMap<String, Schema>::new);
+        setMapProperty(PROP_PROPERTIES, properties, SCHEMA_CONVERTER);
     }
 
     /**
@@ -577,7 +737,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public Schema addProperty(String key, Schema propertySchema) {
         incrementModCount();
-        this.properties = ModelUtil.add(key, propertySchema, this.properties, LinkedHashMap<String, Schema>::new);
+        addToMapProperty(PROP_PROPERTIES, key, propertySchema, SCHEMA_CONVERTER);
         return this;
     }
 
@@ -587,17 +747,17 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void removeProperty(String key) {
         incrementModCount();
-        ModelUtil.remove(this.properties, key);
+        removeFromMapProperty(PROP_PROPERTIES, key);
     }
 
     @Override
     public Schema getAdditionalPropertiesSchema() {
-        return this.additionalPropertiesSchema;
+        return getProperty(PROP_ADDITIONAL_PROPERTIES, SCHEMA_CONVERTER);
     }
 
     @Override
     public Boolean getAdditionalPropertiesBoolean() {
-        return this.additionalPropertiesBoolean;
+        return getAdditionalPropertiesSchema().getBooleanSchema();
     }
 
     /**
@@ -606,8 +766,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setAdditionalPropertiesSchema(Schema additionalProperties) {
         incrementModCount();
-        this.additionalPropertiesBoolean = null;
-        this.additionalPropertiesSchema = additionalProperties;
+        setProperty(PROP_ADDITIONAL_PROPERTIES, additionalProperties, SCHEMA_CONVERTER);
     }
 
     /**
@@ -616,8 +775,11 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setAdditionalPropertiesBoolean(Boolean additionalProperties) {
         incrementModCount();
-        this.additionalPropertiesSchema = null;
-        this.additionalPropertiesBoolean = additionalProperties;
+        if (additionalProperties != null) {
+            setAdditionalPropertiesSchema(new SchemaImpl(additionalProperties));
+        } else {
+            setAdditionalPropertiesSchema(null);
+        }
     }
 
     /**
@@ -625,7 +787,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public String getDescription() {
-        return this.description;
+        return getProperty(PROP_DESCRIPTION, STRING_CONVERTER);
     }
 
     /**
@@ -634,7 +796,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setDescription(String description) {
         incrementModCount();
-        this.description = description;
+        setProperty(PROP_DESCRIPTION, description, STRING_CONVERTER);
     }
 
     /**
@@ -642,7 +804,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public String getFormat() {
-        return this.format;
+        return getProperty(PROP_FORMAT, STRING_CONVERTER);
     }
 
     /**
@@ -651,7 +813,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setFormat(String format) {
         incrementModCount();
-        this.format = format;
+        setProperty(PROP_FORMAT, format, STRING_CONVERTER);
     }
 
     /**
@@ -659,7 +821,8 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Boolean getNullable() {
-        return this.nullable;
+        List<SchemaType> types = getType();
+        return types != null ? types.contains(SchemaType.NULL) : Boolean.FALSE;
     }
 
     /**
@@ -668,7 +831,14 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setNullable(Boolean nullable) {
         incrementModCount();
-        this.nullable = nullable;
+        if (nullable == Boolean.TRUE) {
+            List<SchemaType> types = getType();
+            if (types == null || !types.contains(SchemaType.NULL)) {
+                addType(SchemaType.NULL);
+            }
+        } else {
+            removeType(SchemaType.NULL);
+        }
     }
 
     /**
@@ -676,7 +846,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Boolean getReadOnly() {
-        return this.readOnly;
+        return getProperty(PROP_READ_ONLY, BOOLEAN_CONVERTER);
     }
 
     /**
@@ -685,7 +855,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setReadOnly(Boolean readOnly) {
         incrementModCount();
-        this.readOnly = readOnly;
+        setProperty(PROP_READ_ONLY, readOnly, BOOLEAN_CONVERTER);
     }
 
     /**
@@ -693,7 +863,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Boolean getWriteOnly() {
-        return this.writeOnly;
+        return getProperty(PROP_WRITE_ONLY, BOOLEAN_CONVERTER);
     }
 
     /**
@@ -702,7 +872,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setWriteOnly(Boolean writeOnly) {
         incrementModCount();
-        this.writeOnly = writeOnly;
+        setProperty(PROP_WRITE_ONLY, writeOnly, BOOLEAN_CONVERTER);
     }
 
     /**
@@ -710,7 +880,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Object getExample() {
-        return this.example;
+        return getProperty(PROP_EXAMPLE, OBJECT_CONVERTER);
     }
 
     /**
@@ -719,7 +889,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setExample(Object example) {
         incrementModCount();
-        this.example = example;
+        setProperty(PROP_EXAMPLE, example, OBJECT_CONVERTER);
     }
 
     /**
@@ -727,7 +897,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public ExternalDocumentation getExternalDocs() {
-        return this.externalDocs;
+        return getProperty(ExternalDocsConstant.PROP_EXTERNAL_DOCS, EXTERNAL_DOCUMENTATION_CONVERTER);
     }
 
     /**
@@ -736,7 +906,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setExternalDocs(ExternalDocumentation externalDocs) {
         incrementModCount();
-        this.externalDocs = externalDocs;
+        setProperty(ExternalDocsConstant.PROP_EXTERNAL_DOCS, externalDocs, EXTERNAL_DOCUMENTATION_CONVERTER);
     }
 
     /**
@@ -744,7 +914,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Boolean getDeprecated() {
-        return this.deprecated;
+        return getProperty(PROP_DEPRECATED, BOOLEAN_CONVERTER);
     }
 
     /**
@@ -753,7 +923,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setDeprecated(Boolean deprecated) {
         incrementModCount();
-        this.deprecated = deprecated;
+        setProperty(PROP_DEPRECATED, deprecated, BOOLEAN_CONVERTER);
     }
 
     /**
@@ -761,7 +931,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public XML getXml() {
-        return this.xml;
+        return getProperty(PROP_XML, XML_CONVERTER);
     }
 
     /**
@@ -770,7 +940,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setXml(XML xml) {
         incrementModCount();
-        this.xml = xml;
+        setProperty(PROP_XML, xml, XML_CONVERTER);
     }
 
     /**
@@ -778,7 +948,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public Schema getItems() {
-        return this.items;
+        return getProperty(PROP_ITEMS, SCHEMA_CONVERTER);
     }
 
     /**
@@ -787,7 +957,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setItems(Schema items) {
         incrementModCount();
-        this.items = items;
+        setProperty(PROP_ITEMS, items, SCHEMA_CONVERTER);
     }
 
     /**
@@ -795,7 +965,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public List<Schema> getAllOf() {
-        return ModelUtil.unmodifiableList(this.allOf);
+        return getListProperty(PROP_ALL_OF, SCHEMA_CONVERTER);
     }
 
     /**
@@ -804,7 +974,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setAllOf(List<Schema> allOf) {
         incrementModCount();
-        this.allOf = ModelUtil.replace(allOf, ArrayList<Schema>::new);
+        setListProperty(PROP_ALL_OF, allOf, SCHEMA_CONVERTER);
     }
 
     /**
@@ -813,7 +983,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public Schema addAllOf(Schema allOf) {
         incrementModCount();
-        this.allOf = ModelUtil.add(allOf, this.allOf, ArrayList<Schema>::new);
+        addToListProperty(PROP_ALL_OF, allOf, SCHEMA_CONVERTER);
         return this;
     }
 
@@ -823,7 +993,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void removeAllOf(Schema allOf) {
         incrementModCount();
-        ModelUtil.remove(this.allOf, allOf);
+        removeFromListProperty(PROP_ALL_OF, allOf, SCHEMA_CONVERTER);
     }
 
     /**
@@ -831,7 +1001,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public List<Schema> getAnyOf() {
-        return ModelUtil.unmodifiableList(this.anyOf);
+        return getListProperty(PROP_ANY_OF, SCHEMA_CONVERTER);
     }
 
     /**
@@ -840,7 +1010,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setAnyOf(List<Schema> anyOf) {
         incrementModCount();
-        this.anyOf = ModelUtil.replace(anyOf, ArrayList<Schema>::new);
+        setListProperty(PROP_ANY_OF, anyOf, SCHEMA_CONVERTER);
     }
 
     /**
@@ -849,7 +1019,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public Schema addAnyOf(Schema anyOf) {
         incrementModCount();
-        this.anyOf = ModelUtil.add(anyOf, this.anyOf, ArrayList<Schema>::new);
+        addToListProperty(PROP_ANY_OF, anyOf, SCHEMA_CONVERTER);
         return this;
     }
 
@@ -859,7 +1029,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void removeAnyOf(Schema anyOf) {
         incrementModCount();
-        ModelUtil.remove(this.anyOf, anyOf);
+        removeFromListProperty(PROP_ANY_OF, anyOf, SCHEMA_CONVERTER);
     }
 
     /**
@@ -867,7 +1037,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
      */
     @Override
     public List<Schema> getOneOf() {
-        return ModelUtil.unmodifiableList(this.oneOf);
+        return getListProperty(PROP_ONE_OF, SCHEMA_CONVERTER);
     }
 
     /**
@@ -876,7 +1046,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void setOneOf(List<Schema> oneOf) {
         incrementModCount();
-        this.oneOf = ModelUtil.replace(oneOf, ArrayList<Schema>::new);
+        setListProperty(PROP_ONE_OF, oneOf, SCHEMA_CONVERTER);
     }
 
     /**
@@ -885,7 +1055,7 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public Schema addOneOf(Schema oneOf) {
         incrementModCount();
-        this.oneOf = ModelUtil.add(oneOf, this.oneOf, ArrayList<Schema>::new);
+        addToListProperty(PROP_ONE_OF, oneOf, SCHEMA_CONVERTER);
         return this;
     }
 
@@ -895,7 +1065,510 @@ public class SchemaImpl extends ExtensibleImpl<Schema> implements Schema, ModelI
     @Override
     public void removeOneOf(Schema oneOf) {
         incrementModCount();
-        ModelUtil.remove(this.oneOf, oneOf);
+        removeFromListProperty(PROP_ONE_OF, oneOf, SCHEMA_CONVERTER);
     }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public Map<String, Object> getExtensions() {
+        return (Map<String, Object>) OBJECT_CONVERTER.fromNode(node);
+    }
+
+    @Override
+    public Schema addExtension(String name, Object value) {
+        setProperty(name, value, OBJECT_CONVERTER);
+        return this;
+    }
+
+    @Override
+    public void removeExtension(String name) {
+        node.remove(name);
+    }
+
+    @Override
+    public void setExtensions(Map<String, Object> extensions) {
+        for (Entry<String, Object> entry : extensions.entrySet()) {
+            if (entry.getKey() != null) {
+                setProperty(entry.getKey(), entry.getValue(), OBJECT_CONVERTER);
+            }
+        }
+    }
+
+    @Override
+    public String getSchemaDialect() {
+        return getProperty(PROP_SCHEMA_DIALECT, STRING_CONVERTER);
+    }
+
+    @Override
+    public void setSchemaDialect(String schemaDialect) {
+        setProperty(PROP_SCHEMA_DIALECT, schemaDialect, STRING_CONVERTER);
+    }
+
+    @Override
+    public String getComment() {
+        return getProperty(PROP_COMMENT, STRING_CONVERTER);
+    }
+
+    @Override
+    public void setComment(String comment) {
+        setProperty(PROP_COMMENT, comment, STRING_CONVERTER);
+    }
+
+    @Override
+    public Schema getIfSchema() {
+        return getProperty(PROP_IF, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public void setIfSchema(Schema ifSchema) {
+        setProperty(PROP_IF, ifSchema, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Schema getThenSchema() {
+        return getProperty(PROP_THEN, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public void setThenSchema(Schema thenSchema) {
+        setProperty(PROP_THEN, thenSchema, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Schema getElseSchema() {
+        return getProperty(PROP_ELSE, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public void setElseSchema(Schema elseSchema) {
+        setProperty(PROP_ELSE, elseSchema, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Map<String, Schema> getDependentSchemas() {
+        return getMapProperty(PROP_DEPENDENT_SCHEMAS, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public void setDependentSchemas(Map<String, Schema> dependentSchemas) {
+        setMapProperty(PROP_DEPENDENT_SCHEMAS, dependentSchemas, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Schema addDependentSchema(String propertyName, Schema schema) {
+        addToMapProperty(PROP_DEPENDENT_SCHEMAS, propertyName, schema, SCHEMA_CONVERTER);
+        return this;
+    }
+
+    @Override
+    public void removeDependentSchema(String propertyName) {
+        removeFromMapProperty(PROP_DEPENDENT_SCHEMAS, propertyName);
+    }
+
+    @Override
+    public List<Schema> getPrefixItems() {
+        return getListProperty(PROP_PREFIX_ITEMS, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public void setPrefixItems(List<Schema> prefixItems) {
+        setListProperty(PROP_PREFIX_ITEMS, prefixItems, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Schema addPrefixItem(Schema prefixItem) {
+        addToListProperty(PROP_PREFIX_ITEMS, prefixItem, SCHEMA_CONVERTER);
+        return this;
+    }
+
+    @Override
+    public void removePrefixItem(Schema prefixItem) {
+        removeFromListProperty(PROP_PREFIX_ITEMS, prefixItem, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Schema getContains() {
+        return getProperty(PROP_CONTAINS, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public void setContains(Schema contains) {
+        setProperty(PROP_CONTAINS, contains, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Map<String, Schema> getPatternProperties() {
+        return getMapProperty(PROP_PATTERN_PROPERTIES, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public void setPatternProperties(Map<String, Schema> patternProperties) {
+        setMapProperty(PROP_PATTERN_PROPERTIES, patternProperties, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Schema addPatternProperty(String regularExpression, Schema schema) {
+        addToMapProperty(PROP_PATTERN_PROPERTIES, regularExpression, schema, SCHEMA_CONVERTER);
+        return this;
+    }
+
+    @Override
+    public void removePatternProperty(String regularExpression) {
+        removeFromMapProperty(PROP_PATTERN_PROPERTIES, regularExpression);
+    }
+
+    @Override
+    public Schema getPropertyNames() {
+        return getProperty(PROP_PROPERTY_NAMES, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public void setPropertyNames(Schema propertyNameSchema) {
+        setProperty(PROP_PROPERTY_NAMES, propertyNameSchema, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Schema getUnevaluatedItems() {
+        return getProperty(PROP_UNEVALUATED_ITEMS, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public void setUnevaluatedItems(Schema unevaluatedItems) {
+        setProperty(PROP_UNEVALUATED_ITEMS, unevaluatedItems, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Schema getUnevaluatedProperties() {
+        return getProperty(PROP_UNEVALUATED_PROPERTIES, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public void setUnevaluatedProperties(Schema unevaluatedProperties) {
+        setProperty(PROP_UNEVALUATED_PROPERTIES, unevaluatedProperties, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Object getConstValue() {
+        return getProperty(PROP_CONST, OBJECT_CONVERTER);
+    }
+
+    @Override
+    public void setConstValue(Object constValue) {
+        setProperty(PROP_CONST, constValue, OBJECT_CONVERTER);
+    }
+
+    @Override
+    public Integer getMaxContains() {
+        return getProperty(PROP_MAX_CONTAINS, INT_CONVERTER);
+    }
+
+    @Override
+    public void setMaxContains(Integer maxContains) {
+        setProperty(PROP_MAX_CONTAINS, maxContains, INT_CONVERTER);
+    }
+
+    @Override
+    public Integer getMinContains() {
+        return getProperty(PROP_MIN_CONTAINS, INT_CONVERTER);
+    }
+
+    @Override
+    public void setMinContains(Integer minContains) {
+        setProperty(PROP_MIN_CONTAINS, minContains, INT_CONVERTER);
+    }
+
+    @Override
+    public Map<String, List<String>> getDependentRequired() {
+        return getMapProperty(PROP_DEPENDENT_REQUIRED, LIST_OF_STRING_CONVERTER);
+    }
+
+    @Override
+    public void setDependentRequired(Map<String, List<String>> dependentRequired) {
+        setMapProperty(PROP_DEPENDENT_REQUIRED, dependentRequired, LIST_OF_STRING_CONVERTER);
+    }
+
+    @Override
+    public Schema addDependentRequired(String propertyName, List<String> additionalRequiredPropertyNames) {
+        addToMapProperty(PROP_DEPENDENT_REQUIRED, propertyName, additionalRequiredPropertyNames, LIST_OF_STRING_CONVERTER);
+        return this;
+    }
+
+    @Override
+    public void removeDependentRequired(String propertyName) {
+        removeFromMapProperty(PROP_DEPENDENT_REQUIRED, propertyName);
+    }
+
+    @Override
+    public String getContentEncoding() {
+        return getProperty(PROP_CONTENT_ENCODING, STRING_CONVERTER);
+    }
+
+    @Override
+    public void setContentEncoding(String contentEncoding) {
+        setProperty(PROP_CONTENT_ENCODING, contentEncoding, STRING_CONVERTER);
+    }
+
+    @Override
+    public String getContentMediaType() {
+        return getProperty(PROP_CONTENT_MEDIA_TYPE, STRING_CONVERTER);
+    }
+
+    @Override
+    public void setContentMediaType(String contentMediaType) {
+        setProperty(PROP_CONTENT_MEDIA_TYPE, contentMediaType, STRING_CONVERTER);
+    }
+
+    @Override
+    public Schema getContentSchema() {
+        return getProperty(PROP_CONTENT_SCHEMA, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public void setContentSchema(Schema contentSchema) {
+        setProperty(PROP_CONTENT_SCHEMA, contentSchema, SCHEMA_CONVERTER);
+    }
+
+    @Override
+    public Boolean getBooleanSchema() {
+        return booleanValue;
+    }
+
+    @Override
+    public void setBooleanSchema(Boolean booleanSchema) {
+        if (booleanSchema == null) {
+            if (isBooleanSchema()) {
+                // Schema is going from boolean to empty object
+                booleanValue = null;
+                node = JsonNodeFactory.instance.objectNode();
+            }
+        } else {
+            if (booleanValue == null) {
+                // Schema is going from object to boolean
+                node = null;
+            }
+            booleanValue = booleanSchema;
+        }
+    }
+
+    @Override
+    public List<Object> getExamples() {
+        return getListProperty(PROP_EXAMPLES, OBJECT_CONVERTER);
+    }
+
+    @Override
+    public void setExamples(List<Object> examples) {
+        setListProperty(PROP_EXAMPLES, examples, OBJECT_CONVERTER);
+    }
+
+    @Override
+    public Schema addExample(Object example) {
+        addToListProperty(PROP_EXAMPLES, example, OBJECT_CONVERTER);
+        return this;
+    }
+
+    @Override
+    public void removeExample(Object example) {
+        removeFromListProperty(PROP_EXAMPLES, example, OBJECT_CONVERTER);
+    }
+
+    private boolean isBooleanSchema() {
+        return booleanValue != null;
+    }
+    
+    @Override
+    protected <T> void setProperty(String propertyName, T value, JsonWriter<T> writer) {
+        if (isBooleanSchema()) {
+            if (value != null) {
+                setBooleanSchema(null);
+                super.setProperty(propertyName, value, writer);
+            }
+        } else {
+            super.setProperty(propertyName, value, writer);
+        }
+    }
+
+    @Override
+    protected <T> T getProperty(String propertyName, JsonReader<T> reader) {
+        if (isBooleanSchema()) {
+            return null;
+        }
+        return super.getProperty(propertyName, reader);
+    }
+
+    @Override
+    protected <T> List<T> getListProperty(String propertyName, JsonReader<T> reader) {
+        if (isBooleanSchema()) {
+            return null;
+        }
+        return super.getListProperty(propertyName, reader);
+    }
+
+    @Override
+    protected <T> void setListProperty(String propertyName, List<T> value, JsonWriter<T> writer) {
+        if (isBooleanSchema()) {
+            if (value != null) {
+                setBooleanSchema(null);
+                super.setListProperty(propertyName, value, writer);
+            }
+        } else {
+            super.setListProperty(propertyName, value, writer);
+        }
+    }
+
+    @Override
+    protected <T> void addToListProperty(String propertyName, T value, JsonWriter<T> writer) {
+        if (isBooleanSchema()) {
+            setBooleanSchema(null);
+        }
+        super.addToListProperty(propertyName, value, writer);
+    }
+
+    @Override
+    protected <T> void removeFromListProperty(String propertyName, T toRemove, JsonReader<T> reader) {
+        if (!isBooleanSchema()) {
+            super.removeFromListProperty(propertyName, toRemove, reader);
+        }
+    }
+
+    @Override
+    protected <T> void setMapProperty(String propertyName, Map<String, T> value, JsonWriter<T> writer) {
+        if (isBooleanSchema()) {
+            if (value != null) {
+                setBooleanSchema(null);
+                super.setMapProperty(propertyName, value, writer);
+            }
+        } else {
+            super.setMapProperty(propertyName, value, writer);
+        }
+    }
+
+    @Override
+    protected <T> Map<String, T> getMapProperty(String propertyName, JsonReader<T> reader) {
+        if (isBooleanSchema()) {
+            return null;
+        }
+        return super.getMapProperty(propertyName, reader);
+    }
+
+    @Override
+    protected <T> void addToMapProperty(String propertyName, String key, T value, JsonWriter<T> writer) {
+        if (isBooleanSchema()) {
+            setBooleanSchema(null);
+        }
+        super.addToMapProperty(propertyName, key, value, writer);
+    }
+
+    @Override
+    protected <T> void removeFromMapProperty(String propertyName, String key) {
+        if (!isBooleanSchema()) {
+            super.removeFromMapProperty(propertyName, key);
+        }
+    }
+
+
+
+    protected static final JsonConverter<SchemaType> SCHEMA_TYPE_CONVERTER = new JsonConverter<SchemaType>() {
+        
+        @Override
+        public JsonNode toNode(SchemaType value) {
+            return STRING_CONVERTER.toNode(value.name());
+        }
+        
+        @Override
+        public SchemaType fromNode(JsonNode node) {
+            if (!node.isTextual()) return null;
+            return SchemaType.valueOf(node.textValue().toUpperCase(Locale.ROOT));
+        }
+    };
+    
+    protected static final JsonConverter<Schema> SCHEMA_CONVERTER = new JsonConverter<Schema>() {
+        
+        @Override
+        public JsonNode toNode(Schema value) {
+            if (value instanceof SchemaImpl) {
+                Boolean booleanValue = value.getBooleanSchema();
+                if (booleanValue != null) {
+                    return JsonNodeFactory.instance.booleanNode(booleanValue);
+                } else {
+                    return ((SchemaImpl)value).node;
+                }
+            }
+            return null;
+        }
+        
+        @Override
+        public Schema fromNode(JsonNode node) {
+            if (node.isObject()) {
+                return new SchemaImpl((ObjectNode) node);
+            } else if (node.isBoolean()) {
+                return new SchemaImpl(node.booleanValue());
+            }
+            return null;
+        }
+    };
+    
+    protected static final JsonConverter<ExternalDocumentation> EXTERNAL_DOCUMENTATION_CONVERTER = new JsonConverter<ExternalDocumentation>() {
+        
+        @Override
+        public JsonNode toNode(ExternalDocumentation value) {
+            return ExternalDocsWriter.createExternalDocumentationNode(JsonNodeFactory.instance, value);
+        }
+        
+        @Override
+        public ExternalDocumentation fromNode(JsonNode node) {
+            return ExternalDocsReader.readExternalDocs(node);
+        }
+    };
+    
+    protected static final JsonConverter<XML> XML_CONVERTER = new JsonConverter<XML>() {
+        
+        @Override
+        public JsonNode toNode(XML value) {
+            return XmlWriter.createXMLNode(JsonNodeFactory.instance, value);
+        }
+        
+        @Override
+        public XML fromNode(JsonNode node) {
+            return XmlReader.readXML(node);
+        }
+    };
+    
+    protected static final JsonConverter<Discriminator> DISCRIMINATOR_CONVERTER = new JsonConverter<Discriminator>() {
+        
+        @Override
+        public JsonNode toNode(Discriminator value) {
+            return DiscriminatorWriter.convertDiscriminatorToNode(JsonNodeFactory.instance, value);
+        }
+        
+        @Override
+        public Discriminator fromNode(JsonNode node) {
+            return DiscriminatorReader.readDiscriminator(node);
+        }
+    };
+    
+    // We could do this generically, but we only have one case where we need this
+    protected static final JsonConverter<List<String>> LIST_OF_STRING_CONVERTER = new JsonConverter<List<String>>() {
+        
+        @Override
+        public JsonNode toNode(List<String> value) {
+            ArrayNode node = JsonNodeFactory.instance.arrayNode();
+            for (String item : value) {
+                node.add(item);
+            }
+            return node;
+        }
+        
+        @Override
+        public List<String> fromNode(JsonNode node) {
+            if (!node.isArray()) {
+                return null;
+            }
+            ArrayList<String> result = new ArrayList<String>(node.size());
+            for (JsonNode item : node) {
+                result.add(STRING_CONVERTER.fromNode(item));
+            }
+            return result;
+        }
+    };
 
 }
