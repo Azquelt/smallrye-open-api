@@ -1,12 +1,10 @@
 package io.smallrye.openapi.runtime.io.schema;
 
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 
@@ -65,7 +63,7 @@ public class SchemaWriter {
         }
         parent.set(name, getSchemaNode(model));
     }
-    
+
     private static JsonNode getSchemaNode(Schema model) {
         if (model instanceof SchemaImpl) {
             SchemaImpl impl = (SchemaImpl) model;

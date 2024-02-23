@@ -36,7 +36,7 @@ public class DiscriminatorWriter {
         }
         parent.set(SchemaConstant.PROP_DISCRIMINATOR, convertDiscriminatorToNode(parent, model));
     }
-    
+
     public static JsonNode convertDiscriminatorToNode(JsonNodeCreator creator, Discriminator model) {
         ObjectNode node = creator.objectNode();
         JsonUtil.stringProperty(node, DiscriminatorConstant.PROP_PROPERTY_NAME, model.getPropertyName());

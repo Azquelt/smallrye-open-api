@@ -172,7 +172,7 @@ public class BeanValidationScanner {
         if (schemaTypes == null || schemaTypes.isEmpty() || schema.getRef() != null) {
             return;
         }
-        
+
         for (SchemaType schemaType : schemaTypes) {
             switch (schemaType) {
                 case ARRAY:
@@ -277,7 +277,7 @@ public class BeanValidationScanner {
             Boolean inclusive = Annotations.value(constraint, INCLUSIVE);
             try {
                 BigDecimal decimal = new BigDecimal(decimalValue);
-                
+
                 if (Boolean.FALSE.equals(inclusive)) {
                     schema.setExclusiveMaximum(decimal);
                 } else {
@@ -297,11 +297,11 @@ public class BeanValidationScanner {
             Boolean inclusive = Annotations.value(constraint, INCLUSIVE);
             try {
                 BigDecimal decimal = new BigDecimal(decimalValue);
-                
+
                 if (Boolean.FALSE.equals(inclusive)) {
-                    schema.setExclusiveMaximum(decimal);
+                    schema.setExclusiveMinimum(decimal);
                 } else {
-                    schema.setMaximum(decimal);
+                    schema.setMinimum(decimal);
                 }
             } catch (@SuppressWarnings("unused") NumberFormatException e) {
                 DataObjectLogging.logger.invalidAnnotationFormat(decimalValue);

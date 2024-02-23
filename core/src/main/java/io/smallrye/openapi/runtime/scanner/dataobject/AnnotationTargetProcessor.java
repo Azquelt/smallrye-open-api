@@ -450,7 +450,7 @@ public class AnnotationTargetProcessor implements RequirementHandler {
             Schema::getDeprecated,
             Schema::getDescription,
             Schema::getExample,
-            Schema::getExtensions,
+            //            Schema::getExtensions,
             Schema::getExternalDocs,
             Schema::getReadOnly,
             Schema::getTitle,

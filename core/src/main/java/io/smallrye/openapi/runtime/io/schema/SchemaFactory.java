@@ -180,7 +180,7 @@ public class SchemaFactory {
         AnnotationInstance externalDocsAnnotation = Annotations.value(annotation, ExternalDocsConstant.PROP_EXTERNAL_DOCS);
         schema.setExternalDocs(ExternalDocsReader.readExternalDocs(context, externalDocsAnnotation));
         schema.setDeprecated(readAttr(annotation, SchemaConstant.PROP_DEPRECATED, defaults));
-        
+
         final SchemaType type = readSchemaType(annotation, schema, defaults);
         schema.setType(type);
         schema.setExample(parseSchemaAttr(context, annotation, SchemaConstant.PROP_EXAMPLE, defaults, type));
@@ -269,7 +269,7 @@ public class SchemaFactory {
             implSchema = readClassSchema(context, type, false);
         }
 
-        if (schema.getType().contains(Schema.SchemaType.ARRAY) && implSchema != null) {
+        if (schema.getType() != null && schema.getType().contains(Schema.SchemaType.ARRAY) && implSchema != null) {
             // If the @Schema annotation indicates an array type, then use the Schema
             // generated from the implementation Class as the "items" for the array.
             schema.setItems(implSchema);

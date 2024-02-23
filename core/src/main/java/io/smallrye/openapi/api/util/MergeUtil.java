@@ -94,7 +94,7 @@ public class MergeUtil {
         if (!object1.getClass().equals(object2.getClass())) {
             return object2;
         }
-        
+
         // Some model objects are just wrappers around JSON data and need merged differently
         if (object1 instanceof JsonWrappingImpl) {
             ((JsonWrappingImpl) object1).mergeFrom((JsonWrappingImpl) object2);

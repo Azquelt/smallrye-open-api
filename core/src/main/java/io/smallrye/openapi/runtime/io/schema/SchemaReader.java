@@ -76,9 +76,9 @@ public class SchemaReader {
         if (node == null) {
             return null;
         } else if (node.isObject()) {
-            return new SchemaImpl((ObjectNode) node);
+            return SchemaImpl.getOrCreateFromNode((ObjectNode) node);
         } else if (node.isBoolean()) {
-            return new SchemaImpl(node.booleanValue());
+            return SchemaImpl.ofBoolean(node.booleanValue());
         } else {
             return null;
         }

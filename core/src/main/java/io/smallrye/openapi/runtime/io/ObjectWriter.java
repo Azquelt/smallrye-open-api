@@ -82,17 +82,17 @@ public class ObjectWriter {
 
     /**
      * Add an object into a JSON array
-     * 
+     *
      * @param node the array
      * @param value the object to add
      */
     public static void addObject(ArrayNode node, Object value) {
         node.add(convertObjectToNode(node, value));
     }
-    
+
     /**
      * Convert an object to a JsonNode
-     * 
+     *
      * @param nodeCreator the factory to use to create the new JsonNode
      * @param value the object to convert
      * @return the JSON representation of the object

@@ -647,7 +647,7 @@ public abstract class AbstractParameterProcessor {
 
         if (localOnlySchemaModified(paramSchema, localSchema, modCount)) {
             // Add new `allOf` schema, erasing `type` derived above from the local schema
-            Schema allOf = new SchemaImpl().addAllOf(paramSchema).addAllOf(localSchema.type((List<SchemaType>)null));
+            Schema allOf = new SchemaImpl().addAllOf(paramSchema).addAllOf(localSchema.type((List<SchemaType>) null));
             param.setSchema(allOf);
         }
     }

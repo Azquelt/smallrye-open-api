@@ -32,17 +32,17 @@ public class ExternalDocsWriter {
         if (model == null) {
             return;
         }
-        
+
         parent.set(ExternalDocsConstant.PROP_EXTERNAL_DOCS, createExternalDocumentationNode(parent, model));
     }
-    
+
     public static ObjectNode createExternalDocumentationNode(JsonNodeCreator creator, ExternalDocumentation model) {
         ObjectNode node = creator.objectNode();
-        
+
         JsonUtil.stringProperty(node, ExternalDocsConstant.PROP_DESCRIPTION, model.getDescription());
         JsonUtil.stringProperty(node, ExternalDocsConstant.PROP_URL, model.getUrl());
         ExtensionWriter.writeExtensions(node, model);
-        
+
         return node;
     }
 }

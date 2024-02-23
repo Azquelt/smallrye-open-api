@@ -34,7 +34,7 @@ public class XmlWriter {
         }
         parent.set(SchemaConstant.PROP_XML, createXMLNode(parent, model));
     }
-    
+
     public static ObjectNode createXMLNode(JsonNodeCreator creator, XML model) {
         ObjectNode node = creator.objectNode();
         JsonUtil.stringProperty(node, XmlConstant.PROP_NAME, model.getName());

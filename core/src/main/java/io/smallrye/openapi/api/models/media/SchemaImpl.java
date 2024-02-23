@@ -75,6 +75,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.smallrye.openapi.api.constants.OpenApiConstants;
 import io.smallrye.openapi.api.models.JsonWrappingImpl;
 import io.smallrye.openapi.api.models.ModelImpl;
+import io.smallrye.openapi.api.models.NodeObjectCache;
 import io.smallrye.openapi.runtime.io.JsonUtil;
 import io.smallrye.openapi.runtime.io.Referenceable;
 import io.smallrye.openapi.runtime.io.discriminator.DiscriminatorReader;
@@ -91,48 +92,61 @@ import io.smallrye.openapi.runtime.util.ModelUtil;
  * An implementation of the {@link Schema} OpenAPI model interface.
  */
 public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
-    
+
+    private static final NodeObjectCache<ObjectNode, SchemaImpl> NODE_OBJECT_CACHE = new NodeObjectCache<>(SchemaImpl::new);
+
+    /**
+     * Get or create a schema object for a given JSON object
+     * <p>
+     * If a schema object for this JSON node already exists, the same object will be returned, otherwise a new one may be
+     * created.
+     *
+     * @param node the JSON object
+     * @return the schema object
+     */
+    public static SchemaImpl getOrCreateFromNode(ObjectNode node) {
+        return NODE_OBJECT_CACHE.getOrCreate(node);
+    }
+
+    /**
+     * Get a boolean schema object
+     * <p>
+     * Calling this method twice for the same boolean value will return the same (immutable) schema object
+     *
+     * @param booleanValue the schema value
+     * @return an immutable boolean schema
+     */
+    public static SchemaImpl ofBoolean(boolean booleanValue) {
+        return booleanValue ? TRUE_SCHEMA : FALSE_SCHEMA;
+    }
+
+    private static final SchemaImpl TRUE_SCHEMA = new SchemaImpl(true);
+    private static final SchemaImpl FALSE_SCHEMA = new SchemaImpl(false);
+
     // Non-standard
     private String name;
     private int modCount;
     private List<Schema> typeObservers;
-    
+
     /**
      * The boolean value of this schema. {@code null} in most cases where the schema is an object
      */
     private Boolean booleanValue;
-    
+
     @Override
-    public void mergeFrom(JsonWrappingImpl other) {
+    public JsonWrappingImpl mergeFrom(JsonWrappingImpl other) {
         SchemaImpl otherSchema = null;
-        if (other instanceof SchemaImpl) {
-            otherSchema = (SchemaImpl) other;
-            if (isBooleanSchema()) {
-                if (otherSchema.isBooleanSchema()) {
-                    booleanValue = otherSchema.booleanValue;
-                } else {
-                    // We're a boolean schema but they're not, just copy everything
-                    setBooleanSchema(null);
-                    super.mergeFrom(otherSchema);
-                }
-            } else {
-                if (otherSchema.isBooleanSchema()) {
-                    // They're a boolean schema, overwrite everything
-                    setBooleanSchema(otherSchema.getBooleanSchema());
-                } else {
-                    // Normal case, do a merge
-                    super.mergeFrom(otherSchema);
-                }
-            }
-        } else {
-            // Other object is not a schema (weird)
-            if (isBooleanSchema()) {
-                // Can't merge if we're a boolean schema
-                // so set back to object schema before merging
-                setBooleanSchema(null);
-            }
-            super.mergeFrom(other);
+
+        // If either schema is a boolean, we don't merge and just return the other schema
+        if (this.isBooleanSchema()) {
+            return other;
         }
+        if (other instanceof SchemaImpl && ((SchemaImpl) other).isBooleanSchema()) {
+            return otherSchema;
+        }
+
+        // Otherwise we merge the JSON trees
+        return super.mergeFrom(other);
     }
 
     public static boolean isNamed(Schema schema) {
@@ -158,70 +172,75 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
         }
         if (other instanceof SchemaImpl) {
             SchemaImpl otherImpl = (SchemaImpl) other;
-            SchemaImpl clone = new SchemaImpl(otherImpl.name);
-            clone.booleanValue = otherImpl.booleanValue;
-            if (otherImpl.node != null) {
-                clone.node = otherImpl.node.deepCopy();
+            SchemaImpl clone;
+            if (otherImpl.booleanValue != null) {
+                // Boolean schemas are singletons and immutable, no need to actually copy
+                clone = otherImpl;
+            } else {
+                clone = getOrCreateFromNode(otherImpl.node.deepCopy());
             }
+            clone.name = otherImpl.name;
             return clone;
         }
         throw new UnsupportedOperationException("Can't copy a different impl");
-//        SchemaImpl clone = (SchemaImpl) MergeUtil.mergeObjects(new SchemaImpl(), other);
-//        clone.required = copy(clone.required, () -> new ArrayList<>(clone.required));
-//        clone.enumeration = copy(clone.enumeration, () -> new ArrayList<>(clone.enumeration));
-//        clone.items = copy(clone.items, () -> copyOf(clone.items));
-//
-//        clone.allOf = copy(clone.allOf, () -> clone.allOf
-//                .stream()
-//                .map(SchemaImpl::copyOf)
-//                .collect(Collectors.toList()));
-//
-//        clone.properties = copy(clone.properties, () -> clone.properties.entrySet()
-//                .stream()
-//                .collect(Collectors.toMap(
-//                        Map.Entry::getKey,
-//                        e -> copyOf(e.getValue()),
-//                        (u, v) -> {
-//                            throw new IllegalStateException(String.format("Duplicate key %s", u));
-//                        },
-//                        LinkedHashMap::new)));
-//
-//        clone.additionalPropertiesSchema = copy(clone.additionalPropertiesSchema,
-//                () -> copyOf(clone.additionalPropertiesSchema));
-//
-//        clone.xml = copy(clone.xml, () -> MergeUtil.mergeObjects(new XMLImpl(), clone.xml));
-//        clone.externalDocs = copy(clone.externalDocs,
-//                () -> MergeUtil.mergeObjects(new ExternalDocumentationImpl(), clone.externalDocs));
-//
-//        clone.oneOf = copy(clone.oneOf, () -> clone.oneOf
-//                .stream()
-//                .map(SchemaImpl::copyOf)
-//                .collect(Collectors.toList()));
-//
-//        clone.anyOf = copy(clone.anyOf, () -> clone.anyOf
-//                .stream()
-//                .map(SchemaImpl::copyOf)
-//                .collect(Collectors.toList()));
-//
-//        clone.not = copy(clone.not, () -> copyOf(clone.not));
-//
-//        return clone;
+        //        SchemaImpl clone = (SchemaImpl) MergeUtil.mergeObjects(new SchemaImpl(), other);
+        //        clone.required = copy(clone.required, () -> new ArrayList<>(clone.required));
+        //        clone.enumeration = copy(clone.enumeration, () -> new ArrayList<>(clone.enumeration));
+        //        clone.items = copy(clone.items, () -> copyOf(clone.items));
+        //
+        //        clone.allOf = copy(clone.allOf, () -> clone.allOf
+        //                .stream()
+        //                .map(SchemaImpl::copyOf)
+        //                .collect(Collectors.toList()));
+        //
+        //        clone.properties = copy(clone.properties, () -> clone.properties.entrySet()
+        //                .stream()
+        //                .collect(Collectors.toMap(
+        //                        Map.Entry::getKey,
+        //                        e -> copyOf(e.getValue()),
+        //                        (u, v) -> {
+        //                            throw new IllegalStateException(String.format("Duplicate key %s", u));
+        //                        },
+        //                        LinkedHashMap::new)));
+        //
+        //        clone.additionalPropertiesSchema = copy(clone.additionalPropertiesSchema,
+        //                () -> copyOf(clone.additionalPropertiesSchema));
+        //
+        //        clone.xml = copy(clone.xml, () -> MergeUtil.mergeObjects(new XMLImpl(), clone.xml));
+        //        clone.externalDocs = copy(clone.externalDocs,
+        //                () -> MergeUtil.mergeObjects(new ExternalDocumentationImpl(), clone.externalDocs));
+        //
+        //        clone.oneOf = copy(clone.oneOf, () -> clone.oneOf
+        //                .stream()
+        //                .map(SchemaImpl::copyOf)
+        //                .collect(Collectors.toList()));
+        //
+        //        clone.anyOf = copy(clone.anyOf, () -> clone.anyOf
+        //                .stream()
+        //                .map(SchemaImpl::copyOf)
+        //                .collect(Collectors.toList()));
+        //
+        //        clone.not = copy(clone.not, () -> copyOf(clone.not));
+        //
+        //        return clone;
     }
 
-//    private static <T> T copy(T property, Supplier<T> copySupplier) {
-//        if (property != null) {
-//            return copySupplier.get();
-//        }
-//        return null;
-//    }
-    
+    //    private static <T> T copy(T property, Supplier<T> copySupplier) {
+    //        if (property != null) {
+    //            return copySupplier.get();
+    //        }
+    //        return null;
+    //    }
+
     /**
      * Create an empty named schema
+     *
      * @param name the name
      */
     public SchemaImpl(String name) {
         super(JsonUtil.objectNode());
         this.name = name;
+        NODE_OBJECT_CACHE.put(this.node, this);
     }
 
     /**
@@ -230,21 +249,27 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     public SchemaImpl() {
         this((String) null);
     }
-    
+
     /**
      * Create a schema from a boolean value
+     * <p>
+     * External callers should use {@link #ofBoolean(boolean)}
+     *
      * @param booleanValue the boolean value
      */
-    public SchemaImpl(boolean booleanValue) {
+    private SchemaImpl(boolean booleanValue) {
         super(null);
         this.booleanValue = booleanValue;
     }
-    
+
     /**
      * Create a schema from a JSON object
+     * <p>
+     * External callers should use {@link #getOrCreateFromNode(ObjectNode)} instead
+     *
      * @param node the json object
      */
-    public SchemaImpl(ObjectNode node) {
+    private SchemaImpl(ObjectNode node) {
         super(node);
     }
 
@@ -255,7 +280,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     private void incrementModCount() {
         modCount++;
     }
-    
+
     public JsonNode getJsonNode() {
         if (isBooleanSchema()) {
             return JsonNodeFactory.instance.booleanNode(booleanValue);
@@ -637,12 +662,12 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
         if (resultList != null) {
             return resultList;
         }
-        
+
         SchemaType result = getProperty(PROP_TYPE, SCHEMA_TYPE_CONVERTER);
         if (result != null) {
             return Collections.singletonList(result);
         }
-        
+
         return null;
     }
 
@@ -650,7 +675,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     public void setType(List<SchemaType> types) {
         incrementModCount();
         setListProperty(PROP_TYPE, types, SCHEMA_TYPE_CONVERTER);
-        
+
         if (typeObservers != null) {
             typeObservers.forEach(o -> o.setType(types));
         }
@@ -660,7 +685,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     public Schema addType(SchemaType type) {
         incrementModCount();
         addToListProperty(PROP_TYPE, type, SCHEMA_TYPE_CONVERTER);
-        
+
         if (typeObservers != null) {
             typeObservers.forEach(o -> o.addType(type));
         }
@@ -671,7 +696,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     public void removeType(SchemaType type) {
         incrementModCount();
         removeFromListProperty(PROP_TYPE, type, SCHEMA_TYPE_CONVERTER);
-        
+
         if (typeObservers != null) {
             typeObservers.forEach(o -> o.removeType(type));
         }
@@ -686,9 +711,17 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
         incrementModCount();
         List<SchemaType> currentValue = getListProperty(PROP_TYPE, SCHEMA_TYPE_CONVERTER);
         if (currentValue != null && currentValue.contains(SchemaType.NULL)) {
-            setListProperty(PROP_TYPE, Arrays.asList(type, SchemaType.NULL), SCHEMA_TYPE_CONVERTER);
+            if (type == null) {
+                setListProperty(PROP_TYPE, Arrays.asList(SchemaType.NULL), SCHEMA_TYPE_CONVERTER);
+            } else {
+                setListProperty(PROP_TYPE, Arrays.asList(type, SchemaType.NULL), SCHEMA_TYPE_CONVERTER);
+            }
         } else {
-            setListProperty(PROP_TYPE, Collections.singletonList(type), SCHEMA_TYPE_CONVERTER);
+            if (type == null) {
+                setListProperty(PROP_TYPE, null, SCHEMA_TYPE_CONVERTER);
+            } else {
+                setListProperty(PROP_TYPE, Collections.singletonList(type), SCHEMA_TYPE_CONVERTER);
+            }
         }
 
         if (typeObservers != null) {
@@ -757,7 +790,8 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     @Override
     public Boolean getAdditionalPropertiesBoolean() {
-        return getAdditionalPropertiesSchema().getBooleanSchema();
+        Schema additionalPropertiesSchema = getAdditionalPropertiesSchema();
+        return additionalPropertiesSchema == null ? null : additionalPropertiesSchema.getBooleanSchema();
     }
 
     /**
@@ -1087,6 +1121,9 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     @Override
     public void setExtensions(Map<String, Object> extensions) {
+        if (extensions == null) {
+            return;
+        }
         for (Entry<String, Object> entry : extensions.entrySet()) {
             if (entry.getKey() != null) {
                 setProperty(entry.getKey(), entry.getValue(), OBJECT_CONVERTER);
@@ -1334,20 +1371,9 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     }
 
     @Override
+    @Deprecated
     public void setBooleanSchema(Boolean booleanSchema) {
-        if (booleanSchema == null) {
-            if (isBooleanSchema()) {
-                // Schema is going from boolean to empty object
-                booleanValue = null;
-                node = JsonNodeFactory.instance.objectNode();
-            }
-        } else {
-            if (booleanValue == null) {
-                // Schema is going from object to boolean
-                node = null;
-            }
-            booleanValue = booleanSchema;
-        }
+        throw new UnsupportedOperationException("Can't set BooleanSchema");
     }
 
     @Override
@@ -1374,17 +1400,22 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     private boolean isBooleanSchema() {
         return booleanValue != null;
     }
-    
+
+    /**
+     * Asserts that the schema is not a boolean schema
+     *
+     * @throws UnsupportedOperationException if this schema is a boolean schema
+     */
+    private void assertObjectSchema() throws UnsupportedOperationException {
+        if (isBooleanSchema()) {
+            throw new UnsupportedOperationException("Schema has a boolean value");
+        }
+    }
+
     @Override
     protected <T> void setProperty(String propertyName, T value, JsonWriter<T> writer) {
-        if (isBooleanSchema()) {
-            if (value != null) {
-                setBooleanSchema(null);
-                super.setProperty(propertyName, value, writer);
-            }
-        } else {
-            super.setProperty(propertyName, value, writer);
-        }
+        assertObjectSchema();
+        super.setProperty(propertyName, value, writer);
     }
 
     @Override
@@ -1405,21 +1436,13 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     @Override
     protected <T> void setListProperty(String propertyName, List<T> value, JsonWriter<T> writer) {
-        if (isBooleanSchema()) {
-            if (value != null) {
-                setBooleanSchema(null);
-                super.setListProperty(propertyName, value, writer);
-            }
-        } else {
-            super.setListProperty(propertyName, value, writer);
-        }
+        assertObjectSchema();
+        super.setListProperty(propertyName, value, writer);
     }
 
     @Override
     protected <T> void addToListProperty(String propertyName, T value, JsonWriter<T> writer) {
-        if (isBooleanSchema()) {
-            setBooleanSchema(null);
-        }
+        assertObjectSchema();
         super.addToListProperty(propertyName, value, writer);
     }
 
@@ -1432,14 +1455,8 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     @Override
     protected <T> void setMapProperty(String propertyName, Map<String, T> value, JsonWriter<T> writer) {
-        if (isBooleanSchema()) {
-            if (value != null) {
-                setBooleanSchema(null);
-                super.setMapProperty(propertyName, value, writer);
-            }
-        } else {
-            super.setMapProperty(propertyName, value, writer);
-        }
+        assertObjectSchema();
+        super.setMapProperty(propertyName, value, writer);
     }
 
     @Override
@@ -1452,9 +1469,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     @Override
     protected <T> void addToMapProperty(String propertyName, String key, T value, JsonWriter<T> writer) {
-        if (isBooleanSchema()) {
-            setBooleanSchema(null);
-        }
+        assertObjectSchema();
         super.addToMapProperty(propertyName, key, value, writer);
     }
 
@@ -1465,24 +1480,45 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
         }
     }
 
-
+    //    @Override
+    //    public int hashCode() {
+    //        final int prime = 31;
+    //        int result = super.hashCode();
+    //        result = prime * result + Objects.hash(booleanValue, modCount, name, typeObservers);
+    //        return result;
+    //    }
+    //
+    //    @Override
+    //    public boolean equals(Object obj) {
+    //        if (this == obj)
+    //            return true;
+    //        if (!super.equals(obj))
+    //            return false;
+    //        if (getClass() != obj.getClass())
+    //            return false;
+    //        SchemaImpl other = (SchemaImpl) obj;
+    //        return Objects.equals(booleanValue, other.booleanValue) && modCount == other.modCount
+    //                && Objects.equals(name, other.name)
+    //                && Objects.equals(typeObservers, other.typeObservers);
+    //    }
 
     protected static final JsonConverter<SchemaType> SCHEMA_TYPE_CONVERTER = new JsonConverter<SchemaType>() {
-        
+
         @Override
         public JsonNode toNode(SchemaType value) {
-            return STRING_CONVERTER.toNode(value.name());
+            return STRING_CONVERTER.toNode(value.toString());
         }
-        
+
         @Override
         public SchemaType fromNode(JsonNode node) {
-            if (!node.isTextual()) return null;
+            if (!node.isTextual())
+                return null;
             return SchemaType.valueOf(node.textValue().toUpperCase(Locale.ROOT));
         }
     };
-    
+
     protected static final JsonConverter<Schema> SCHEMA_CONVERTER = new JsonConverter<Schema>() {
-        
+
         @Override
         public JsonNode toNode(Schema value) {
             if (value instanceof SchemaImpl) {
@@ -1490,65 +1526,65 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
                 if (booleanValue != null) {
                     return JsonNodeFactory.instance.booleanNode(booleanValue);
                 } else {
-                    return ((SchemaImpl)value).node;
+                    return ((SchemaImpl) value).node;
                 }
             }
             return null;
         }
-        
+
         @Override
         public Schema fromNode(JsonNode node) {
             if (node.isObject()) {
-                return new SchemaImpl((ObjectNode) node);
+                return getOrCreateFromNode((ObjectNode) node);
             } else if (node.isBoolean()) {
-                return new SchemaImpl(node.booleanValue());
+                return SchemaImpl.ofBoolean(node.booleanValue());
             }
             return null;
         }
     };
-    
+
     protected static final JsonConverter<ExternalDocumentation> EXTERNAL_DOCUMENTATION_CONVERTER = new JsonConverter<ExternalDocumentation>() {
-        
+
         @Override
         public JsonNode toNode(ExternalDocumentation value) {
             return ExternalDocsWriter.createExternalDocumentationNode(JsonNodeFactory.instance, value);
         }
-        
+
         @Override
         public ExternalDocumentation fromNode(JsonNode node) {
             return ExternalDocsReader.readExternalDocs(node);
         }
     };
-    
+
     protected static final JsonConverter<XML> XML_CONVERTER = new JsonConverter<XML>() {
-        
+
         @Override
         public JsonNode toNode(XML value) {
             return XmlWriter.createXMLNode(JsonNodeFactory.instance, value);
         }
-        
+
         @Override
         public XML fromNode(JsonNode node) {
             return XmlReader.readXML(node);
         }
     };
-    
+
     protected static final JsonConverter<Discriminator> DISCRIMINATOR_CONVERTER = new JsonConverter<Discriminator>() {
-        
+
         @Override
         public JsonNode toNode(Discriminator value) {
             return DiscriminatorWriter.convertDiscriminatorToNode(JsonNodeFactory.instance, value);
         }
-        
+
         @Override
         public Discriminator fromNode(JsonNode node) {
             return DiscriminatorReader.readDiscriminator(node);
         }
     };
-    
+
     // We could do this generically, but we only have one case where we need this
     protected static final JsonConverter<List<String>> LIST_OF_STRING_CONVERTER = new JsonConverter<List<String>>() {
-        
+
         @Override
         public JsonNode toNode(List<String> value) {
             ArrayNode node = JsonNodeFactory.instance.arrayNode();
@@ -1557,7 +1593,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
             }
             return node;
         }
-        
+
         @Override
         public List<String> fromNode(JsonNode node) {
             if (!node.isArray()) {
