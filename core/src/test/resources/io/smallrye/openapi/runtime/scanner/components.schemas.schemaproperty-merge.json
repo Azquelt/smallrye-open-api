@@ -8,12 +8,12 @@
             "$ref": "#/components/schemas/Reptile"
           },
           {
-            "type": "object",
+            "type": ["object"],
             "properties": {
               "color": {
                 "description": "The color of the lizard",
                 "default": "GREEN",
-                "type": "string",
+                "type": ["string"],
                 "deprecated": false
               }
             }
@@ -26,10 +26,10 @@
             "$ref": "#/components/schemas/Reptile"
           },
           {
-            "type": "object",
+            "type": ["object"],
             "properties": {
               "lengthUnits": {
-                "type": "string",
+                "type": ["string"],
                 "description": "The units of measure for length",
                 "default": "CM",
                 "allOf": [
@@ -40,7 +40,7 @@
               },
               "length": {
                 "format": "double",
-                "type": "number",
+                "type": ["number"],
                 "multipleOf": 0.1
               }
             }
@@ -53,7 +53,7 @@
           "MM",
           "IN"
         ],
-        "type": "string"
+        "type": ["string"]
       },
       "SpeedEnum": {
         "enum": [
@@ -61,7 +61,7 @@
           "slower",
           "slowest"
         ],
-        "type": "string"
+        "type": ["string"]
       },
       "Turtle": {
         "allOf": [
@@ -69,10 +69,10 @@
             "$ref": "#/components/schemas/Reptile"
           },
           {
-            "type": "object",
+            "type": ["object"],
             "properties": {
               "shellPattern": {
-                "type": "string"
+                "type": ["string"]
               },
               "speed": {
                 "$ref": "#/components/schemas/SpeedEnum"
@@ -85,10 +85,10 @@
         "required": [
           "type"
         ],
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "type": {
-            "type": "string"
+            "type": ["string"]
           }
         },
         "discriminator": {

@@ -1,5 +1,6 @@
 package io.smallrye.openapi.runtime.scanner;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
@@ -36,8 +37,8 @@ class OpenApiDataObjectScannerTest {
         AnnotationScannerContext context = new AnnotationScannerContext(index, Thread.currentThread().getContextClassLoader(),
                 IndexScannerTestBase.emptyConfig());
         Schema out = OpenApiDataObjectScanner.process(context, Type.create(DotName.createSimple(type), Kind.CLASS));
-        assertEquals(Schema.SchemaType.ARRAY, out.getType());
-        assertEquals(itemType, out.getItems().getType());
+        assertEquals(singletonList(Schema.SchemaType.ARRAY), out.getType());
+        assertEquals(singletonList(itemType), out.getItems().getType());
         assertEquals(itemFormat, out.getItems().getFormat());
     }
 
