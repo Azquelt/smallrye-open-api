@@ -3,11 +3,11 @@
   "components" : {
     "schemas" : {
       "MaxLengthNegative" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "test" : {
             "maxLength" : -2,
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       }

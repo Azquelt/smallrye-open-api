@@ -3,12 +3,12 @@
   "components": {
     "schemas": {
       "1PairStringString": {
-        "type": "array",
+        "type": ["array"],
         "items": {
         }
       },
       "TestBean": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "pair": {
             "$ref": "#/components/schemas/1PairStringString"

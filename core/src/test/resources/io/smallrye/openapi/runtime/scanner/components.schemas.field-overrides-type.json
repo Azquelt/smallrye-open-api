@@ -3,25 +3,25 @@
   "components": {
     "schemas": {
       "Bean": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "first": {
             "title": "In-lined schema with overridden attributes",
             "description": "Not 'The first bean'",
-            "type": "object",
+            "type": ["object"],
             "properties": {
               "prop1": {
                 "maxLength": 4,
-                "type": "string"
+                "type": ["string"]
               },
               "prop2": {
-                "type": "integer"
+                "type": ["integer"]
               }
             }
           },
           "second": {
             "title": "Property with `allOf` referring to `OtherBean`",
-            "type": "object",
+            "type": ["object"],
             "allOf": [
               {
                 "$ref": "#/components/schemas/OtherBean"
@@ -35,11 +35,11 @@
       },
       "OtherBean": {
         "description": "The first bean",
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "prop1": {
             "maxLength": 5,
-            "type": "string"
+            "type": ["string"]
           },
           "prop2": {
           }

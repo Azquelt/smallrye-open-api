@@ -4,6 +4,7 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.jboss.jandex.DotName;
@@ -38,7 +39,8 @@ class OpenApiDataObjectScannerTest {
                 IndexScannerTestBase.emptyConfig());
         Schema out = OpenApiDataObjectScanner.process(context, Type.create(DotName.createSimple(type), Kind.CLASS));
         assertEquals(singletonList(Schema.SchemaType.ARRAY), out.getType());
-        assertEquals(singletonList(itemType), out.getItems().getType());
+        List<Schema.SchemaType> expectedTypes = itemType == null ? null : singletonList(itemType);
+        assertEquals(expectedTypes, out.getItems().getType());
         assertEquals(itemFormat, out.getItems().getFormat());
     }
 

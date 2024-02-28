@@ -3,12 +3,12 @@
   "components": {
     "schemas": {
       "A": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "arrayOfOptionalB": {
-            "type": "array",
+            "type": ["array"],
             "items": {
-              "nullable": true,
+              "type": ["null", "object"],
               "allOf": [
                 {
                   "$ref": "#/components/schemas/B"
@@ -20,15 +20,15 @@
             "$ref": "#/components/schemas/UUID"
           },
           "listOfB": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "$ref": "#/components/schemas/B"
             }
           },
           "listOfOptionalB": {
-            "type": "array",
+            "type": ["array"],
             "items": {
-              "nullable": true,
+              "type": ["null", "object"],
               "allOf": [
                 {
                   "$ref": "#/components/schemas/B"
@@ -37,22 +37,19 @@
             }
           },
           "optionalArrayOfB": {
-            "type": "array",
+            "type": ["null", "array"],
             "items": {
               "$ref": "#/components/schemas/B"
-            },
-            "nullable": true
+            }
           },
           "optionalListOfB": {
-            "type": "array",
+            "type": ["null", "array"],
             "items": {
               "$ref": "#/components/schemas/B"
-            },
-            "nullable": true
+            }
           },
           "optionalOfB": {
-            "type": "object",
-            "nullable": true,
+            "type": ["null", "object"],
             "allOf": [
               {
                 "$ref": "#/components/schemas/B"
@@ -62,7 +59,7 @@
         }
       },
       "B": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "id": {
             "$ref": "#/components/schemas/UUID"
@@ -72,7 +69,7 @@
       "UUID": {
         "format": "uuid",
         "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-        "type": "string"
+        "type": ["string"]
       }
     }
   }

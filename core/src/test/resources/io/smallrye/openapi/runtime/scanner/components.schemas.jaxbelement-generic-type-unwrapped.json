@@ -3,13 +3,13 @@
   "components": {
     "schemas": {
       "JAXBElementDto": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "caseSubtitleFree": {
-            "type": "string"
+            "type": ["string"]
           },
           "caseSubtitle": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       }

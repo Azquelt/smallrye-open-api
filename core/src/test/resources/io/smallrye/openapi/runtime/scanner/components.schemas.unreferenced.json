@@ -7,37 +7,36 @@
   "components": {
     "schemas": {
       "CatType": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "age": {
             "format": "int32",
-            "type": "integer",
+            "type": ["integer"],
             "minimum": 1,
             "maximum": 20
           },
           "color": {
-            "type": "string",
-            "nullable": true
+            "type": ["string", "null"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "DogType": {
-        "type": "object",
+        "type": ["object"],
         "required": [ "volume" ],
         "properties": {
           "age": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           },
           "volume": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           }
         }
       }

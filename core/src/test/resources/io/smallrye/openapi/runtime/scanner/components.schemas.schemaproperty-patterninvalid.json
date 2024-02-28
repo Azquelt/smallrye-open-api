@@ -3,11 +3,11 @@
   "components" : {
     "schemas" : {
       "PatternInvalid" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "test" : {
             "pattern" : "(invalid",
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       }

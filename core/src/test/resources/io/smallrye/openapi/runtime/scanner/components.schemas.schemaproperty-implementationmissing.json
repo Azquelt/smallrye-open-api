@@ -3,10 +3,10 @@
   "components" : {
     "schemas" : {
       "ImplementationMissing" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "test" : {
-            "type" : "object"
+            "type" : ["object"]
           }
         }
       }

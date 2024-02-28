@@ -3,24 +3,24 @@
   "components": {
     "schemas": {
       "AnimalListEnvelope": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "apiVersion": {
             "description": "The API version",
-            "type": "string",
+            "type": ["string"],
             "example": "v3"
           },
           "context": {
             "description": "Optional context-value for request/response correlation",
-            "type": "string"
+            "type": ["string"]
           },
           "requestId": {
             "description": "Unique request-id (used for logging)",
-            "type": "string",
+            "type": ["string"],
             "example": "F176f717c7a71"
           },
           "data": {
-            "type": "object",
+            "type": ["object"],
             "description": "The business data object",
             "allOf": [
               {
@@ -30,88 +30,88 @@
           },
           "kind": {
             "description": "The class-name of the business data object",
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "MessageDataItems": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "items": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "$ref": "#/components/schemas/Animal"
             }
           },
           "currentItemCount": {
             "format": "int32",
-            "type": "integer",
+            "type": ["integer"],
             "example": 1
           }
         }
       },
       "MessageDataItemsAnimal": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "items": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "$ref": "#/components/schemas/Animal"
             }
           },
           "currentItemCount": {
             "format": "int32",
-            "type": "integer",
+            "type": ["integer"],
             "example": 1
           }
         }
       },
       "Animal": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "age": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "MessageBase": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "apiVersion": {
             "description": "The API version",
-            "type": "string",
+            "type": ["string"],
             "example": "v3"
           },
           "context": {
             "description": "Optional context-value for request/response correlation",
-            "type": "string"
+            "type": ["string"]
           },
           "requestId": {
             "description": "Unique request-id (used for logging)",
-            "type": "string",
+            "type": ["string"],
             "example": "F176f717c7a71"
           }
         }
       },
       "MessageData": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "apiVersion": {
             "description": "The API version",
-            "type": "string",
+            "type": ["string"],
             "example": "v3"
           },
           "context": {
             "description": "Optional context-value for request/response correlation",
-            "type": "string"
+            "type": ["string"]
           },
           "requestId": {
             "description": "Unique request-id (used for logging)",
-            "type": "string",
+            "type": ["string"],
             "example": "F176f717c7a71"
           },
           "data": {
@@ -119,7 +119,7 @@
           },
           "kind": {
             "description": "The class-name of the business data object",
-            "type": "string"
+            "type": ["string"]
           }
         }
       }

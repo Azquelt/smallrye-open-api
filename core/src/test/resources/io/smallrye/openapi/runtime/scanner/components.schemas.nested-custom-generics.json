@@ -3,7 +3,7 @@
   "components": {
     "schemas": {
       "Foo": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "generic": {
             "$ref": "#/components/schemas/Generic2String"
@@ -11,18 +11,18 @@
         }
       },
       "Generic0String" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "value" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       },
       "Generic2String": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "arrayOfGeneric0" : {
-            "type" : "array",
+            "type" : ["array"],
             "items" : {
               "$ref" : "#/components/schemas/Generic0String"
             }
@@ -36,16 +36,16 @@
         }
       },
       "CustomMapStringString": {
-        "type": "object",
+        "type": ["object"],
         "additionalProperties": {
-          "type": "string"
+          "type": ["string"]
         }
       },
       "Generic1String": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "value": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       }

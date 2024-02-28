@@ -3,29 +3,29 @@
   "components": {
     "schemas": {
       "StringArray": {
-        "type": "array",
+        "type": ["array"],
         "items": {
-          "type": "string"
+          "type": ["string"]
         }
       },
       "TestBean": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "stringArrayFromStream": {
-            "type": "array",
+            "type": ["array"],
             "items": {
-              "type": "string"
+              "type": ["string"]
             }
           },
           "intArrayFromStream": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "format": "int32",
-              "type": "integer"
+              "type": ["integer"]
             }
           },
           "anyValueMapFromProperties": {
-            "type": "object",
+            "type": ["object"],
             "additionalProperties": {
               
             }
@@ -34,21 +34,21 @@
             "$ref": "#/components/schemas/StringArray"
           },
           "longArrayFromStream": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "format": "int64",
-              "type": "integer"
+              "type": ["integer"]
             }
           },
           "doubleArrayFromStream": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "format": "double",
-              "type": "number"
+              "type": ["number"]
             }
           },
           "anyArrayFromRawCollection": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               
             }

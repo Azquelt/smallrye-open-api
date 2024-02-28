@@ -3,28 +3,28 @@
   "components": {
     "schemas": {
       "Sample": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "arrayFromSchema": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "format": "byte",
-              "type": "string"
+              "type": ["string"]
             }
           },
           "arrayFromType": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "format": "byte",
-              "type": "string"
+              "type": ["string"]
             }
           },
           "chars": {
-            "type": "string"
+            "type": ["string"]
           },
           "data": {
             "format": "base64",
-            "type": "string"
+            "type": ["string"]
           }
         }
       }

@@ -3,11 +3,11 @@
   "components" : {
     "schemas" : {
       "NotMissing" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "test" : {
             "not" : {
-              "type" : "object"
+              "type" : ["object"]
             }
           }
         }

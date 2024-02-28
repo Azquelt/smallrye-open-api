@@ -3,95 +3,95 @@
   "components": {
     "schemas": {
       "JacksonJsonPerson": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "streetName": {
-            "type": "string"
+            "type": ["string"]
           },
           "streetNumber": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           },
           "city": {
-            "type": "string"
+            "type": ["string"]
           },
           "postalCode": {
-            "type": "string"
+            "type": ["string"]
           },
           "state": {
-            "type": "string"
+            "type": ["string"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "JacksonJsonPersonWithPrefixedAddress": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "addr-city": {
-            "type": "string"
+            "type": ["string"]
           },
           "addr-postalCode": {
-            "type": "string"
+            "type": ["string"]
           },
           "addr-streetName": {
-            "type": "string"
+            "type": ["string"]
           },
           "addr-state": {
-            "type": "string"
+            "type": ["string"]
           },
           "addr-streetNumber": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "JacksonJsonPersonWithSuffixedAddress": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "city-addr": {
-            "type": "string"
+            "type": ["string"]
           },
           "streetName-addr": {
-            "type": "string"
+            "type": ["string"]
           },
           "postalCode-addr": {
-            "type": "string"
+            "type": ["string"]
           },
           "streetNumber-addr": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           },
           "state-addr": {
-            "type": "string"
+            "type": ["string"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "JacksonJsonAddress": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "city": {
-            "type": "string"
+            "type": ["string"]
           },
           "postalCode": {
-            "type": "string"
+            "type": ["string"]
           },
           "state": {
-            "type": "string"
+            "type": ["string"]
           },
           "streetName": {
-            "type": "string"
+            "type": ["string"]
           },
           "streetNumber": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           }
         }
       }

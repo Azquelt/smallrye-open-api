@@ -3,11 +3,11 @@
   "components" : {
     "schemas" : {
       "MinLengthNegative" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "test" : {
             "minLength" : -2,
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       }

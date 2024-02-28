@@ -3,11 +3,11 @@
   "components" : {
     "schemas" : {
       "OneOfMissing" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "test" : {
             "oneOf" : [ {
-              "type" : "object"
+              "type" : ["object"]
             } ]
           }
         }

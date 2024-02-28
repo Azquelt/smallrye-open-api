@@ -3,7 +3,7 @@
   "components" : {
     "schemas" : {
       "RefWithOtherProps" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "test" : {
             "$ref" : "#/components/schemas/foobar"
