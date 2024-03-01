@@ -25,52 +25,52 @@
           "name",
           "conditions"
         ],
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "actions": {
             "description": "String describing actions separated by ';' when the policy is evaluated to true.Allowed values are 'email' and 'webhook'",
-            "type": "string"
+            "type": ["string"]
           },
           "conditions": {
             "description": "Condition string.",
             "minLength": 1,
-            "type": "string",
+            "type": ["string"],
             "example": "arch = \"x86_64\""
           },
           "ctime": {
             "format": "yyyy-MM-dd hh:mm:ss.ddd",
             "description": "Create time in a form like '2020-01-24 12:19:56.718', output only",
-            "type": "string",
+            "type": ["string"],
             "readOnly": true
           },
           "description": {
             "description": "A short description of the policy.",
-            "type": "string"
+            "type": ["string"]
           },
           "id": {
             "format": "uuid",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-            "type": "string"
+            "type": ["string"]
           },
           "isEnabled": {
-            "type": "boolean"
+            "type": ["boolean"]
           },
           "lastTriggered": {
             "format": "int64",
-            "type": "integer",
+            "type": ["integer"],
             "writeOnly": true
           },
           "mtime": {
             "format": "yyyy-MM-dd hh:mm:ss.ddd",
             "description": "Last update time in a form like '2020-01-24 12:19:56.718', output only",
-            "type": "string",
+            "type": ["string"],
             "readOnly": true
           },
           "name": {
             "description": "Name of the rule. Must be unique per customer account.",
             "maxLength": 150,
             "minLength": 1,
-            "type": "string"
+            "type": ["string"]
           }
         }
       }

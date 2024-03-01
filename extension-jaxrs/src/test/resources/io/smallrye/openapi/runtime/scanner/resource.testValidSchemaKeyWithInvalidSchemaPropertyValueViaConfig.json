@@ -140,7 +140,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
+                  "type" : ["array"],
                   "items" : {
                     "$ref" : "#/components/schemas/Greeting"
                   }
@@ -155,10 +155,10 @@
   "components" : {
     "schemas" : {
       "message" : {
-        "type" : "string"
+        "type" : ["string"]
       },
      "Greeting" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "message" : {
             "$ref" : "#/components/schemas/message"

@@ -28,21 +28,21 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }, {
           "name" : "apiId",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }, {
           "name" : "version",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         } ],
         "responses" : {
@@ -57,21 +57,21 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }, {
           "name" : "apiId",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }, {
           "name" : "version",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         } ],
         "responses" : {
@@ -110,21 +110,21 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }, {
           "name" : "clientId",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }, {
           "name" : "version",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         } ],
         "responses" : {
@@ -153,97 +153,97 @@
       "ApiEndpoint" : {
         "properties" : {
           "endpoint" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       },
       "Api" : {
         "properties" : {
           "apiId" : {
-            "type" : "string"
+            "type" : ["string"]
           },
           "apiPolicies" : {
-            "type" : "array",
+            "type" : ["array"],
             "items" : {
-              "type" : "object",
+              "type" : ["object"],
               "properties" : {
                 "policyImpl" : {
-                  "type" : "string"
+                  "type" : ["string"]
                 },
                 "policyJsonConfig" : {
-                  "type" : "string"
+                  "type" : ["string"]
                 }
               }
             }
           },
           "endpoint" : {
-            "type" : "string"
+            "type" : ["string"]
           },
           "endpointContentType" : {
-            "type" : "string"
+            "type" : ["string"]
           },
           "endpointProperties" : {
-            "type" : "object",
+            "type" : ["object"],
             "additionalProperties" : {
-              "type" : "string"
+              "type" : ["string"]
             }
           },
           "endpointType" : {
-            "type" : "string"
+            "type" : ["string"]
           },
           "maxPayloadBufferSize" : {
             "format" : "int64",
-            "type" : "integer"
+            "type" : ["integer"]
           },
           "organizationId" : {
-            "type" : "string"
+            "type" : ["string"]
           },
           "parsePayload" : {
-            "type" : "boolean"
+            "type" : ["boolean"]
           },
           "publicAPI" : {
-            "type" : "boolean"
+            "type" : ["boolean"]
           },
           "version" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       },
       "Client" : {
         "properties" : {
           "apiKey" : {
-            "type" : "string"
+            "type" : ["string"]
           },
           "clientId" : {
-            "type" : "string"
+            "type" : ["string"]
           },
           "contracts" : {
-            "type" : "array",
+            "type" : ["array"],
             "items" : {
-              "type" : "object",
+              "type" : ["object"],
               "properties" : {
                 "apiId" : {
-                  "type" : "string"
+                  "type" : ["string"]
                 },
                 "apiOrgId" : {
-                  "type" : "string"
+                  "type" : ["string"]
                 },
                 "apiVersion" : {
-                  "type" : "string"
+                  "type" : ["string"]
                 },
                 "plan" : {
-                  "type" : "string"
+                  "type" : ["string"]
                 },
                 "policies" : {
-                  "type" : "array",
+                  "type" : ["array"],
                   "items" : {
-                    "type" : "object",
+                    "type" : ["object"],
                     "properties" : {
                       "policyImpl" : {
-                        "type" : "string"
+                        "type" : ["string"]
                       },
                       "policyJsonConfig" : {
-                        "type" : "string"
+                        "type" : ["string"]
                       }
                     }
                   }
@@ -252,29 +252,29 @@
             }
           },
           "organizationId" : {
-            "type" : "string"
+            "type" : ["string"]
           },
           "version" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       },
       "SystemStatus" : {
         "properties" : {
           "description" : {
-            "type" : "string"
+            "type" : ["string"]
           },
           "id" : {
-            "type" : "string"
+            "type" : ["string"]
           },
           "name" : {
-            "type" : "string"
+            "type" : ["string"]
           },
           "up" : {
-            "type" : "boolean"
+            "type" : ["boolean"]
           },
           "version" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       }

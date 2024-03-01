@@ -10,9 +10,9 @@
               "*/*" : {
                 "schema" : {
                   "uniqueItems" : true,
-                  "type" : "array",
+                  "type" : ["array"],
                   "items" : {
-                    "type" : "string"
+                    "type" : ["string"]
                   }
                 }
               }

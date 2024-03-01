@@ -3,11 +3,11 @@
     "schemas" : {
       "test.io.smallrye.openapi.runtime.scanner.entities.EnumRequiredContainer" : {
         "required": [ "bazEnum" ],
-        "type": "object",
+        "type": ["object"],
         "properties" : {
           "bazEnum" : {
             "enum" : [ "Gold", "Green" ],
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       }

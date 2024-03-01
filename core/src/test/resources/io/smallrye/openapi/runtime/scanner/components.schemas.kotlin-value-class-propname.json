@@ -10,10 +10,10 @@
         "properties": {
           "id": {
             "format": "int64",
-            "type": ["integer", "null"],
+            "type": ["integer", "null"]
           },
           "name": {
-            "type": ["string", "null"],
+            "type": ["string", "null"]
           },
           "description": {
             "type": ["string"]

@@ -2,16 +2,16 @@
   "components": {
     "schemas": {
       "test.io.smallrye.openapi.runtime.scanner.entities.Bar": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "theQ": {
           },
           "theT": {
-            "type": "object",
+            "type": ["object"],
             "properties": {
               "an_integer_value": {
                 "format": "int32",
-                "type": "integer"
+                "type": ["integer"]
               }
             }
           },

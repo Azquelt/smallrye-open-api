@@ -13,7 +13,7 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "string"
+                  "type": ["string"]
                 }
               }
             },

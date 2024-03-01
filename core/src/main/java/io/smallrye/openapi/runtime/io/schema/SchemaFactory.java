@@ -411,8 +411,11 @@ public class SchemaFactory {
             return type;
         }
         List<SchemaType> types = schema.getType();
-        if (types != null && !types.isEmpty()) {
-            return types.get(0);
+        if (types != null) {
+            return types.stream()
+                        .filter(t -> t != SchemaType.NULL)
+                        .findFirst()
+                        .orElse(null);
         }
         return null;
     }

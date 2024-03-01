@@ -30,7 +30,7 @@
   "components": {
     "schemas": {
       "NestedParameterTestParent": {
-        "type": "object",
+        "type": ["object"],
         "required": [
           "id",
           "name",
@@ -38,16 +38,16 @@
         ],
         "properties": {
           "id": {
-            "type": "string"
+            "type": ["string"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           },
           "nested": {
             "$ref": "#/components/schemas/NestedParameterTestChild"
           },
           "another_child": {
-            "type": "object",
+            "type": ["object"],
             "description": "This schema will be unioned to $ref to 'another_nested', name will be used for the property, and this description will be present on this property",
             "allOf": [
               {
@@ -56,13 +56,13 @@
             ]
           },
           "childList": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "$ref": "#/components/schemas/NestedParameterTestChild"
             }
           },
           "childMap": {
-            "type": "object",
+            "type": ["object"],
             "additionalProperties": {
               "$ref": "#/components/schemas/NestedParameterTestChild"
             }
@@ -70,32 +70,32 @@
         }
       },
       "NestedParameterTestChild": {
-        "type": "object",
+        "type": ["object"],
         "description": "The description of the child",
         "required": [
           "id"
         ],
         "properties": {
           "id": {
-            "type": "string"
+            "type": ["string"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "another_nested": {
-        "type": "object",
+        "type": ["object"],
         "description": "The name of this child is not 'AnotherNestedChildWithSchemaName'",
         "required": [
           "id"
         ],
         "properties": {
           "id": {
-            "type": "string"
+            "type": ["string"]
           },
           "name_": {
-            "type": "string",
+            "type": ["string"],
             "title": "This property's 'name' has been overridden using the @Schema"
           }
         }

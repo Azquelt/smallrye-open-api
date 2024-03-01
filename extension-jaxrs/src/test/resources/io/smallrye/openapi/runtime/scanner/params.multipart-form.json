@@ -8,7 +8,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "integer",
+            "type": ["integer"],
             "format": "int32"
           }
         },
@@ -17,7 +17,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       ],
@@ -26,57 +26,57 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": "object",
+                "type": ["object"],
                 "required": [
                   "formField4",
                   "f3"
                 ],
                 "properties": {
                   "formField1": {
-                    "type": "string",
+                    "type": ["string"],
                     "default": "f1-default"
                   },
                   "f2": {
-                    "type": "string",
+                    "type": ["string"],
                     "default": "default2"
                   },
                   "f3": {
-                    "type": "integer",
+                    "type": ["integer"],
                     "format": "int32",
                     "default": 3
                   },
                   "formField4": {
-                    "type": "string"
+                    "type": ["string"]
                   },
                   "data": {
-                    "type": "object"
+                    "type": ["object"]
                   },
                   "binaryData": {
-                    "type": "string",
+                    "type": ["string"],
                     "format": "binary"
                   },
                   "fileFromFile": {
                     "format": "binary",
-                    "type": "string"
+                    "type": ["string"]
                   },
                   "fileFromStream": {
                     "format": "binary",
-                    "type": "string"
+                    "type": ["string"]
                   },
                   "listOfFileStreams": {
                     "description": "List of streams",
-                    "type": "array",
+                    "type": ["array"],
                     "items": {
                       "format": "binary",
-                      "type": "string"
+                      "type": ["string"]
                     }
                   },
                   "listOfBinaryArrays": {
                     "description": "List of byte arrays",
-                    "type": "array",
+                    "type": ["array"],
                     "items": {
                       "format": "binary",
-                      "type": "string"
+                      "type": ["string"]
                     }
                   }
                 }
@@ -119,13 +119,13 @@
   "components": {
     "schemas": {
       "Widget": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "id": {
-            "type": "string"
+            "type": ["string"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       }

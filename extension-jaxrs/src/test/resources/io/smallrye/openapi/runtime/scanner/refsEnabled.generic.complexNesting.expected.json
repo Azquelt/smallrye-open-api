@@ -6,12 +6,12 @@
           "bar",
           "foo"
         ],
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "bar": {
           },
           "foo": {
-            "type": "object",
+            "type": ["object"],
             "maxLength": 123456,
             "allOf": [
               {
@@ -22,50 +22,50 @@
         }
       },
       "FuzzStringDate": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "qAgain": {
             "format": "date",
-            "type": "string",
+            "type": ["string"],
             "example": "2022-03-10"
           },
           "qAgain3": {
             "format": "date",
-            "type": "string",
+            "type": ["string"],
             "example": "2022-03-10"
           },
           "qValue": {
             "format": "date",
             "description": "Ah, Q, my favourite variable!",
-            "type": "string",
+            "type": ["string"],
             "example": "2022-03-10"
           },
           "tAgain2": {
-            "type": "string"
+            "type": ["string"]
           },
           "tAgain4": {
-            "type": "string"
+            "type": ["string"]
           },
           "tValue": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "FuzzKustomPairFuzzStringDateObjectDouble": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "qAgain": {
             "format": "double",
-            "type": "number"
+            "type": ["number"]
           },
           "qAgain3": {
             "format": "double",
-            "type": "number"
+            "type": ["number"]
           },
           "qValue": {
             "format": "double",
             "description": "Ah, Q, my favourite variable!",
-            "type": "number"
+            "type": ["number"]
           },
           "tAgain2": {
             "$ref": "#/components/schemas/KustomPairFuzzStringDateObject"

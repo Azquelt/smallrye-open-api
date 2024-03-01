@@ -2,58 +2,58 @@
   "components": {
     "schemas": {
       "Bazzy": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "hellofrombazzy": {
-            "type": "string"
+            "type": ["string"]
           },
           "an_integer_value": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           }
         }
       },
       "Foo": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "theQ": {
-            "type": "string"
+            "type": ["string"]
           },
           "theT": {
             "$ref": "#/components/schemas/Bazzy"
           },
           "ultimateTShouldBeQ": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "GenericFieldTestContainerStringDuration": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "arrayListOfV": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "format": "duration",
-              "type": "string",
+              "type": ["string"],
               "example" : "P1D"
             }
           },
           "genericFieldK": {
             "format": "duration",
-            "type": "string",
+            "type": ["string"],
             "example" : "P1D"
           },
           "mapOfKToFoo": {
-            "type": "object",
+            "type": ["object"],
             "additionalProperties": {
               "$ref": "#/components/schemas/Foo"
             }
           },
           "mapOfKV": {
-            "type": "object",
+            "type": ["object"],
             "additionalProperties": {
               "format": "duration",
-              "type": "string",
+              "type": ["string"],
               "example" : "P1D"
             }
           }

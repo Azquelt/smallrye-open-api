@@ -8,8 +8,10 @@
           "arrayOfOptionalB": {
             "type": ["array"],
             "items": {
-              "type": ["null", "object"],
-              "allOf": [
+              "anyOf": [
+                {
+                  "type": ["null"]
+                },
                 {
                   "$ref": "#/components/schemas/B"
                 }
@@ -28,8 +30,10 @@
           "listOfOptionalB": {
             "type": ["array"],
             "items": {
-              "type": ["null", "object"],
-              "allOf": [
+              "anyOf": [
+                {
+                  "type": ["null"]
+                },
                 {
                   "$ref": "#/components/schemas/B"
                 }
@@ -37,20 +41,36 @@
             }
           },
           "optionalArrayOfB": {
-            "type": ["null", "array"],
-            "items": {
-              "$ref": "#/components/schemas/B"
-            }
+            "anyOf": [
+              {
+                "type": ["null"]
+              },
+              {
+                "type": ["array"],
+                "items": {
+                  "$ref": "#/components/schemas/B"
+                }
+              }
+            ]
           },
           "optionalListOfB": {
-            "type": ["null", "array"],
-            "items": {
-              "$ref": "#/components/schemas/B"
-            }
+            "anyOf": [
+              {
+                "type": ["null"]
+              },
+              {
+                "type": ["array"],
+                "items": {
+                  "$ref": "#/components/schemas/B"
+                }
+              }
+            ]
           },
           "optionalOfB": {
-            "type": ["null", "object"],
-            "allOf": [
+            "anyOf": [
+              {
+                "type": ["null"]
+              },
               {
                 "$ref": "#/components/schemas/B"
               }

@@ -8,7 +8,7 @@
             "name": "data",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": ["string"]
             },
             "x-qparam-data-ext": 1
           }
@@ -32,15 +32,15 @@
   "components": {
     "schemas": {
       "Model": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "value1": {
-            "type": "string",
+            "type": ["string"],
             "x-value1-ext": "plain string"
           },
           "value2": {
             "format": "int32",
-            "type": "integer",
+            "type": ["integer"],
             "x-value2-ext": "plain string"
           }
         },

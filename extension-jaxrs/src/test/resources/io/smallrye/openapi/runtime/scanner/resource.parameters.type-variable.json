@@ -9,7 +9,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "array",
+                  "type": ["array"],
                   "items": {
                     "$ref": "#/components/schemas/Dto"
                   }
@@ -28,7 +28,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           }
         ],
@@ -50,10 +50,10 @@
   "components": {
     "schemas": {
       "Dto": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "id": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       }

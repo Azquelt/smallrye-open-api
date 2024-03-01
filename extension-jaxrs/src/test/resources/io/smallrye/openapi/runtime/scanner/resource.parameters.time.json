@@ -45,7 +45,7 @@
             "name": "offsetId",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           }
         ],
@@ -70,7 +70,7 @@
             "name": "zoneId",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           }
         ],
@@ -92,7 +92,7 @@
   "components": {
     "schemas": {
       "LocalTime": {
-        "type": "string",
+        "type": ["string"],
         "format": "local-time",
         "externalDocs": {
           "description": "As defined by 'partial-time' in RFC3339",
@@ -101,7 +101,7 @@
         "example": "13:45.30.123456789"
       },
       "OffsetTime": {
-        "type": "string",
+        "type": ["string"],
         "format": "time",
         "externalDocs": {
           "description": "As defined by 'full-time' in RFC3339",
@@ -110,10 +110,10 @@
         "example": "13:45.30.123456789+02:00"
       },
       "UTC": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "utc": {
-            "type": "string",
+            "type": ["string"],
             "description": "Current time at offset '00:00'",
             "allOf": [
               {

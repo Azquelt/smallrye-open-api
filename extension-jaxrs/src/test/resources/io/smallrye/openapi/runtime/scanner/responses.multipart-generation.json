@@ -9,7 +9,7 @@
             "content": {
               "multipart/mixed": {
                 "schema": {
-                    "type": "object"
+                    "type": ["object"]
                 }
               }
             }

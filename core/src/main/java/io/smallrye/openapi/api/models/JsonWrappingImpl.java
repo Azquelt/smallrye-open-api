@@ -3,12 +3,14 @@ package io.smallrye.openapi.api.models;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Set;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -44,8 +46,44 @@ public abstract class JsonWrappingImpl implements ModelImpl {
      * @return the merged object
      */
     public JsonWrappingImpl mergeFrom(JsonWrappingImpl other) {
-        node.setAll(other.node);
+        mergeObject(node, other.node);
         return this;
+    }
+
+    private static void mergeObject(ObjectNode into, ObjectNode from) {
+        for (Iterator<Entry<String, JsonNode>> i = from.fields(); i.hasNext();) {
+            Entry<String, JsonNode> entry = i.next();
+            String name = entry.getKey();
+            JsonNode value = entry.getValue();
+            JsonNode oldValue = into.get(entry.getKey());
+            if (oldValue == null || oldValue.getNodeType() != value.getNodeType()) {
+                into.set(name, value);
+            } else {
+                switch (oldValue.getNodeType()) {
+                    case OBJECT:
+                        mergeObject((ObjectNode) oldValue, (ObjectNode) value);
+                        break;
+                    case ARRAY:
+                        mergeArray((ArrayNode) oldValue, (ArrayNode) value);
+                        break;
+                    default:
+                        into.set(name, value);
+                }
+            }
+        }
+    }
+
+    private static void mergeArray(ArrayNode oldValue, ArrayNode value) {
+        Set<JsonNode> contents = new HashSet<>();
+        for (Iterator<JsonNode> i = oldValue.elements(); i.hasNext();) {
+            contents.add(i.next());
+        }
+        for (Iterator<JsonNode> i = value.elements(); i.hasNext();) {
+            JsonNode element = i.next();
+            if (!contents.contains(element)) {
+                oldValue.add(element);
+            }
+        }
     }
 
     protected <T> void setProperty(String propertyName, T value, JsonWriter<T> writer) {

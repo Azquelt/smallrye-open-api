@@ -140,7 +140,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
+                  "type" : ["array"],
                   "items" : {
                     "$ref" : "#/components/schemas/Greeting"
                   }
@@ -155,11 +155,11 @@
   "components" : {
     "schemas" : {
       "message" : {
-        "type" : "string",
+        "type" : ["string"],
         "description" : "Mock custom String class defined with config"
       },
      "Greeting" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "message" : {
             "$ref" : "#/components/schemas/message"

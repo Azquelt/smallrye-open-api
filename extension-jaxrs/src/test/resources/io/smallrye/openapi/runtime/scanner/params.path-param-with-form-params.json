@@ -8,7 +8,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string",
+            "type": ["string"],
             "default": "12345",
             "minLength": 1,
             "maxLength": 12
@@ -20,17 +20,17 @@
           "content": {
             "application/x-www-form-urlencoded": {
               "schema": {
-                "type": "object",
+                "type": ["object"],
                 "properties": {
                   "form-param2": {
-                    "type": "string",
+                    "type": ["string"],
                     "maxLength": 10
                   },
                   "qualifiers": {
                     "uniqueItems": true,
-                    "type": "array",
+                    "type": ["array"],
                     "items": {
-                      "type": "string"
+                      "type": ["string"]
                     }
                   }
                 }
@@ -56,13 +56,13 @@
   "components": {
     "schemas": {
       "Widget": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "id": {
-            "type": "string"
+            "type": ["string"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       }

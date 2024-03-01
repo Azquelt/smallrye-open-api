@@ -21,9 +21,9 @@
   "components": {
     "schemas": {
       "1EitherIntegerString": {
-        "type": "array",
+        "type": ["array"],
         "items": {
-          "type": "string"
+          "type": ["string"]
         }
       }
     }

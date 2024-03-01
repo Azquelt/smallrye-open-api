@@ -2,27 +2,27 @@
   "components" : {
     "schemas" : {
       "test.io.smallrye.openapi.runtime.scanner.entities.SpecialCaseTestContainer" : {
-        "type" : "array",
+        "type" : ["array"],
         "items" : {
-          "type" : "object",
+          "type" : ["object"],
           "properties" : {
             "theQ" : {
-              "type" : "string"
+              "type" : ["string"]
             },
             "theT" : {
-              "type" : "object",
+              "type" : ["object"],
               "properties" : {
                 "hellofrombazzy" : {
-                  "type" : "string"
+                  "type" : ["string"]
                 },
                 "an_integer_value" : {
                   "format" : "int32",
-                  "type" : "integer"
+                  "type" : ["integer"]
                 }
               }
             },
             "ultimateTShouldBeQ" : {
-              "type" : "string"
+              "type" : ["string"]
             }
           }
         }

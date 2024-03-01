@@ -2,14 +2,14 @@
   "components": {
     "schemas": {
       "BazEnum": {
-        "type": "string",
+        "type": ["string"],
         "enum": [
           "Gold",
           "Green"
         ]
       },
       "EnumContainer": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "bazEnum": {
             "$ref": "#/components/schemas/BazEnum"

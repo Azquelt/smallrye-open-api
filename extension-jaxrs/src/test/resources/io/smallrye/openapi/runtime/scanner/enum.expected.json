@@ -2,11 +2,11 @@
   "components" : {
     "schemas" : {
       "test.io.smallrye.openapi.runtime.scanner.entities.EnumContainer" : {
-        "type": "object",
+        "type": ["object"],
         "properties" : {
           "bazEnum" : {
             "enum" : [ "Gold", "Green" ],
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       }

@@ -12,7 +12,7 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         } ],
         "responses" : {
@@ -36,7 +36,7 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         } ],
         "responses" : {
@@ -60,7 +60,7 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         } ],
         "responses" : {
@@ -84,7 +84,7 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         } ],
         "responses" : {
@@ -107,7 +107,7 @@
           "name" : "name",
           "in" : "query",
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         } ],
         "responses" : {
@@ -131,7 +131,7 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         } ],
         "responses" : {
@@ -140,7 +140,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "type" : "array",
+                  "type" : ["array"],
                   "items" : {
                     "$ref" : "#/components/schemas/Greeting"
                   }
@@ -155,10 +155,10 @@
   "components" : {
     "schemas" : {
       "Greeting" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "message" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       }

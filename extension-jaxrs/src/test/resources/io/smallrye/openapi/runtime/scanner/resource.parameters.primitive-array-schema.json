@@ -22,24 +22,24 @@
   "components": {
     "schemas": {
       "PrimitiveArrayTestObject": {
-        "type": "object",
+        "type": ["object"],
         "description": "the REST response class",
         "required": [
           "data"
         ],
         "properties": {
           "data": {
-            "type": "array",
+            "type": ["array"],
             "description": "a packed data array",
             "items": {
-              "type": "number",
+              "type": ["number"],
               "format": "double"
             }
           },
           "data2": {
-            "type": "array",
+            "type": ["array"],
             "items": {
-              "type": "number",
+              "type": ["number"],
               "format": "double"
             }
           }

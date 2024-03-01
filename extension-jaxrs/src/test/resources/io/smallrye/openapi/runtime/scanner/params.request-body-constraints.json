@@ -8,7 +8,7 @@
             "text/plain": {
               "schema": {
                 "minLength": 1,
-                "type": "string"
+                "type": ["string"]
               }
             }
           },
@@ -28,7 +28,7 @@
             "text/plain": {
               "schema": {
                 "minLength": 1,
-                "type": "string"
+                "type": ["string"]
               }
             }
           },

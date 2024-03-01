@@ -271,6 +271,11 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     private SchemaImpl(ObjectNode node) {
         super(node);
+        // Smallrye extension: name is accepted when parsing a schema but not output
+        if (node != null && node.path("name").isTextual()) {
+            name = node.path("name").asText();
+            node.remove("name");
+        }
     }
 
     public String getName() {

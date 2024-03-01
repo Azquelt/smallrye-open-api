@@ -23,7 +23,7 @@
             "name": "id",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           },
           {
@@ -31,7 +31,7 @@
             "in": "query",
             "schema": {
               "format": "int32",
-              "type": "integer"
+              "type": ["integer"]
             }
           },
           {
@@ -39,16 +39,16 @@
             "in": "query",
             "schema": {
               "format": "int32",
-              "type": "integer"
+              "type": ["integer"]
             }
           },
           {
             "name": "orderby",
             "in": "query",
             "schema": {
-              "type": "array",
+              "type": ["array"],
               "items": {
-                "type": "string"
+                "type": ["string"]
               }
             }
           }
@@ -152,7 +152,7 @@
             "name": "id",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           },
           {
@@ -160,7 +160,7 @@
             "in": "query",
             "schema": {
               "format": "int32",
-              "type": "integer"
+              "type": ["integer"]
             }
           },
           {
@@ -168,16 +168,16 @@
             "in": "query",
             "schema": {
               "format": "int32",
-              "type": "integer"
+              "type": ["integer"]
             }
           },
           {
             "name": "orderby",
             "in": "query",
             "schema": {
-              "type": "array",
+              "type": ["array"],
               "items": {
-                "type": "string"
+                "type": ["string"]
               }
             }
           }
@@ -265,7 +265,7 @@
             "name": "id",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           },
           {
@@ -273,7 +273,7 @@
             "in": "query",
             "schema": {
               "format": "int32",
-              "type": "integer"
+              "type": ["integer"]
             }
           },
           {
@@ -281,16 +281,16 @@
             "in": "query",
             "schema": {
               "format": "int32",
-              "type": "integer"
+              "type": ["integer"]
             }
           },
           {
             "name": "orderby",
             "in": "query",
             "schema": {
-              "type": "array",
+              "type": ["array"],
               "items": {
-                "type": "string"
+                "type": ["string"]
               }
             }
           }
@@ -375,118 +375,118 @@
   "components": {
     "schemas": {
       "Magma": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "id": {
             "format": "uuid",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-            "type": "string"
+            "type": ["string"]
           },
           "lastUpdate": {
             "format": "date-time",
-            "type": "string"
+            "type": ["string"]
           },
           "codename": {
-            "type": "string"
+            "type": ["string"]
           },
           "deployment": {
             "$ref": "#/components/schemas/KingCrimson"
           },
           "tier": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "KingCrimson": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "id": {
             "format": "uuid",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-            "type": "string"
+            "type": ["string"]
           },
           "lastUpdate": {
             "format": "date-time",
-            "type": "string"
+            "type": ["string"]
           },
           "environment": {
             "$ref": "#/components/schemas/Magma"
           },
           "status": {
-            "type": "object"
+            "type": ["object"]
           },
           "timestamp": {
             "format": "date-time",
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "Message": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "description": {
-            "type": "string"
+            "type": ["string"]
           },
           "message": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "ResultListKingCrimson": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "error": {
             "$ref": "#/components/schemas/Message"
           },
           "result": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "$ref": "#/components/schemas/KingCrimson"
             }
           },
           "status": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           }
         }
       },
       "POJO": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "id": {
             "format": "uuid",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-            "type": "string"
+            "type": ["string"]
           },
           "lastUpdate": {
             "format": "date-time",
-            "type": "string"
+            "type": ["string"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "ResultListPOJO": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "error": {
             "$ref": "#/components/schemas/Message"
           },
           "result": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "$ref": "#/components/schemas/POJO"
             }
           },
           "status": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           }
         }
       },
       "ResultKingCrimson": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "error": {
             "$ref": "#/components/schemas/Message"
@@ -496,30 +496,30 @@
           },
           "status": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           }
         }
       },
       "ResultListMagma": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "error": {
             "$ref": "#/components/schemas/Message"
           },
           "result": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "$ref": "#/components/schemas/Magma"
             }
           },
           "status": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           }
         }
       },
       "ResultMagma": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "error": {
             "$ref": "#/components/schemas/Message"
@@ -529,50 +529,50 @@
           },
           "status": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           }
         }
       },
       "Residents": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "id": {
             "format": "uuid",
             "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-            "type": "string"
+            "type": ["string"]
           },
           "lastUpdate": {
             "format": "date-time",
-            "type": "string"
+            "type": ["string"]
           },
           "bar": {
-            "type": "string"
+            "type": ["string"]
           },
           "foo": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "ResultListResidents": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "error": {
             "$ref": "#/components/schemas/Message"
           },
           "result": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "$ref": "#/components/schemas/Residents"
             }
           },
           "status": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           }
         }
       },
       "ResultResidents": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "error": {
             "$ref": "#/components/schemas/Message"
@@ -582,7 +582,7 @@
           },
           "status": {
             "format": "int32",
-            "type": "integer"
+            "type": ["integer"]
           }
         }
       }

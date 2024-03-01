@@ -10,7 +10,7 @@
               "application/json" : {
                 "schema" : {
                   "uniqueItems" : true,
-                  "type" : "array",
+                  "type" : ["array"],
                   "items" : { }
                 }
               }
@@ -23,7 +23,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "type" : "object"
+                "type" : ["object"]
               }
             }
           }
@@ -35,7 +35,7 @@
               "application/json" : {
                 "schema" : {
                   "uniqueItems" : true,
-                  "type" : "array",
+                  "type" : ["array"],
                   "items" : { }
                 }
               }
@@ -48,7 +48,7 @@
           "content" : {
             "application/json" : {
               "schema" : {
-                "type" : "object"
+                "type" : ["object"]
               }
             }
           }
@@ -60,7 +60,7 @@
               "application/json" : {
                 "schema" : {
                   "uniqueItems" : true,
-                  "type" : "array",
+                  "type" : ["array"],
                   "items" : { }
                 }
               }

@@ -18,7 +18,7 @@
             "in": "query",
             "description": "A parameter",
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           }
         ],
@@ -28,7 +28,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
+                  "type": ["array"],
                   "items": {
                     "$ref": "#/components/schemas/DataJson"
                   }
@@ -68,7 +68,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "type": ["object"]
                 }
               }
             }
@@ -80,7 +80,7 @@
   "components": {
     "schemas": {
       "DataJson": {
-        "type": "object"
+        "type": ["object"]
       }
     }
   }

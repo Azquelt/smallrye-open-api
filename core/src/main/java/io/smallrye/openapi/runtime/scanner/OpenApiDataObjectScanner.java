@@ -250,7 +250,7 @@ public class OpenApiDataObjectScanner {
             TypeUtil.mapDeprecated(currentClass, currentSchema::getDeprecated, currentSchema::setDeprecated);
             currentPathEntry.setSchema(currentSchema);
 
-            if (currentSchema.getType() == null) {
+            if (!hasNonNullType(currentSchema)) {
                 // If not schema has yet been set, consider this an "object"
                 currentSchema.setType(Collections.singletonList(Schema.SchemaType.OBJECT));
             } else {
@@ -285,6 +285,12 @@ public class OpenApiDataObjectScanner {
                 processInheritance(currentPathEntry);
             }
         }
+    }
+    
+    private static boolean hasNonNullType(Schema schema) {
+        List<Schema.SchemaType> types = schema.getType();
+        
+        return types != null && types.stream().anyMatch(t -> t != SchemaType.NULL);
     }
 
     private void processClassAnnotations(Schema schema, ClassInfo classInfo) {

@@ -2,9 +2,9 @@
   "components" : {
     "schemas" : {
       "test.io.smallrye.openapi.runtime.scanner.entities.SpecialCaseTestContainer" : {
-        "type" : "array",
+        "type" : ["array"],
         "items" : {
-          "type" : "string"
+          "type" : ["string"]
         }
       }
     }

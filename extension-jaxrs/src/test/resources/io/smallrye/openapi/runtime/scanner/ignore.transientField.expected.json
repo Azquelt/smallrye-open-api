@@ -2,10 +2,10 @@
   "components" : {
     "schemas" : {
       "test.io.smallrye.openapi.runtime.scanner.entities.TransientFieldExample" : {
-        "type" : "object",
+        "type" : ["object"],
         "properties" : {
           "unhiddenTransientField" : {
-            "type" : "string"
+            "type" : ["string"]
           }
         }
       }

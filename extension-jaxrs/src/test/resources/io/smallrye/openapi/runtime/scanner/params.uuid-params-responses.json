@@ -18,7 +18,7 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "array",
+                  "type": ["array"],
                   "items": {
                     "$ref": "#/components/schemas/WrappedUUID"
                   }
@@ -56,10 +56,10 @@
   "components": {
     "schemas": {
       "WrappedUUID": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "theUUID": {
-            "type": "string",
+            "type": ["string"],
             "description": "test",
             "allOf": [
               {
@@ -70,7 +70,7 @@
         }
       },
       "UUID": {
-        "type": "string",
+        "type": ["string"],
         "format": "uuid",
         "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
       }

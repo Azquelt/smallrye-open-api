@@ -9,7 +9,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": "string"
+                  "type": ["string"]
                 }
               }
             }
@@ -23,13 +23,13 @@
           "required": true,
           "explode": true,
           "schema": {
-            "type": "object",
+            "type": ["object"],
             "properties": {
               "matrixProperty": {
-                "type": "string"
+                "type": ["string"]
               },
               "matrixField": {
-                "type": "string"
+                "type": ["string"]
               }
             }
           },
@@ -39,49 +39,49 @@
           "name": "queryField",
           "in": "query",
           "schema": {
-            "type": "string"
+            "type": ["string"]
           }
         },
         {
           "name": "queryProperty",
           "in": "query",
           "schema": {
-            "type": "string"
+            "type": ["string"]
           }
         },
         {
           "name": "queryProperty2",
           "in": "query",
           "schema": {
-            "type": "string"
+            "type": ["string"]
           }
         },
         {
           "name": "headerField",
           "in": "header",
           "schema": {
-            "type": "string"
+            "type": ["string"]
           }
         },
         {
           "name": "headerProperty",
           "in": "header",
           "schema": {
-            "type": "string"
+            "type": ["string"]
           }
         },
         {
           "name": "cookieField",
           "in": "cookie",
           "schema": {
-            "type": "string"
+            "type": ["string"]
           }
         },
         {
           "name": "cookieProperty",
           "in": "cookie",
           "schema": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       ]

@@ -6,14 +6,14 @@
         "required": [
           "id"
         ],
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "id": {
             "format": "int32",
             "description": "The user identifier",
             "maximum": 9999,
             "minimum": 15,
-            "type": "integer"
+            "type": ["integer"]
           }
         }
       }

@@ -9,14 +9,14 @@
           "required": true,
           "description": "The id of the task",
           "schema": {
-            "type": "string"
+            "type": ["string"]
           },
           "example": "e1cb23d0-6cbe-4a29"
         }, {
           "name": "nextTask",
           "in": "query",
           "schema": {
-            "type": "string"
+            "type": ["string"]
           }
         }],
         "responses": {
@@ -34,7 +34,7 @@
           "required": true,
           "description": "The id of the task, invalid name discarded when @Parameter and JAX-RS annotation have same target",
           "schema": {
-            "type": "string"
+            "type": ["string"]
           },
           "example": "e1cb23d0-6cbe-4a29"
         }],

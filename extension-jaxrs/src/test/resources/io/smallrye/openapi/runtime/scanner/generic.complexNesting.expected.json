@@ -2,55 +2,55 @@
   "components" : {
     "schemas" : {
       "test.io.smallrye.openapi.runtime.scanner.entities.GenericTypeTestContainer" : {
-        "type": "object",
+        "type": ["object"],
         "properties" : {
           "qAgain" : {
             "format" : "double",
-            "type" : "number"
+            "type" : ["number"]
           },
           "qAgain3" : {
             "format" : "double",
-            "type" : "number"
+            "type" : ["number"]
           },
           "qValue" : {
             "format" : "double",
             "description" : "Ah, Q, my favourite variable!",
-            "type" : "number"
+            "type" : ["number"]
           },
           "tAgain2" : {
             "required" : [ "bar", "foo" ],
-            "type" : "object",
+            "type" : ["object"],
             "properties" : {
               "bar" : {
               },
               "foo" : {
                 "maxLength" : 123456,
-                "type" : "object",
+                "type" : ["object"],
                 "properties" : {
                   "qAgain" : {
                     "format" : "date",
-                    "type" : "string",
+                    "type" : ["string"],
                     "example": "2022-03-10"
                   },
                   "qAgain3" : {
                     "format" : "date",
-                    "type" : "string",
+                    "type" : ["string"],
                     "example": "2022-03-10"
                   },
                   "qValue" : {
                     "format" : "date",
                     "description" : "Ah, Q, my favourite variable!",
-                    "type" : "string",
+                    "type" : ["string"],
                     "example": "2022-03-10"
                   },
                   "tAgain2" : {
-                    "type" : "string"
+                    "type" : ["string"]
                   },
                   "tAgain4" : {
-                    "type" : "string"
+                    "type" : ["string"]
                   },
                   "tValue" : {
-                    "type" : "string"
+                    "type" : ["string"]
                   }
                 }
               }
@@ -58,38 +58,38 @@
           },
           "tAgain4" : {
             "required" : [ "bar", "foo" ],
-            "type" : "object",
+            "type" : ["object"],
             "properties" : {
               "bar" : {
               },
               "foo" : {
                 "maxLength" : 123456,
-                "type" : "object",
+                "type" : ["object"],
                 "properties" : {
                   "qAgain" : {
                     "format" : "date",
-                    "type" : "string",
+                    "type" : ["string"],
                     "example": "2022-03-10"
                   },
                   "qAgain3" : {
                     "format" : "date",
-                    "type" : "string",
+                    "type" : ["string"],
                     "example": "2022-03-10"
                   },
                   "qValue" : {
                     "format" : "date",
                     "description" : "Ah, Q, my favourite variable!",
-                    "type" : "string",
+                    "type" : ["string"],
                     "example": "2022-03-10"
                   },
                   "tAgain2" : {
-                    "type" : "string"
+                    "type" : ["string"]
                   },
                   "tAgain4" : {
-                    "type" : "string"
+                    "type" : ["string"]
                   },
                   "tValue" : {
-                    "type" : "string"
+                    "type" : ["string"]
                   }
                 }
               }
@@ -97,38 +97,38 @@
           },
           "tValue" : {
             "required" : [ "bar", "foo" ],
-            "type" : "object",
+            "type" : ["object"],
             "properties" : {
               "bar" : {
               },
               "foo" : {
                 "maxLength" : 123456,
-                "type" : "object",
+                "type" : ["object"],
                 "properties" : {
                   "qAgain" : {
                     "format" : "date",
-                    "type" : "string",
+                    "type" : ["string"],
                     "example": "2022-03-10"
                   },
                   "qAgain3" : {
                     "format" : "date",
-                    "type" : "string",
+                    "type" : ["string"],
                     "example": "2022-03-10"
                   },
                   "qValue" : {
                     "format" : "date",
                     "description" : "Ah, Q, my favourite variable!",
-                    "type" : "string",
+                    "type" : ["string"],
                     "example": "2022-03-10"
                   },
                   "tAgain2" : {
-                    "type" : "string"
+                    "type" : ["string"]
                   },
                   "tAgain4" : {
-                    "type" : "string"
+                    "type" : ["string"]
                   },
                   "tValue" : {
-                    "type" : "string"
+                    "type" : ["string"]
                   }
                 }
               }

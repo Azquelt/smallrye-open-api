@@ -8,7 +8,7 @@
             "name": "q0",
             "in": "query",
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           },
           {
@@ -35,7 +35,7 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "string"
+                  "type": ["string"]
                 }
               }
             }
@@ -53,7 +53,7 @@
           "BAR",
           "FOO"
         ],
-        "type": "string"
+        "type": ["string"]
       }
     }
   }

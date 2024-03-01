@@ -10,7 +10,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           }
         ],
@@ -41,30 +41,30 @@
   "components": {
     "schemas": {
       "Cat": {
-        "type": "object",
+        "type": ["object"],
         "required": [
           "pet_type"
         ],
         "properties": {
           "pet_type": {
-            "type": "string"
+            "type": ["string"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "Lizard": {
-        "type": "object",
+        "type": ["object"],
         "required": [
           "pet_type"
         ],
         "properties": {
           "pet_type": {
-            "type": "string"
+            "type": ["string"]
           },
           "lovesRocks": {
-            "type": "boolean"
+            "type": ["boolean"]
           }
         }
       }

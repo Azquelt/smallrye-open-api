@@ -8,14 +8,14 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": "string"
+            "type": ["string"]
           }
         }],
         "requestBody": {
           "content": {
             "multipart/related": {
               "schema": {
-                "type": "object"
+                "type": ["object"]
               }
             }
           },

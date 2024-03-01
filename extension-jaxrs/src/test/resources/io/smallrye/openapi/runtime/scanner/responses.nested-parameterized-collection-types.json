@@ -30,11 +30,11 @@
   "components": {
     "schemas": {
       "MultivaluedMapStringMapStringCustomRequest": {
-        "type": "object",
+        "type": ["object"],
         "additionalProperties": {
-          "type": "array",
+          "type": ["array"],
           "items": {
-            "type": "object",
+            "type": ["object"],
             "additionalProperties": {
               "$ref": "#/components/schemas/CustomRequest"
             }
@@ -42,19 +42,19 @@
         }
       },
       "CustomRequest": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "requestName": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       },
       "MultivaluedMapStringMapStringCustomResponse": {
-        "type": "object",
+        "type": ["object"],
         "additionalProperties": {
-          "type": "array",
+          "type": ["array"],
           "items": {
-            "type": "object",
+            "type": ["object"],
             "additionalProperties": {
               "$ref": "#/components/schemas/CustomResponse"
             }
@@ -62,10 +62,10 @@
         }
       },
       "CustomResponse": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "responseName": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       }

@@ -10,7 +10,7 @@
               "application/json": {
                 "schema": {
                   "uniqueItems": true,
-                  "type": "array",
+                  "type": ["array"],
                   "items": {
                     "$ref": "#/components/schemas/Fruit"
                   }
@@ -37,7 +37,7 @@
               "application/json": {
                 "schema": {
                   "uniqueItems": true,
-                  "type": "array",
+                  "type": ["array"],
                   "items": {
                     "$ref": "#/components/schemas/Fruit"
                   }
@@ -64,7 +64,7 @@
               "application/json": {
                 "schema": {
                   "uniqueItems": true,
-                  "type": "array",
+                  "type": ["array"],
                   "items": {
                     "$ref": "#/components/schemas/Fruit"
                   }
@@ -79,19 +79,19 @@
   "components": {
     "schemas": {
       "Seed": {
-        "type": "object"
+        "type": ["object"]
       },
       "Fruit": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "description": {
-            "type": "string"
+            "type": ["string"]
           },
           "name": {
-            "type": "string"
+            "type": ["string"]
           },
           "seeds": {
-            "type": "array",
+            "type": ["array"],
             "items": {
               "$ref": "#/components/schemas/Seed"
             }

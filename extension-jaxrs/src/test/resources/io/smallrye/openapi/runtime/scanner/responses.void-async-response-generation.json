@@ -9,7 +9,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           }
         ],
@@ -39,7 +39,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           }
         ],
@@ -58,7 +58,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           }
         ],
@@ -73,10 +73,10 @@
   "components": {
     "schemas": {
       "ServerError": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "description": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       }

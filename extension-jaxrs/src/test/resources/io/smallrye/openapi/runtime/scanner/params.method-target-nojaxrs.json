@@ -10,7 +10,7 @@
             "in": "query",
             "description": "Page number, starts 0, if not specified uses 0.",
             "schema": {
-              "type": "integer"
+              "type": ["integer"]
             }
           },
           {
@@ -18,7 +18,7 @@
             "in": "query",
             "description": "Number of items per page, if not specified uses 10. NO_LIMIT can be used to specify an unlimited page, when specified it ignores the offset",
             "schema": {
-              "type": "integer"
+              "type": ["integer"]
             }
           },
           {
@@ -32,7 +32,7 @@
                 "is_enabled",
                 "mtime"
               ],
-              "type": "string"
+              "type": ["string"]
             }
           },
           {
@@ -44,7 +44,7 @@
                 "asc",
                 "desc"
               ],
-              "type": "string"
+              "type": ["string"]
             }
           },
           {
@@ -52,7 +52,7 @@
             "in": "query",
             "description": "Filtering policies by the name depending on the Filter operator used.",
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           },
           {
@@ -67,7 +67,7 @@
                 "ilike",
                 "not_equal"
               ],
-              "type": "string"
+              "type": ["string"]
             }
           },
           {
@@ -75,7 +75,7 @@
             "in": "query",
             "description": "Filtering policies by the description depending on the Filter operator used.",
             "schema": {
-              "type": "string"
+              "type": ["string"]
             }
           },
           {
@@ -90,7 +90,7 @@
                 "ilike",
                 "not_equal"
               ],
-              "type": "string"
+              "type": ["string"]
             }
           },
           {
@@ -103,7 +103,7 @@
                 true,
                 false
               ],
-              "type": "boolean"
+              "type": ["boolean"]
             }
           },
           {
@@ -119,7 +119,7 @@
                   "status": "expired"
                 }
               ],
-              "type": "object"
+              "type": ["object"]
             }
           }
         ],
@@ -140,7 +140,7 @@
                 "description": "Total number of items found",
                 "style": "simple",
                 "schema": {
-                  "type": "integer"
+                  "type": ["integer"]
                 }
               }
             },
@@ -159,23 +159,23 @@
   "components": {
     "schemas": {
       "PagedResponse": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "meta": {
-            "type": "object",
+            "type": ["object"],
             "additionalProperties": {
               "format": "int64",
-              "type": "integer"
+              "type": ["integer"]
             }
           },
           "links": {
-            "type": "object",
+            "type": ["object"],
             "additionalProperties": {
-              "type": "string"
+              "type": ["string"]
             }
           },
           "data": {
-            "type": "array",
+            "type": ["array"],
             "items": {
             }
           }

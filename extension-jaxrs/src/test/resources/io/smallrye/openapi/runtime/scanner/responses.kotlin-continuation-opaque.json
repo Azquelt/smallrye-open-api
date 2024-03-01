@@ -41,13 +41,13 @@
   "components": {
     "schemas": {
       "PairStringString": {
-        "type": "object",
+        "type": ["object"],
         "properties": {
           "first": {
-            "type": "string"
+            "type": ["string"]
           },
           "second": {
-            "type": "string"
+            "type": ["string"]
           }
         }
       }
