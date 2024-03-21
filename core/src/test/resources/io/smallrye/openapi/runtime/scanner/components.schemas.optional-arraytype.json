@@ -41,38 +41,24 @@
             }
           },
           "optionalArrayOfB": {
-            "anyOf": [
-              {
-                "type": ["null"]
-              },
-              {
-                "type": ["array"],
-                "items": {
-                  "$ref": "#/components/schemas/B"
-                }
-              }
-            ]
+            "type": ["array", "null"],
+            "items": {
+              "$ref": "#/components/schemas/B"
+            }
           },
           "optionalListOfB": {
-            "anyOf": [
-              {
-                "type": ["null"]
-              },
-              {
-                "type": ["array"],
-                "items": {
-                  "$ref": "#/components/schemas/B"
-                }
-              }
-            ]
+            "type": ["array","null"],
+            "items": {
+              "$ref": "#/components/schemas/B"
+            }
           },
           "optionalOfB": {
             "anyOf": [
               {
-                "type": ["null"]
+                "$ref": "#/components/schemas/B"
               },
               {
-                "$ref": "#/components/schemas/B"
+                "type": ["null"]
               }
             ]
           }

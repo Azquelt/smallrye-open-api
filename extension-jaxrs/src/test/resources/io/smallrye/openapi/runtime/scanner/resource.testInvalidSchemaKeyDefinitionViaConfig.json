@@ -21,7 +21,14 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Greeting"
+                  "anyOf": [
+                    {
+                      "$ref" : "#/components/schemas/Greeting"
+                    },
+                    {
+                      "type" : ["null"]
+                    }
+                  ]
                 }
               }
             }
@@ -155,7 +162,7 @@
   "components" : {
     "schemas" : {
       "message" : {
-        "type" : "string",
+        "type" : ["string"],
         "description" : "Mock custom String class defined with config"
       },
      "Greeting" : {

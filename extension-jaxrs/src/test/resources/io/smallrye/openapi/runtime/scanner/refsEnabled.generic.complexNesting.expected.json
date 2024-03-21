@@ -13,11 +13,7 @@
           "foo": {
             "type": ["object"],
             "maxLength": 123456,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/FuzzStringDate"
-              }
-            ]
+            "$ref": "#/components/schemas/FuzzStringDate"
           }
         }
       },

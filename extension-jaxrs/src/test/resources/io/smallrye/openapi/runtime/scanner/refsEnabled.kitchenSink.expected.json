@@ -219,11 +219,7 @@
           "foo": {
             "type": ["object"],
             "maxLength": 123456,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/FuzzStringObject"
-              }
-            ]
+            "$ref": "#/components/schemas/FuzzStringObject"
           }
         }
       },
@@ -280,11 +276,7 @@
           "qValue": {
             "type": ["object"],
             "description": "Ah, Q, my favourite variable!",
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/FooExtendsFoo"
-              }
-            ]
+            "$ref": "#/components/schemas/FooExtendsFoo"
           },
           "tAgain2": {
             "type": ["string"]
@@ -327,11 +319,7 @@
           "foo": {
             "type": ["object"],
             "maxLength": 123456,
-            "allOf": [
-              {
-                "$ref": "#/components/schemas/KustomPairStringString"
-              }
-            ]
+            "$ref": "#/components/schemas/KustomPairStringString"
           }
         }
       },
