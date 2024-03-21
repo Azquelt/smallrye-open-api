@@ -34,10 +34,10 @@ public class DiscriminatorWriter {
         if (model == null) {
             return;
         }
-        parent.set(SchemaConstant.PROP_DISCRIMINATOR, convertDiscriminatorToNode(parent, model));
+        parent.set(SchemaConstant.PROP_DISCRIMINATOR, createDiscriminatorNode(parent, model));
     }
 
-    public static JsonNode convertDiscriminatorToNode(JsonNodeCreator creator, Discriminator model) {
+    public static JsonNode createDiscriminatorNode(JsonNodeCreator creator, Discriminator model) {
         ObjectNode node = creator.objectNode();
         JsonUtil.stringProperty(node, DiscriminatorConstant.PROP_PROPERTY_NAME, model.getPropertyName());
         ObjectWriter.writeStringMap(node, model.getMapping(), DiscriminatorConstant.PROP_MAPPING);

@@ -10,16 +10,10 @@ import static io.smallrye.openapi.runtime.scanner.OpenApiDataObjectScanner.STRIN
 import static io.smallrye.openapi.runtime.util.TypeUtil.isTerminalType;
 import static java.util.Collections.singletonList;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
-import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
-import org.eclipse.microprofile.openapi.models.media.Discriminator;
 import org.eclipse.microprofile.openapi.models.media.Schema;
-import org.eclipse.microprofile.openapi.models.media.XML;
 import org.eclipse.microprofile.openapi.models.media.Schema.SchemaType;
 import org.jboss.jandex.AnnotationInstance;
 import org.jboss.jandex.AnnotationTarget;

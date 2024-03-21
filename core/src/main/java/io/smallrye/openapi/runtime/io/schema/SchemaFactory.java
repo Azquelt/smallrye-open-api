@@ -147,6 +147,13 @@ public class SchemaFactory {
         if (isAnnotationMissingOrHidden(annotation, defaults)) {
             return schema;
         }
+        
+        String ref = readAttr(annotation, OpenApiConstants.REF, defaults);
+        if (ref != null) {
+            schema.setRef(ref);
+            // If the annotation sets a ref, ignore any defaults passed in
+            defaults = Collections.emptyMap();
+        }
 
         schema.setNot(SchemaFactory.<Type, Schema> readAttr(annotation, SchemaConstant.PROP_NOT,
                 types -> readClassSchema(context, types, true), defaults));
@@ -173,7 +180,6 @@ public class SchemaFactory {
         schema.setRequired(readAttr(annotation, SchemaConstant.PROP_REQUIRED_PROPERTIES, defaults));
         schema.setDescription(readAttr(annotation, SchemaConstant.PROP_DESCRIPTION, defaults));
         schema.setFormat(readAttr(annotation, SchemaConstant.PROP_FORMAT, defaults));
-        schema.setRef(readAttr(annotation, OpenApiConstants.REF, defaults));
         schema.setNullable(readAttr(annotation, SchemaConstant.PROP_NULLABLE, defaults));
         schema.setReadOnly(readAttr(annotation, SchemaConstant.PROP_READ_ONLY, defaults));
         schema.setWriteOnly(readAttr(annotation, SchemaConstant.PROP_WRITE_ONLY, defaults));
@@ -413,9 +419,9 @@ public class SchemaFactory {
         List<SchemaType> types = schema.getType();
         if (types != null) {
             return types.stream()
-                        .filter(t -> t != SchemaType.NULL)
-                        .findFirst()
-                        .orElse(null);
+                    .filter(t -> t != SchemaType.NULL)
+                    .findFirst()
+                    .orElse(null);
         }
         return null;
     }

@@ -57,8 +57,10 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -67,46 +69,21 @@ import org.eclipse.microprofile.openapi.models.media.Discriminator;
 import org.eclipse.microprofile.openapi.models.media.Schema;
 import org.eclipse.microprofile.openapi.models.media.XML;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import io.smallrye.openapi.api.constants.OpenApiConstants;
+import io.smallrye.openapi.api.models.ExternalDocumentationImpl;
 import io.smallrye.openapi.api.models.JsonWrappingImpl;
 import io.smallrye.openapi.api.models.ModelImpl;
-import io.smallrye.openapi.api.models.NodeObjectCache;
+import io.smallrye.openapi.api.util.MergeUtil;
 import io.smallrye.openapi.runtime.io.JsonUtil;
 import io.smallrye.openapi.runtime.io.Referenceable;
-import io.smallrye.openapi.runtime.io.discriminator.DiscriminatorReader;
-import io.smallrye.openapi.runtime.io.discriminator.DiscriminatorWriter;
 import io.smallrye.openapi.runtime.io.externaldocs.ExternalDocsConstant;
-import io.smallrye.openapi.runtime.io.externaldocs.ExternalDocsReader;
-import io.smallrye.openapi.runtime.io.externaldocs.ExternalDocsWriter;
 import io.smallrye.openapi.runtime.io.schema.SchemaConstant;
-import io.smallrye.openapi.runtime.io.xml.XmlReader;
-import io.smallrye.openapi.runtime.io.xml.XmlWriter;
 import io.smallrye.openapi.runtime.util.ModelUtil;
 
 /**
  * An implementation of the {@link Schema} OpenAPI model interface.
  */
 public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
-
-    private static final NodeObjectCache<ObjectNode, SchemaImpl> NODE_OBJECT_CACHE = new NodeObjectCache<>(SchemaImpl::new);
-
-    /**
-     * Get or create a schema object for a given JSON object
-     * <p>
-     * If a schema object for this JSON node already exists, the same object will be returned, otherwise a new one may be
-     * created.
-     *
-     * @param node the JSON object
-     * @return the schema object
-     */
-    public static SchemaImpl getOrCreateFromNode(ObjectNode node) {
-        return NODE_OBJECT_CACHE.getOrCreate(node);
-    }
 
     /**
      * Get a boolean schema object
@@ -127,6 +104,8 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     private String name;
     private int modCount;
     private List<Schema> typeObservers;
+    // Was setNullable called with a non-null value
+    private boolean nullableRequested = false;
 
     /**
      * The boolean value of this schema. {@code null} in most cases where the schema is an object
@@ -163,7 +142,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
             obs.typeObservers = ModelUtil.add(observer, obs.typeObservers, ArrayList<Schema>::new);
         }
 
-        observer.setType(observable.getType());
+        setTypeRetainingNull(observer, observable.getType());
     }
 
     public static SchemaImpl copyOf(Schema other) {
@@ -172,65 +151,48 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
         }
         if (other instanceof SchemaImpl) {
             SchemaImpl otherImpl = (SchemaImpl) other;
-            SchemaImpl clone;
-            if (otherImpl.booleanValue != null) {
-                // Boolean schemas are singletons and immutable, no need to actually copy
-                clone = otherImpl;
-            } else {
-                clone = getOrCreateFromNode(otherImpl.node.deepCopy());
-            }
-            clone.name = otherImpl.name;
-            return clone;
+            SchemaImpl result = new SchemaImpl();
+            result.data.putAll(copyOf(otherImpl.data));
+            return result;
         }
         throw new UnsupportedOperationException("Can't copy a different impl");
-        //        SchemaImpl clone = (SchemaImpl) MergeUtil.mergeObjects(new SchemaImpl(), other);
-        //        clone.required = copy(clone.required, () -> new ArrayList<>(clone.required));
-        //        clone.enumeration = copy(clone.enumeration, () -> new ArrayList<>(clone.enumeration));
-        //        clone.items = copy(clone.items, () -> copyOf(clone.items));
-        //
-        //        clone.allOf = copy(clone.allOf, () -> clone.allOf
-        //                .stream()
-        //                .map(SchemaImpl::copyOf)
-        //                .collect(Collectors.toList()));
-        //
-        //        clone.properties = copy(clone.properties, () -> clone.properties.entrySet()
-        //                .stream()
-        //                .collect(Collectors.toMap(
-        //                        Map.Entry::getKey,
-        //                        e -> copyOf(e.getValue()),
-        //                        (u, v) -> {
-        //                            throw new IllegalStateException(String.format("Duplicate key %s", u));
-        //                        },
-        //                        LinkedHashMap::new)));
-        //
-        //        clone.additionalPropertiesSchema = copy(clone.additionalPropertiesSchema,
-        //                () -> copyOf(clone.additionalPropertiesSchema));
-        //
-        //        clone.xml = copy(clone.xml, () -> MergeUtil.mergeObjects(new XMLImpl(), clone.xml));
-        //        clone.externalDocs = copy(clone.externalDocs,
-        //                () -> MergeUtil.mergeObjects(new ExternalDocumentationImpl(), clone.externalDocs));
-        //
-        //        clone.oneOf = copy(clone.oneOf, () -> clone.oneOf
-        //                .stream()
-        //                .map(SchemaImpl::copyOf)
-        //                .collect(Collectors.toList()));
-        //
-        //        clone.anyOf = copy(clone.anyOf, () -> clone.anyOf
-        //                .stream()
-        //                .map(SchemaImpl::copyOf)
-        //                .collect(Collectors.toList()));
-        //
-        //        clone.not = copy(clone.not, () -> copyOf(clone.not));
-        //
-        //        return clone;
     }
 
-    //    private static <T> T copy(T property, Supplier<T> copySupplier) {
-    //        if (property != null) {
-    //            return copySupplier.get();
-    //        }
-    //        return null;
-    //    }
+    private static <K, V> Map<K, V> copyOf(Map<K, V> map) {
+        Map<K, V> clone = new HashMap<>();
+        for (Map.Entry<K, V> entry : map.entrySet()) {
+            K key = entry.getKey();
+            V val = entry.getValue();
+            clone.put(key, copyOf(val));
+        }
+        return clone;
+    }
+
+    private static <T> List<T> copyOf(List<T> list) {
+        List<T> clone = new ArrayList<>();
+        for (T value : list) {
+            clone.add(copyOf(value));
+        }
+        return clone;
+    }
+
+    private static <T> T copyOf(T value) {
+        if (value instanceof Map) {
+            return (T) copyOf((Map<?, ?>) value);
+        } else if (value instanceof List) {
+            return (T) copyOf((List<?>) value);
+        } else if (value instanceof Schema) {
+            return (T) copyOf((Schema) value);
+        } else if (value instanceof XML) {
+            return (T) MergeUtil.mergeObjects(new XMLImpl(), (XML) value);
+        } else if (value instanceof ExternalDocumentation) {
+            return (T) MergeUtil.mergeObjects(new ExternalDocumentationImpl(), (ExternalDocumentation) value);
+        } else if (value instanceof Discriminator) {
+            return (T) MergeUtil.mergeObjects(new DiscriminatorImpl(), (Discriminator) value);
+        } else {
+            return value;
+        }
+    }
 
     /**
      * Create an empty named schema
@@ -240,7 +202,6 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     public SchemaImpl(String name) {
         super(JsonUtil.objectNode());
         this.name = name;
-        NODE_OBJECT_CACHE.put(this.node, this);
     }
 
     /**
@@ -262,22 +223,6 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
         this.booleanValue = booleanValue;
     }
 
-    /**
-     * Create a schema from a JSON object
-     * <p>
-     * External callers should use {@link #getOrCreateFromNode(ObjectNode)} instead
-     *
-     * @param node the json object
-     */
-    private SchemaImpl(ObjectNode node) {
-        super(node);
-        // Smallrye extension: name is accepted when parsing a schema but not output
-        if (node != null && node.path("name").isTextual()) {
-            name = node.path("name").asText();
-            node.remove("name");
-        }
-    }
-
     public String getName() {
         return name;
     }
@@ -286,20 +231,12 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
         modCount++;
     }
 
-    public JsonNode getJsonNode() {
-        if (isBooleanSchema()) {
-            return JsonNodeFactory.instance.booleanNode(booleanValue);
-        } else {
-            return node;
-        }
-    }
-
     /**
      * @see org.eclipse.microprofile.openapi.models.Reference#getRef()
      */
     @Override
     public String getRef() {
-        return getProperty(Referenceable.PROP_$REF, STRING_CONVERTER);
+        return getProperty(Referenceable.PROP_$REF, String.class);
     }
 
     /**
@@ -311,7 +248,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
             ref = OpenApiConstants.REF_PREFIX_SCHEMA + ref;
         }
         incrementModCount();
-        setProperty(Referenceable.PROP_$REF, ref, STRING_CONVERTER);
+        setProperty(Referenceable.PROP_$REF, ref);
     }
 
     /**
@@ -319,7 +256,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Discriminator getDiscriminator() {
-        return getProperty(PROP_DISCRIMINATOR, DISCRIMINATOR_CONVERTER);
+        return getProperty(PROP_DISCRIMINATOR, Discriminator.class);
     }
 
     /**
@@ -328,7 +265,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setDiscriminator(Discriminator discriminator) {
         incrementModCount();
-        setProperty(PROP_DISCRIMINATOR, discriminator, DISCRIMINATOR_CONVERTER);
+        setProperty(PROP_DISCRIMINATOR, discriminator);
     }
 
     /**
@@ -336,7 +273,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public String getTitle() {
-        return getProperty(SchemaConstant.PROP_TITLE, STRING_CONVERTER);
+        return getProperty(SchemaConstant.PROP_TITLE, String.class);
     }
 
     /**
@@ -345,7 +282,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setTitle(String title) {
         incrementModCount();
-        setProperty(SchemaConstant.PROP_TITLE, title, STRING_CONVERTER);
+        setProperty(SchemaConstant.PROP_TITLE, title);
     }
 
     /**
@@ -353,7 +290,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Object getDefaultValue() {
-        return getProperty(PROP_DEFAULT, OBJECT_CONVERTER);
+        return getProperty(PROP_DEFAULT, Object.class);
     }
 
     /**
@@ -362,7 +299,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setDefaultValue(Object defaultValue) {
         incrementModCount();
-        setProperty(SchemaConstant.PROP_DEFAULT, defaultValue, OBJECT_CONVERTER);
+        setProperty(SchemaConstant.PROP_DEFAULT, defaultValue);
     }
 
     /**
@@ -370,7 +307,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public List<Object> getEnumeration() {
-        return getListProperty(PROP_ENUM, OBJECT_CONVERTER);
+        return getListProperty(PROP_ENUM);
     }
 
     /**
@@ -379,7 +316,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setEnumeration(List<Object> enumeration) {
         incrementModCount();
-        setListProperty(PROP_ENUM, enumeration, OBJECT_CONVERTER);
+        setListProperty(PROP_ENUM, enumeration);
     }
 
     /**
@@ -388,7 +325,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public Schema addEnumeration(Object enumeration) {
         incrementModCount();
-        addToListProperty(PROP_ENUM, enumeration, OBJECT_CONVERTER);
+        addToListProperty(PROP_ENUM, enumeration);
         return this;
     }
 
@@ -398,7 +335,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void removeEnumeration(Object enumeration) {
         incrementModCount();
-        removeFromListProperty(PROP_ENUM, enumeration, OBJECT_CONVERTER);
+        removeFromListProperty(PROP_ENUM, enumeration);
     }
 
     /**
@@ -406,7 +343,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public BigDecimal getMultipleOf() {
-        return getProperty(PROP_MULTIPLE_OF, NUMBER_CONVERTER);
+        return getProperty(PROP_MULTIPLE_OF, BigDecimal.class);
     }
 
     /**
@@ -415,7 +352,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setMultipleOf(BigDecimal multipleOf) {
         incrementModCount();
-        setProperty(PROP_MULTIPLE_OF, multipleOf, NUMBER_CONVERTER);
+        setProperty(PROP_MULTIPLE_OF, multipleOf);
     }
 
     /**
@@ -423,7 +360,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public BigDecimal getMaximum() {
-        return getProperty(PROP_MAXIMUM, NUMBER_CONVERTER);
+        return getProperty(PROP_MAXIMUM, BigDecimal.class);
     }
 
     /**
@@ -432,7 +369,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setMaximum(BigDecimal maximum) {
         incrementModCount();
-        setProperty(PROP_MAXIMUM, maximum, NUMBER_CONVERTER);
+        setProperty(PROP_MAXIMUM, maximum);
     }
 
     /**
@@ -440,7 +377,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public BigDecimal getExclusiveMaximum() {
-        return getProperty(PROP_EXCLUSIVE_MAXIMUM, NUMBER_CONVERTER);
+        return getProperty(PROP_EXCLUSIVE_MAXIMUM, BigDecimal.class);
     }
 
     /**
@@ -449,7 +386,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setExclusiveMaximum(BigDecimal exclusiveMaximum) {
         incrementModCount();
-        setProperty(PROP_EXCLUSIVE_MAXIMUM, exclusiveMaximum, NUMBER_CONVERTER);
+        setProperty(PROP_EXCLUSIVE_MAXIMUM, exclusiveMaximum);
     }
 
     /**
@@ -457,7 +394,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public BigDecimal getMinimum() {
-        return getProperty(PROP_MINIMUM, NUMBER_CONVERTER);
+        return getProperty(PROP_MINIMUM, BigDecimal.class);
     }
 
     /**
@@ -466,7 +403,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setMinimum(BigDecimal minimum) {
         incrementModCount();
-        setProperty(PROP_MINIMUM, minimum, NUMBER_CONVERTER);
+        setProperty(PROP_MINIMUM, minimum);
     }
 
     /**
@@ -474,7 +411,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public BigDecimal getExclusiveMinimum() {
-        return getProperty(PROP_EXCLUSIVE_MINIMUM, NUMBER_CONVERTER);
+        return getProperty(PROP_EXCLUSIVE_MINIMUM, BigDecimal.class);
     }
 
     /**
@@ -483,7 +420,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setExclusiveMinimum(BigDecimal exclusiveMinimum) {
         incrementModCount();
-        setProperty(PROP_EXCLUSIVE_MINIMUM, exclusiveMinimum, NUMBER_CONVERTER);
+        setProperty(PROP_EXCLUSIVE_MINIMUM, exclusiveMinimum);
     }
 
     /**
@@ -491,7 +428,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Integer getMaxLength() {
-        return getProperty(PROP_MAX_LENGTH, INT_CONVERTER);
+        return getProperty(PROP_MAX_LENGTH, Integer.class);
     }
 
     /**
@@ -500,7 +437,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setMaxLength(Integer maxLength) {
         incrementModCount();
-        setProperty(PROP_MAX_LENGTH, maxLength, INT_CONVERTER);
+        setProperty(PROP_MAX_LENGTH, maxLength);
     }
 
     /**
@@ -508,7 +445,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Integer getMinLength() {
-        return getProperty(PROP_MIN_LENGTH, INT_CONVERTER);
+        return getProperty(PROP_MIN_LENGTH, Integer.class);
     }
 
     /**
@@ -517,7 +454,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setMinLength(Integer minLength) {
         incrementModCount();
-        setProperty(PROP_MIN_LENGTH, minLength, INT_CONVERTER);
+        setProperty(PROP_MIN_LENGTH, minLength);
     }
 
     /**
@@ -525,7 +462,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public String getPattern() {
-        return getProperty(PROP_PATTERN, STRING_CONVERTER);
+        return getProperty(PROP_PATTERN, String.class);
     }
 
     /**
@@ -534,7 +471,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setPattern(String pattern) {
         incrementModCount();
-        setProperty(PROP_PATTERN, pattern, STRING_CONVERTER);
+        setProperty(PROP_PATTERN, pattern);
     }
 
     /**
@@ -542,7 +479,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Integer getMaxItems() {
-        return getProperty(PROP_MAX_ITEMS, INT_CONVERTER);
+        return getProperty(PROP_MAX_ITEMS, Integer.class);
     }
 
     /**
@@ -551,7 +488,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setMaxItems(Integer maxItems) {
         incrementModCount();
-        setProperty(PROP_MAX_ITEMS, maxItems, INT_CONVERTER);
+        setProperty(PROP_MAX_ITEMS, maxItems);
     }
 
     /**
@@ -559,7 +496,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Integer getMinItems() {
-        return getProperty(PROP_MIN_ITEMS, INT_CONVERTER);
+        return getProperty(PROP_MIN_ITEMS, Integer.class);
     }
 
     /**
@@ -568,7 +505,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setMinItems(Integer minItems) {
         incrementModCount();
-        setProperty(PROP_MIN_ITEMS, minItems, INT_CONVERTER);
+        setProperty(PROP_MIN_ITEMS, minItems);
     }
 
     /**
@@ -576,7 +513,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Boolean getUniqueItems() {
-        return getProperty(PROP_UNIQUE_ITEMS, BOOLEAN_CONVERTER);
+        return getProperty(PROP_UNIQUE_ITEMS, Boolean.class);
     }
 
     /**
@@ -585,7 +522,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setUniqueItems(Boolean uniqueItems) {
         incrementModCount();
-        setProperty(PROP_UNIQUE_ITEMS, uniqueItems, BOOLEAN_CONVERTER);
+        setProperty(PROP_UNIQUE_ITEMS, uniqueItems);
     }
 
     /**
@@ -593,7 +530,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Integer getMaxProperties() {
-        return getProperty(PROP_MAX_PROPERTIES, INT_CONVERTER);
+        return getProperty(PROP_MAX_PROPERTIES, Integer.class);
     }
 
     /**
@@ -602,7 +539,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setMaxProperties(Integer maxProperties) {
         incrementModCount();
-        setProperty(PROP_MAX_PROPERTIES, maxProperties, INT_CONVERTER);
+        setProperty(PROP_MAX_PROPERTIES, maxProperties);
     }
 
     /**
@@ -610,7 +547,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Integer getMinProperties() {
-        return getProperty(PROP_MIN_PROPERTIES, INT_CONVERTER);
+        return getProperty(PROP_MIN_PROPERTIES, Integer.class);
     }
 
     /**
@@ -619,7 +556,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setMinProperties(Integer minProperties) {
         incrementModCount();
-        setProperty(PROP_MIN_PROPERTIES, minProperties, INT_CONVERTER);
+        setProperty(PROP_MIN_PROPERTIES, minProperties);
     }
 
     /**
@@ -627,7 +564,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public List<String> getRequired() {
-        return getListProperty(PROP_REQUIRED, STRING_CONVERTER);
+        return getListProperty(PROP_REQUIRED);
     }
 
     /**
@@ -636,7 +573,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setRequired(List<String> required) {
         incrementModCount();
-        setListProperty(PROP_REQUIRED, required, STRING_CONVERTER);
+        setListProperty(PROP_REQUIRED, required);
     }
 
     /**
@@ -645,7 +582,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public Schema addRequired(String required) {
         incrementModCount();
-        addToListProperty(PROP_REQUIRED, required, STRING_CONVERTER);
+        addToListProperty(PROP_REQUIRED, required);
         return this;
     }
 
@@ -655,7 +592,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void removeRequired(String required) {
         incrementModCount();
-        removeFromListProperty(PROP_REQUIRED, required, STRING_CONVERTER);
+        removeFromListProperty(PROP_REQUIRED, required);
     }
 
     /**
@@ -663,12 +600,12 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public List<SchemaType> getType() {
-        List<SchemaType> resultList = getListProperty(PROP_TYPE, SCHEMA_TYPE_CONVERTER);
+        List<SchemaType> resultList = getListProperty(PROP_TYPE);
         if (resultList != null) {
             return resultList;
         }
 
-        SchemaType result = getProperty(PROP_TYPE, SCHEMA_TYPE_CONVERTER);
+        SchemaType result = getProperty(PROP_TYPE, SchemaType.class);
         if (result != null) {
             return Collections.singletonList(result);
         }
@@ -679,17 +616,30 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setType(List<SchemaType> types) {
         incrementModCount();
-        setListProperty(PROP_TYPE, types, SCHEMA_TYPE_CONVERTER);
+        nullableRequested = false;
+        setListProperty(PROP_TYPE, types);
 
         if (typeObservers != null) {
-            typeObservers.forEach(o -> o.setType(types));
+            typeObservers.forEach(o -> setTypeRetainingNull(o, types));
         }
+    }
+
+    private static void setTypeRetainingNull(Schema target, List<SchemaType> types) {
+        // Set types on the observer, but retain null if it was set on the observer
+        List<SchemaType> oldTypes = target.getType();
+        if (oldTypes != null && types != null
+                && oldTypes.contains(SchemaType.NULL)
+                && !types.contains(SchemaType.NULL)) {
+            types = new ArrayList<SchemaType>(types);
+            types.add(SchemaType.NULL);
+        }
+        target.setType(types);
     }
 
     @Override
     public Schema addType(SchemaType type) {
         incrementModCount();
-        addToListProperty(PROP_TYPE, type, SCHEMA_TYPE_CONVERTER);
+        addToListProperty(PROP_TYPE, type);
 
         if (typeObservers != null) {
             typeObservers.forEach(o -> o.addType(type));
@@ -700,7 +650,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void removeType(SchemaType type) {
         incrementModCount();
-        removeFromListProperty(PROP_TYPE, type, SCHEMA_TYPE_CONVERTER);
+        removeFromListProperty(PROP_TYPE, type);
 
         if (typeObservers != null) {
             typeObservers.forEach(o -> o.removeType(type));
@@ -714,18 +664,18 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setType(SchemaType type) {
         incrementModCount();
-        List<SchemaType> currentValue = getListProperty(PROP_TYPE, SCHEMA_TYPE_CONVERTER);
+        List<SchemaType> currentValue = getListProperty(PROP_TYPE);
         if (currentValue != null && currentValue.contains(SchemaType.NULL)) {
             if (type == null) {
-                setListProperty(PROP_TYPE, Arrays.asList(SchemaType.NULL), SCHEMA_TYPE_CONVERTER);
+                setListProperty(PROP_TYPE, Arrays.asList(SchemaType.NULL));
             } else {
-                setListProperty(PROP_TYPE, Arrays.asList(type, SchemaType.NULL), SCHEMA_TYPE_CONVERTER);
+                setListProperty(PROP_TYPE, Arrays.asList(type, SchemaType.NULL));
             }
         } else {
             if (type == null) {
-                setListProperty(PROP_TYPE, null, SCHEMA_TYPE_CONVERTER);
+                setListProperty(PROP_TYPE, null);
             } else {
-                setListProperty(PROP_TYPE, Collections.singletonList(type), SCHEMA_TYPE_CONVERTER);
+                setListProperty(PROP_TYPE, Collections.singletonList(type));
             }
         }
 
@@ -739,7 +689,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Schema getNot() {
-        return getProperty(PROP_NOT, SCHEMA_CONVERTER);
+        return getProperty(PROP_NOT, Schema.class);
     }
 
     /**
@@ -748,7 +698,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setNot(Schema not) {
         incrementModCount();
-        setProperty(PROP_NOT, not, SCHEMA_CONVERTER);
+        setProperty(PROP_NOT, not);
     }
 
     /**
@@ -756,7 +706,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Map<String, Schema> getProperties() {
-        return getMapProperty(PROP_PROPERTIES, SCHEMA_CONVERTER);
+        return getMapProperty(PROP_PROPERTIES);
     }
 
     /**
@@ -765,7 +715,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setProperties(Map<String, Schema> properties) {
         incrementModCount();
-        setMapProperty(PROP_PROPERTIES, properties, SCHEMA_CONVERTER);
+        setMapProperty(PROP_PROPERTIES, properties);
     }
 
     /**
@@ -775,7 +725,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public Schema addProperty(String key, Schema propertySchema) {
         incrementModCount();
-        addToMapProperty(PROP_PROPERTIES, key, propertySchema, SCHEMA_CONVERTER);
+        addToMapProperty(PROP_PROPERTIES, key, propertySchema);
         return this;
     }
 
@@ -790,7 +740,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     @Override
     public Schema getAdditionalPropertiesSchema() {
-        return getProperty(PROP_ADDITIONAL_PROPERTIES, SCHEMA_CONVERTER);
+        return getProperty(PROP_ADDITIONAL_PROPERTIES, Schema.class);
     }
 
     @Override
@@ -805,7 +755,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setAdditionalPropertiesSchema(Schema additionalProperties) {
         incrementModCount();
-        setProperty(PROP_ADDITIONAL_PROPERTIES, additionalProperties, SCHEMA_CONVERTER);
+        setProperty(PROP_ADDITIONAL_PROPERTIES, additionalProperties);
     }
 
     /**
@@ -826,7 +776,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public String getDescription() {
-        return getProperty(PROP_DESCRIPTION, STRING_CONVERTER);
+        return getProperty(PROP_DESCRIPTION, String.class);
     }
 
     /**
@@ -835,7 +785,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setDescription(String description) {
         incrementModCount();
-        setProperty(PROP_DESCRIPTION, description, STRING_CONVERTER);
+        setProperty(PROP_DESCRIPTION, description);
     }
 
     /**
@@ -843,7 +793,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public String getFormat() {
-        return getProperty(PROP_FORMAT, STRING_CONVERTER);
+        return getProperty(PROP_FORMAT, String.class);
     }
 
     /**
@@ -852,7 +802,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setFormat(String format) {
         incrementModCount();
-        setProperty(PROP_FORMAT, format, STRING_CONVERTER);
+        setProperty(PROP_FORMAT, format);
     }
 
     /**
@@ -861,7 +811,16 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public Boolean getNullable() {
         List<SchemaType> types = getType();
-        return types != null ? types.contains(SchemaType.NULL) : Boolean.FALSE;
+        boolean nullPermitted = types != null ? types.contains(SchemaType.NULL) : false;
+        // Retain old tri-state behaviour of getNullable
+        // If setNullable has not been called and null is not permitted, return null rather than false
+        if (nullPermitted) {
+            return true;
+        } else if (nullableRequested) {
+            return false;
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -870,6 +829,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setNullable(Boolean nullable) {
         incrementModCount();
+        nullableRequested = nullable != null;
         if (nullable == Boolean.TRUE) {
             List<SchemaType> types = getType();
             if (types == null || !types.contains(SchemaType.NULL)) {
@@ -885,7 +845,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Boolean getReadOnly() {
-        return getProperty(PROP_READ_ONLY, BOOLEAN_CONVERTER);
+        return getProperty(PROP_READ_ONLY, Boolean.class);
     }
 
     /**
@@ -894,7 +854,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setReadOnly(Boolean readOnly) {
         incrementModCount();
-        setProperty(PROP_READ_ONLY, readOnly, BOOLEAN_CONVERTER);
+        setProperty(PROP_READ_ONLY, readOnly);
     }
 
     /**
@@ -902,7 +862,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Boolean getWriteOnly() {
-        return getProperty(PROP_WRITE_ONLY, BOOLEAN_CONVERTER);
+        return getProperty(PROP_WRITE_ONLY, Boolean.class);
     }
 
     /**
@@ -911,7 +871,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setWriteOnly(Boolean writeOnly) {
         incrementModCount();
-        setProperty(PROP_WRITE_ONLY, writeOnly, BOOLEAN_CONVERTER);
+        setProperty(PROP_WRITE_ONLY, writeOnly);
     }
 
     /**
@@ -919,7 +879,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Object getExample() {
-        return getProperty(PROP_EXAMPLE, OBJECT_CONVERTER);
+        return getProperty(PROP_EXAMPLE, Object.class);
     }
 
     /**
@@ -928,7 +888,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setExample(Object example) {
         incrementModCount();
-        setProperty(PROP_EXAMPLE, example, OBJECT_CONVERTER);
+        setProperty(PROP_EXAMPLE, example);
     }
 
     /**
@@ -936,7 +896,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public ExternalDocumentation getExternalDocs() {
-        return getProperty(ExternalDocsConstant.PROP_EXTERNAL_DOCS, EXTERNAL_DOCUMENTATION_CONVERTER);
+        return getProperty(ExternalDocsConstant.PROP_EXTERNAL_DOCS, ExternalDocumentation.class);
     }
 
     /**
@@ -945,7 +905,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setExternalDocs(ExternalDocumentation externalDocs) {
         incrementModCount();
-        setProperty(ExternalDocsConstant.PROP_EXTERNAL_DOCS, externalDocs, EXTERNAL_DOCUMENTATION_CONVERTER);
+        setProperty(ExternalDocsConstant.PROP_EXTERNAL_DOCS, externalDocs);
     }
 
     /**
@@ -953,7 +913,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Boolean getDeprecated() {
-        return getProperty(PROP_DEPRECATED, BOOLEAN_CONVERTER);
+        return getProperty(PROP_DEPRECATED, Boolean.class);
     }
 
     /**
@@ -962,7 +922,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setDeprecated(Boolean deprecated) {
         incrementModCount();
-        setProperty(PROP_DEPRECATED, deprecated, BOOLEAN_CONVERTER);
+        setProperty(PROP_DEPRECATED, deprecated);
     }
 
     /**
@@ -970,7 +930,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public XML getXml() {
-        return getProperty(PROP_XML, XML_CONVERTER);
+        return getProperty(PROP_XML, XML.class);
     }
 
     /**
@@ -979,7 +939,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setXml(XML xml) {
         incrementModCount();
-        setProperty(PROP_XML, xml, XML_CONVERTER);
+        setProperty(PROP_XML, xml);
     }
 
     /**
@@ -987,7 +947,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public Schema getItems() {
-        return getProperty(PROP_ITEMS, SCHEMA_CONVERTER);
+        return getProperty(PROP_ITEMS, Schema.class);
     }
 
     /**
@@ -996,7 +956,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setItems(Schema items) {
         incrementModCount();
-        setProperty(PROP_ITEMS, items, SCHEMA_CONVERTER);
+        setProperty(PROP_ITEMS, items);
     }
 
     /**
@@ -1004,7 +964,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public List<Schema> getAllOf() {
-        return getListProperty(PROP_ALL_OF, SCHEMA_CONVERTER);
+        return getListProperty(PROP_ALL_OF);
     }
 
     /**
@@ -1013,7 +973,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setAllOf(List<Schema> allOf) {
         incrementModCount();
-        setListProperty(PROP_ALL_OF, allOf, SCHEMA_CONVERTER);
+        setListProperty(PROP_ALL_OF, allOf);
     }
 
     /**
@@ -1022,7 +982,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public Schema addAllOf(Schema allOf) {
         incrementModCount();
-        addToListProperty(PROP_ALL_OF, allOf, SCHEMA_CONVERTER);
+        addToListProperty(PROP_ALL_OF, allOf);
         return this;
     }
 
@@ -1032,7 +992,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void removeAllOf(Schema allOf) {
         incrementModCount();
-        removeFromListProperty(PROP_ALL_OF, allOf, SCHEMA_CONVERTER);
+        removeFromListProperty(PROP_ALL_OF, allOf);
     }
 
     /**
@@ -1040,7 +1000,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public List<Schema> getAnyOf() {
-        return getListProperty(PROP_ANY_OF, SCHEMA_CONVERTER);
+        return getListProperty(PROP_ANY_OF);
     }
 
     /**
@@ -1049,7 +1009,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setAnyOf(List<Schema> anyOf) {
         incrementModCount();
-        setListProperty(PROP_ANY_OF, anyOf, SCHEMA_CONVERTER);
+        setListProperty(PROP_ANY_OF, anyOf);
     }
 
     /**
@@ -1058,7 +1018,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public Schema addAnyOf(Schema anyOf) {
         incrementModCount();
-        addToListProperty(PROP_ANY_OF, anyOf, SCHEMA_CONVERTER);
+        addToListProperty(PROP_ANY_OF, anyOf);
         return this;
     }
 
@@ -1068,7 +1028,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void removeAnyOf(Schema anyOf) {
         incrementModCount();
-        removeFromListProperty(PROP_ANY_OF, anyOf, SCHEMA_CONVERTER);
+        removeFromListProperty(PROP_ANY_OF, anyOf);
     }
 
     /**
@@ -1076,7 +1036,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      */
     @Override
     public List<Schema> getOneOf() {
-        return getListProperty(PROP_ONE_OF, SCHEMA_CONVERTER);
+        return getListProperty(PROP_ONE_OF);
     }
 
     /**
@@ -1085,7 +1045,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setOneOf(List<Schema> oneOf) {
         incrementModCount();
-        setListProperty(PROP_ONE_OF, oneOf, SCHEMA_CONVERTER);
+        setListProperty(PROP_ONE_OF, oneOf);
     }
 
     /**
@@ -1094,7 +1054,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public Schema addOneOf(Schema oneOf) {
         incrementModCount();
-        addToListProperty(PROP_ONE_OF, oneOf, SCHEMA_CONVERTER);
+        addToListProperty(PROP_ONE_OF, oneOf);
         return this;
     }
 
@@ -1104,101 +1064,110 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void removeOneOf(Schema oneOf) {
         incrementModCount();
-        removeFromListProperty(PROP_ONE_OF, oneOf, SCHEMA_CONVERTER);
+        removeFromListProperty(PROP_ONE_OF, oneOf);
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public Map<String, Object> getExtensions() {
-        return (Map<String, Object>) OBJECT_CONVERTER.fromNode(node);
+        Map<String, Object> extensions = new HashMap<>();
+        data.forEach((k, v) -> {
+            if (k.startsWith("x-")) {
+                extensions.put(k, v);
+            }
+        });
+        return extensions;
     }
 
     @Override
     public Schema addExtension(String name, Object value) {
-        setProperty(name, value, OBJECT_CONVERTER);
+        setProperty(name, value);
         return this;
     }
 
     @Override
     public void removeExtension(String name) {
-        node.remove(name);
+        removeProperty(name);
     }
 
     @Override
     public void setExtensions(Map<String, Object> extensions) {
-        if (extensions == null) {
-            return;
-        }
-        for (Entry<String, Object> entry : extensions.entrySet()) {
-            if (entry.getKey() != null) {
-                setProperty(entry.getKey(), entry.getValue(), OBJECT_CONVERTER);
-            }
+        assertObjectSchema();
+        
+        // Remove all extension fields
+        data.keySet().removeIf(k -> k.startsWith("x-"));
+        
+        // Add all the new extensions
+        if (extensions != null) {
+            extensions.forEach((k, v) -> {
+                k = k.startsWith("x-") ? k : "x-" + k;
+                setProperty(k, v);
+            });
         }
     }
 
     @Override
     public String getSchemaDialect() {
-        return getProperty(PROP_SCHEMA_DIALECT, STRING_CONVERTER);
+        return getProperty(PROP_SCHEMA_DIALECT, String.class);
     }
 
     @Override
     public void setSchemaDialect(String schemaDialect) {
-        setProperty(PROP_SCHEMA_DIALECT, schemaDialect, STRING_CONVERTER);
+        setProperty(PROP_SCHEMA_DIALECT, schemaDialect);
     }
 
     @Override
     public String getComment() {
-        return getProperty(PROP_COMMENT, STRING_CONVERTER);
+        return getProperty(PROP_COMMENT, String.class);
     }
 
     @Override
     public void setComment(String comment) {
-        setProperty(PROP_COMMENT, comment, STRING_CONVERTER);
+        setProperty(PROP_COMMENT, comment);
     }
 
     @Override
     public Schema getIfSchema() {
-        return getProperty(PROP_IF, SCHEMA_CONVERTER);
+        return getProperty(PROP_IF, Schema.class);
     }
 
     @Override
     public void setIfSchema(Schema ifSchema) {
-        setProperty(PROP_IF, ifSchema, SCHEMA_CONVERTER);
+        setProperty(PROP_IF, ifSchema);
     }
 
     @Override
     public Schema getThenSchema() {
-        return getProperty(PROP_THEN, SCHEMA_CONVERTER);
+        return getProperty(PROP_THEN, Schema.class);
     }
 
     @Override
     public void setThenSchema(Schema thenSchema) {
-        setProperty(PROP_THEN, thenSchema, SCHEMA_CONVERTER);
+        setProperty(PROP_THEN, thenSchema);
     }
 
     @Override
     public Schema getElseSchema() {
-        return getProperty(PROP_ELSE, SCHEMA_CONVERTER);
+        return getProperty(PROP_ELSE, Schema.class);
     }
 
     @Override
     public void setElseSchema(Schema elseSchema) {
-        setProperty(PROP_ELSE, elseSchema, SCHEMA_CONVERTER);
+        setProperty(PROP_ELSE, elseSchema);
     }
 
     @Override
     public Map<String, Schema> getDependentSchemas() {
-        return getMapProperty(PROP_DEPENDENT_SCHEMAS, SCHEMA_CONVERTER);
+        return getMapProperty(PROP_DEPENDENT_SCHEMAS);
     }
 
     @Override
     public void setDependentSchemas(Map<String, Schema> dependentSchemas) {
-        setMapProperty(PROP_DEPENDENT_SCHEMAS, dependentSchemas, SCHEMA_CONVERTER);
+        setMapProperty(PROP_DEPENDENT_SCHEMAS, dependentSchemas);
     }
 
     @Override
     public Schema addDependentSchema(String propertyName, Schema schema) {
-        addToMapProperty(PROP_DEPENDENT_SCHEMAS, propertyName, schema, SCHEMA_CONVERTER);
+        addToMapProperty(PROP_DEPENDENT_SCHEMAS, propertyName, schema);
         return this;
     }
 
@@ -1209,48 +1178,48 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     @Override
     public List<Schema> getPrefixItems() {
-        return getListProperty(PROP_PREFIX_ITEMS, SCHEMA_CONVERTER);
+        return getListProperty(PROP_PREFIX_ITEMS);
     }
 
     @Override
     public void setPrefixItems(List<Schema> prefixItems) {
-        setListProperty(PROP_PREFIX_ITEMS, prefixItems, SCHEMA_CONVERTER);
+        setListProperty(PROP_PREFIX_ITEMS, prefixItems);
     }
 
     @Override
     public Schema addPrefixItem(Schema prefixItem) {
-        addToListProperty(PROP_PREFIX_ITEMS, prefixItem, SCHEMA_CONVERTER);
+        addToListProperty(PROP_PREFIX_ITEMS, prefixItem);
         return this;
     }
 
     @Override
     public void removePrefixItem(Schema prefixItem) {
-        removeFromListProperty(PROP_PREFIX_ITEMS, prefixItem, SCHEMA_CONVERTER);
+        removeFromListProperty(PROP_PREFIX_ITEMS, prefixItem);
     }
 
     @Override
     public Schema getContains() {
-        return getProperty(PROP_CONTAINS, SCHEMA_CONVERTER);
+        return getProperty(PROP_CONTAINS, Schema.class);
     }
 
     @Override
     public void setContains(Schema contains) {
-        setProperty(PROP_CONTAINS, contains, SCHEMA_CONVERTER);
+        setProperty(PROP_CONTAINS, contains);
     }
 
     @Override
     public Map<String, Schema> getPatternProperties() {
-        return getMapProperty(PROP_PATTERN_PROPERTIES, SCHEMA_CONVERTER);
+        return getMapProperty(PROP_PATTERN_PROPERTIES);
     }
 
     @Override
     public void setPatternProperties(Map<String, Schema> patternProperties) {
-        setMapProperty(PROP_PATTERN_PROPERTIES, patternProperties, SCHEMA_CONVERTER);
+        setMapProperty(PROP_PATTERN_PROPERTIES, patternProperties);
     }
 
     @Override
     public Schema addPatternProperty(String regularExpression, Schema schema) {
-        addToMapProperty(PROP_PATTERN_PROPERTIES, regularExpression, schema, SCHEMA_CONVERTER);
+        addToMapProperty(PROP_PATTERN_PROPERTIES, regularExpression, schema);
         return this;
     }
 
@@ -1261,77 +1230,77 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     @Override
     public Schema getPropertyNames() {
-        return getProperty(PROP_PROPERTY_NAMES, SCHEMA_CONVERTER);
+        return getProperty(PROP_PROPERTY_NAMES, Schema.class);
     }
 
     @Override
     public void setPropertyNames(Schema propertyNameSchema) {
-        setProperty(PROP_PROPERTY_NAMES, propertyNameSchema, SCHEMA_CONVERTER);
+        setProperty(PROP_PROPERTY_NAMES, propertyNameSchema);
     }
 
     @Override
     public Schema getUnevaluatedItems() {
-        return getProperty(PROP_UNEVALUATED_ITEMS, SCHEMA_CONVERTER);
+        return getProperty(PROP_UNEVALUATED_ITEMS, Schema.class);
     }
 
     @Override
     public void setUnevaluatedItems(Schema unevaluatedItems) {
-        setProperty(PROP_UNEVALUATED_ITEMS, unevaluatedItems, SCHEMA_CONVERTER);
+        setProperty(PROP_UNEVALUATED_ITEMS, unevaluatedItems);
     }
 
     @Override
     public Schema getUnevaluatedProperties() {
-        return getProperty(PROP_UNEVALUATED_PROPERTIES, SCHEMA_CONVERTER);
+        return getProperty(PROP_UNEVALUATED_PROPERTIES, Schema.class);
     }
 
     @Override
     public void setUnevaluatedProperties(Schema unevaluatedProperties) {
-        setProperty(PROP_UNEVALUATED_PROPERTIES, unevaluatedProperties, SCHEMA_CONVERTER);
+        setProperty(PROP_UNEVALUATED_PROPERTIES, unevaluatedProperties);
     }
 
     @Override
     public Object getConstValue() {
-        return getProperty(PROP_CONST, OBJECT_CONVERTER);
+        return getProperty(PROP_CONST, Object.class);
     }
 
     @Override
     public void setConstValue(Object constValue) {
-        setProperty(PROP_CONST, constValue, OBJECT_CONVERTER);
+        setProperty(PROP_CONST, constValue);
     }
 
     @Override
     public Integer getMaxContains() {
-        return getProperty(PROP_MAX_CONTAINS, INT_CONVERTER);
+        return getProperty(PROP_MAX_CONTAINS, Integer.class);
     }
 
     @Override
     public void setMaxContains(Integer maxContains) {
-        setProperty(PROP_MAX_CONTAINS, maxContains, INT_CONVERTER);
+        setProperty(PROP_MAX_CONTAINS, maxContains);
     }
 
     @Override
     public Integer getMinContains() {
-        return getProperty(PROP_MIN_CONTAINS, INT_CONVERTER);
+        return getProperty(PROP_MIN_CONTAINS, Integer.class);
     }
 
     @Override
     public void setMinContains(Integer minContains) {
-        setProperty(PROP_MIN_CONTAINS, minContains, INT_CONVERTER);
+        setProperty(PROP_MIN_CONTAINS, minContains);
     }
 
     @Override
     public Map<String, List<String>> getDependentRequired() {
-        return getMapProperty(PROP_DEPENDENT_REQUIRED, LIST_OF_STRING_CONVERTER);
+        return getMapProperty(PROP_DEPENDENT_REQUIRED);
     }
 
     @Override
     public void setDependentRequired(Map<String, List<String>> dependentRequired) {
-        setMapProperty(PROP_DEPENDENT_REQUIRED, dependentRequired, LIST_OF_STRING_CONVERTER);
+        setMapProperty(PROP_DEPENDENT_REQUIRED, dependentRequired);
     }
 
     @Override
     public Schema addDependentRequired(String propertyName, List<String> additionalRequiredPropertyNames) {
-        addToMapProperty(PROP_DEPENDENT_REQUIRED, propertyName, additionalRequiredPropertyNames, LIST_OF_STRING_CONVERTER);
+        addToMapProperty(PROP_DEPENDENT_REQUIRED, propertyName, additionalRequiredPropertyNames);
         return this;
     }
 
@@ -1342,32 +1311,32 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     @Override
     public String getContentEncoding() {
-        return getProperty(PROP_CONTENT_ENCODING, STRING_CONVERTER);
+        return getProperty(PROP_CONTENT_ENCODING, String.class);
     }
 
     @Override
     public void setContentEncoding(String contentEncoding) {
-        setProperty(PROP_CONTENT_ENCODING, contentEncoding, STRING_CONVERTER);
+        setProperty(PROP_CONTENT_ENCODING, contentEncoding);
     }
 
     @Override
     public String getContentMediaType() {
-        return getProperty(PROP_CONTENT_MEDIA_TYPE, STRING_CONVERTER);
+        return getProperty(PROP_CONTENT_MEDIA_TYPE, String.class);
     }
 
     @Override
     public void setContentMediaType(String contentMediaType) {
-        setProperty(PROP_CONTENT_MEDIA_TYPE, contentMediaType, STRING_CONVERTER);
+        setProperty(PROP_CONTENT_MEDIA_TYPE, contentMediaType);
     }
 
     @Override
     public Schema getContentSchema() {
-        return getProperty(PROP_CONTENT_SCHEMA, SCHEMA_CONVERTER);
+        return getProperty(PROP_CONTENT_SCHEMA, Schema.class);
     }
 
     @Override
     public void setContentSchema(Schema contentSchema) {
-        setProperty(PROP_CONTENT_SCHEMA, contentSchema, SCHEMA_CONVERTER);
+        setProperty(PROP_CONTENT_SCHEMA, contentSchema);
     }
 
     @Override
@@ -1383,23 +1352,23 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     @Override
     public List<Object> getExamples() {
-        return getListProperty(PROP_EXAMPLES, OBJECT_CONVERTER);
+        return getListProperty(PROP_EXAMPLES);
     }
 
     @Override
     public void setExamples(List<Object> examples) {
-        setListProperty(PROP_EXAMPLES, examples, OBJECT_CONVERTER);
+        setListProperty(PROP_EXAMPLES, examples);
     }
 
     @Override
     public Schema addExample(Object example) {
-        addToListProperty(PROP_EXAMPLES, example, OBJECT_CONVERTER);
+        addToListProperty(PROP_EXAMPLES, example);
         return this;
     }
 
     @Override
     public void removeExample(Object example) {
-        removeFromListProperty(PROP_EXAMPLES, example, OBJECT_CONVERTER);
+        removeFromListProperty(PROP_EXAMPLES, example);
     }
 
     private boolean isBooleanSchema() {
@@ -1418,64 +1387,64 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     }
 
     @Override
-    protected <T> void setProperty(String propertyName, T value, JsonWriter<T> writer) {
+    protected <T> void setProperty(String propertyName, T value) {
         assertObjectSchema();
-        super.setProperty(propertyName, value, writer);
+        super.setProperty(propertyName, value);
     }
 
     @Override
-    protected <T> T getProperty(String propertyName, JsonReader<T> reader) {
+    protected <T> T getProperty(String propertyName, Class<T> clazz) {
         if (isBooleanSchema()) {
             return null;
         }
-        return super.getProperty(propertyName, reader);
+        return super.getProperty(propertyName, clazz);
     }
 
     @Override
-    protected <T> List<T> getListProperty(String propertyName, JsonReader<T> reader) {
+    protected <T> List<T> getListProperty(String propertyName) {
         if (isBooleanSchema()) {
             return null;
         }
-        return super.getListProperty(propertyName, reader);
+        return super.getListProperty(propertyName);
     }
 
     @Override
-    protected <T> void setListProperty(String propertyName, List<T> value, JsonWriter<T> writer) {
+    protected <T> void setListProperty(String propertyName, List<T> value) {
         assertObjectSchema();
-        super.setListProperty(propertyName, value, writer);
+        super.setListProperty(propertyName, value);
     }
 
     @Override
-    protected <T> void addToListProperty(String propertyName, T value, JsonWriter<T> writer) {
+    protected <T> void addToListProperty(String propertyName, T value) {
         assertObjectSchema();
-        super.addToListProperty(propertyName, value, writer);
+        super.addToListProperty(propertyName, value);
     }
 
     @Override
-    protected <T> void removeFromListProperty(String propertyName, T toRemove, JsonReader<T> reader) {
+    protected <T> void removeFromListProperty(String propertyName, T toRemove) {
         if (!isBooleanSchema()) {
-            super.removeFromListProperty(propertyName, toRemove, reader);
+            super.removeFromListProperty(propertyName, toRemove);
         }
     }
 
     @Override
-    protected <T> void setMapProperty(String propertyName, Map<String, T> value, JsonWriter<T> writer) {
+    protected <T> void setMapProperty(String propertyName, Map<String, T> value) {
         assertObjectSchema();
-        super.setMapProperty(propertyName, value, writer);
+        super.setMapProperty(propertyName, value);
     }
 
     @Override
-    protected <T> Map<String, T> getMapProperty(String propertyName, JsonReader<T> reader) {
+    protected <T> Map<String, T> getMapProperty(String propertyName) {
         if (isBooleanSchema()) {
             return null;
         }
-        return super.getMapProperty(propertyName, reader);
+        return super.getMapProperty(propertyName);
     }
 
     @Override
-    protected <T> void addToMapProperty(String propertyName, String key, T value, JsonWriter<T> writer) {
+    protected <T> void addToMapProperty(String propertyName, String key, T value) {
         assertObjectSchema();
-        super.addToMapProperty(propertyName, key, value, writer);
+        super.addToMapProperty(propertyName, key, value);
     }
 
     @Override
@@ -1484,132 +1453,5 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
             super.removeFromMapProperty(propertyName, key);
         }
     }
-
-    //    @Override
-    //    public int hashCode() {
-    //        final int prime = 31;
-    //        int result = super.hashCode();
-    //        result = prime * result + Objects.hash(booleanValue, modCount, name, typeObservers);
-    //        return result;
-    //    }
-    //
-    //    @Override
-    //    public boolean equals(Object obj) {
-    //        if (this == obj)
-    //            return true;
-    //        if (!super.equals(obj))
-    //            return false;
-    //        if (getClass() != obj.getClass())
-    //            return false;
-    //        SchemaImpl other = (SchemaImpl) obj;
-    //        return Objects.equals(booleanValue, other.booleanValue) && modCount == other.modCount
-    //                && Objects.equals(name, other.name)
-    //                && Objects.equals(typeObservers, other.typeObservers);
-    //    }
-
-    protected static final JsonConverter<SchemaType> SCHEMA_TYPE_CONVERTER = new JsonConverter<SchemaType>() {
-
-        @Override
-        public JsonNode toNode(SchemaType value) {
-            return STRING_CONVERTER.toNode(value.toString());
-        }
-
-        @Override
-        public SchemaType fromNode(JsonNode node) {
-            if (!node.isTextual())
-                return null;
-            return SchemaType.valueOf(node.textValue().toUpperCase(Locale.ROOT));
-        }
-    };
-
-    protected static final JsonConverter<Schema> SCHEMA_CONVERTER = new JsonConverter<Schema>() {
-
-        @Override
-        public JsonNode toNode(Schema value) {
-            if (value instanceof SchemaImpl) {
-                Boolean booleanValue = value.getBooleanSchema();
-                if (booleanValue != null) {
-                    return JsonNodeFactory.instance.booleanNode(booleanValue);
-                } else {
-                    return ((SchemaImpl) value).node;
-                }
-            }
-            return null;
-        }
-
-        @Override
-        public Schema fromNode(JsonNode node) {
-            if (node.isObject()) {
-                return getOrCreateFromNode((ObjectNode) node);
-            } else if (node.isBoolean()) {
-                return SchemaImpl.ofBoolean(node.booleanValue());
-            }
-            return null;
-        }
-    };
-
-    protected static final JsonConverter<ExternalDocumentation> EXTERNAL_DOCUMENTATION_CONVERTER = new JsonConverter<ExternalDocumentation>() {
-
-        @Override
-        public JsonNode toNode(ExternalDocumentation value) {
-            return ExternalDocsWriter.createExternalDocumentationNode(JsonNodeFactory.instance, value);
-        }
-
-        @Override
-        public ExternalDocumentation fromNode(JsonNode node) {
-            return ExternalDocsReader.readExternalDocs(node);
-        }
-    };
-
-    protected static final JsonConverter<XML> XML_CONVERTER = new JsonConverter<XML>() {
-
-        @Override
-        public JsonNode toNode(XML value) {
-            return XmlWriter.createXMLNode(JsonNodeFactory.instance, value);
-        }
-
-        @Override
-        public XML fromNode(JsonNode node) {
-            return XmlReader.readXML(node);
-        }
-    };
-
-    protected static final JsonConverter<Discriminator> DISCRIMINATOR_CONVERTER = new JsonConverter<Discriminator>() {
-
-        @Override
-        public JsonNode toNode(Discriminator value) {
-            return DiscriminatorWriter.convertDiscriminatorToNode(JsonNodeFactory.instance, value);
-        }
-
-        @Override
-        public Discriminator fromNode(JsonNode node) {
-            return DiscriminatorReader.readDiscriminator(node);
-        }
-    };
-
-    // We could do this generically, but we only have one case where we need this
-    protected static final JsonConverter<List<String>> LIST_OF_STRING_CONVERTER = new JsonConverter<List<String>>() {
-
-        @Override
-        public JsonNode toNode(List<String> value) {
-            ArrayNode node = JsonNodeFactory.instance.arrayNode();
-            for (String item : value) {
-                node.add(item);
-            }
-            return node;
-        }
-
-        @Override
-        public List<String> fromNode(JsonNode node) {
-            if (!node.isArray()) {
-                return null;
-            }
-            ArrayList<String> result = new ArrayList<String>(node.size());
-            for (JsonNode item : node) {
-                result.add(STRING_CONVERTER.fromNode(item));
-            }
-            return result;
-        }
-    };
 
 }

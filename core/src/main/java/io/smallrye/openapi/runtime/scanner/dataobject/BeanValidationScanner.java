@@ -3,6 +3,7 @@ package io.smallrye.openapi.runtime.scanner.dataobject;
 import static org.jboss.jandex.DotName.createComponentized;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -173,7 +174,7 @@ public class BeanValidationScanner {
             return;
         }
 
-        for (SchemaType schemaType : schemaTypes) {
+        for (SchemaType schemaType : new ArrayList<>(schemaTypes)) {
             switch (schemaType) {
                 case ARRAY:
                     applyArrayConstraints(target, schema, propertyKey, handler);
