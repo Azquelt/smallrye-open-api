@@ -4,6 +4,7 @@ import static io.smallrye.openapi.runtime.io.schema.DataType.listOf;
 import static io.smallrye.openapi.runtime.io.schema.DataType.mapOf;
 import static io.smallrye.openapi.runtime.io.schema.DataType.type;
 import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROPERTIES_DATA_TYPES;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_NAME;
 import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_TYPE;
 
 import java.math.BigDecimal;
@@ -18,7 +19,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-import org.eclipse.microprofile.openapi.annotations.enums.SchemaType;
 import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
 import org.eclipse.microprofile.openapi.models.media.Schema;
@@ -98,7 +98,8 @@ public class SchemaReader {
         if (node == null) {
             return null;
         } else if (node.isObject()) {
-            SchemaImpl schema = new SchemaImpl();
+            String name = getName(node);
+            SchemaImpl schema = new SchemaImpl(name);
             String dialect = JsonUtil.stringProperty(node, SchemaConstant.PROP_SCHEMA_DIALECT);
             if (dialect == null || dialect.equals(SchemaConstant.DIALECT_OAS31)
                     || dialect.equals(SchemaConstant.DIALECT_JSON_2020_12)) {
@@ -114,6 +115,15 @@ public class SchemaReader {
         }
     }
 
+    private static String getName(JsonNode node) {
+        JsonNode nameNode = node.get(PROP_NAME);
+        if (nameNode != null && nameNode.isTextual()) {
+            String result = nameNode.asText();
+            return result;
+        }
+        return null;
+    }
+
     private static void populateSchemaObject(SchemaImpl schema, ObjectNode node) {
 
         Map<String, Object> dataMap = schema.getDataMap();
@@ -121,12 +131,12 @@ public class SchemaReader {
         // Special handling for type since it can be an array or a string and we want to convert
         JsonNode typeNode = node.get(PROP_TYPE);
         if (typeNode != null) {
-            if (node.isTextual()) {
-                ArrayList<String> typeList = new ArrayList<>();
-                typeList.add(typeNode.textValue());
+            if (typeNode.isTextual()) {
+                ArrayList<Object> typeList = new ArrayList<>();
+                typeList.add(readJson(typeNode, type(Schema.SchemaType.class)));
                 dataMap.put(PROP_TYPE, typeList);
             } else {
-                dataMap.put(PROP_TYPE, readJson(typeNode, listOf(type(SchemaType.class))));
+                dataMap.put(PROP_TYPE, readJson(typeNode, listOf(type(Schema.SchemaType.class))));
             }
         }
 
@@ -145,7 +155,7 @@ public class SchemaReader {
             Entry<String, JsonNode> entry = i.next();
             String name = entry.getKey();
             JsonNode fieldNode = entry.getValue();
-            if (!PROPERTIES_DATA_TYPES.containsKey(name) && !name.equals(PROP_TYPE)) {
+            if (!PROPERTIES_DATA_TYPES.containsKey(name) && !name.equals(PROP_TYPE) && !name.equals(PROP_NAME)) {
                 dataMap.put(name, readJson(fieldNode));
             }
         }
