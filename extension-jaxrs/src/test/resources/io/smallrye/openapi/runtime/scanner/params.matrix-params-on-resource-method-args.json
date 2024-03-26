@@ -8,7 +8,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": ["string"],
+            "type": "string",
             "maxLength": 10
           }
         }
@@ -22,14 +22,14 @@
             "explode": true,
             "required": true,
             "schema": {
-              "type": ["object"],
+              "type": "object",
               "properties": {
                 "m1": {
-                  "type": ["string"],
+                  "type": "string",
                   "default": "default-m1"
                 },
                 "m2": {
-                  "type": ["string"],
+                  "type": "string",
                   "minLength": 20
                 }
               }
@@ -54,13 +54,13 @@
   "components": {
     "schemas": {
       "Widget": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "id": {
-            "type": ["string"]
+            "type": "string"
           },
           "name": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

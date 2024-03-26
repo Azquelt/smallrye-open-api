@@ -8,14 +8,14 @@
             "name": "qc1",
             "in": "query",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           },
           {
             "name": "hi1",
             "in": "header",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -33,21 +33,21 @@
             "name": "qc1",
             "in": "query",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           },
           {
             "name": "hi1",
             "in": "header",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           },
           {
             "name": "cc1",
             "in": "cookie",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -64,16 +64,16 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": ["object"],
+                "type": "object",
                 "properties": {
                   "token": {
-                    "type": ["string"]
+                    "type": "string"
                   },
                   "os": {
-                    "type": ["string"]
+                    "type": "string"
                   },
                   "icon": {
-                    "type": ["string"],
+                    "type": "string",
                     "format": "binary"
                   }
                 }
@@ -94,16 +94,16 @@
           "content": {
             "multipart/form-data": {
               "schema": {
-                "type": ["object"],
+                "type": "object",
                 "properties": {
                   "token": {
-                    "type": ["string"]
+                    "type": "string"
                   },
                   "os": {
-                    "type": ["string"]
+                    "type": "string"
                   },
                   "icon": {
-                    "type": ["string"],
+                    "type": "string",
                     "format": "binary"
                   }
                 }

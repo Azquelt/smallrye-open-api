@@ -3,11 +3,11 @@
   "components" : {
     "schemas" : {
       "AnyOfMissing" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "test" : {
             "anyOf" : [ {
-              "type" : ["object"]
+              "type" : "object"
             } ]
           }
         }

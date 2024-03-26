@@ -4,11 +4,11 @@
     "schemas": {
       "SingleAnnotatedConstructorArgument": {
         "description": "Data structure with a single property",
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "property1": {
             "description": "The single property",
-            "type": ["string"],
+            "type": "string",
             "example": "some value"
           }
         }

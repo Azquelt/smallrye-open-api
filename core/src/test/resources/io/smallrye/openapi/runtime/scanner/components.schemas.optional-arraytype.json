@@ -3,14 +3,14 @@
   "components": {
     "schemas": {
       "A": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "arrayOfOptionalB": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               "anyOf": [
                 {
-                  "type": ["null"]
+                  "type": "null"
                 },
                 {
                   "$ref": "#/components/schemas/B"
@@ -22,17 +22,17 @@
             "$ref": "#/components/schemas/UUID"
           },
           "listOfB": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/B"
             }
           },
           "listOfOptionalB": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               "anyOf": [
                 {
-                  "type": ["null"]
+                  "type": "null"
                 },
                 {
                   "$ref": "#/components/schemas/B"
@@ -58,14 +58,14 @@
                 "$ref": "#/components/schemas/B"
               },
               {
-                "type": ["null"]
+                "type": "null"
               }
             ]
           }
         }
       },
       "B": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "id": {
             "$ref": "#/components/schemas/UUID"
@@ -75,7 +75,7 @@
       "UUID": {
         "format": "uuid",
         "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-        "type": ["string"]
+        "type": "string"
       }
     }
   }

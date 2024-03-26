@@ -13,7 +13,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           },
           {
@@ -21,7 +21,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           },
           {
@@ -34,7 +34,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }
@@ -51,7 +51,7 @@
             "style": "simple",
             "required": true,
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           },
           {
@@ -64,7 +64,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }

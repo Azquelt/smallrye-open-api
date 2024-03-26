@@ -3,10 +3,10 @@
   "components" : {
     "schemas" : {
       "MinimumNotNumber" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "test" : {
-            "type" : ["integer"]
+            "type" : "integer"
           }
         }
       }

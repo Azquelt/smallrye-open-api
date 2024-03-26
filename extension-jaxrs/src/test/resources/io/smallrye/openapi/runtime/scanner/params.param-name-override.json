@@ -9,13 +9,13 @@
           "content": {
             "application/json": {
               "schema": {
-                "type": ["object"],
+                "type": "object",
                 "description": "A JSON query parameter"
               }
             },
             "text/plain": {
               "schema": {
-                "type": ["string"],
+                "type": "string",
                 "description": "A plain text query parameter"
               }
             }
@@ -27,7 +27,7 @@
           "content": {
             "*/*": {
               "schema": {
-                "type": ["string"]
+                "type": "string"
               }
             }
           }
@@ -38,7 +38,7 @@
           "content": {
             "text/plain": {
               "schema": {
-                "type": ["string"]
+                "type": "string"
               }
             }
           }
@@ -53,7 +53,7 @@
             "description": "The name 'Path1' will not be used instead of 'p1'",
             "style": "simple",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -63,7 +63,7 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }

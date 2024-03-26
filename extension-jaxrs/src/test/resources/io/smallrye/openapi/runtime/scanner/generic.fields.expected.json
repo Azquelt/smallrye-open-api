@@ -2,52 +2,52 @@
   "components" : {
     "schemas" : {
       "test.io.smallrye.openapi.runtime.scanner.entities.GenericTypeTestContainer" : {
-        "type": ["object"],
+        "type": "object",
         "properties" : {
           "arrayListOfV" : {
-            "type" : ["array"],
+            "type" : "array",
             "items" : {
               "format" : "date-time",
-              "type" : ["string"],
+              "type" : "string",
               "example": "2022-03-10T12:15:50"
             }
           },
           "genericFieldK" : {
             "format" : "date-time",
-            "type" : ["string"],
+            "type" : "string",
             "example": "2022-03-10T12:15:50"
           },
           "mapOfKToFoo" : {
-            "type" : ["object"],
+            "type" : "object",
             "additionalProperties" : {
-              "type" : ["object"],
+              "type" : "object",
               "properties" : {
                 "theQ" : {
-                  "type" : ["string"]
+                  "type" : "string"
                 },
                 "theT" : {
-                  "type" : ["object"],
+                  "type" : "object",
                   "properties" : {
                     "hellofrombazzy" : {
-                      "type" : ["string"]
+                      "type" : "string"
                     },
                     "an_integer_value" : {
                       "format" : "int32",
-                      "type" : ["integer"]
+                      "type" : "integer"
                     }
                   }
                 },
                 "ultimateTShouldBeQ" : {
-                  "type" : ["string"]
+                  "type" : "string"
                 }
               }
             }
           },
           "mapOfKV" : {
-            "type" : ["object"],
+            "type" : "object",
             "additionalProperties" : {
               "format" : "date-time",
-              "type" : ["string"],
+              "type" : "string",
               "example": "2022-03-10T12:15:50"
             }
           }

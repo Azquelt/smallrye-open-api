@@ -23,21 +23,21 @@
   "components": {
     "schemas": {
       "GreetingMessage": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "message": {
-            "type": ["string"],
+            "type": "string",
             "description": "Used to send a message",
             "$ref": "#/components/schemas/SimpleString"
           },
           "optionalMessage": {
-            "type": ["string"],
+            "type": "string",
             "description": "Simply a string"
           }
         }
       },
       "SimpleString": {
-        "type": ["string"],
+        "type": "string",
         "title": "A Simple String"
       }
     }

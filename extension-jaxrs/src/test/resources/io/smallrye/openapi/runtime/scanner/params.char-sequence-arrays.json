@@ -8,13 +8,13 @@
             "name": "val",
             "in": "query",
             "schema": {
-              "type": ["array"],
+              "type": "array",
               "items": {
-                "type": ["array"],
+                "type": "array",
                 "items": {
-                  "type": ["array"],
+                  "type": "array",
                   "items": {
-                    "type": ["string"]
+                    "type": "string"
                   }
                 }
               }
@@ -39,28 +39,28 @@
   "components": {
     "schemas": {
       "EchoResult": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "resultWithSchema": {
-            "type": ["array"],
+            "type": "array",
             "items": {
-              "type": ["array"],
+              "type": "array",
               "items": {
-                "type": ["array"],
+                "type": "array",
                 "items": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }
           },
           "resultNoSchema": {
-            "type": ["array"],
+            "type": "array",
             "items": {
-              "type": ["array"],
+              "type": "array",
               "items": {
-                "type": ["array"],
+                "type": "array",
                 "items": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }

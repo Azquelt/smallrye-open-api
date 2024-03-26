@@ -8,7 +8,7 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : ["string"]
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -32,7 +32,7 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : ["string"]
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -56,7 +56,7 @@
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : ["string"]
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -77,28 +77,28 @@
   "components" : {
     "schemas" : {
       "Greeting" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "message" : {
-            "type" : ["string"]
+            "type" : "string"
           }
         }
       },
       "JaxbGreeting" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "message" : {
-            "type" : ["string"]
+            "type" : "string"
           }
         }
       },
       "JaxbWithNameGreeting" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "books" : {
-            "type" : ["array"],
+            "type" : "array",
             "items" : {
-              "type" : ["string"],
+              "type" : "string",
               "xml": {
                 "name": "item"
               }
@@ -109,13 +109,13 @@
             }
           },
           "message" : {
-            "type" : ["string"],
+            "type" : "string",
             "xml" : {
               "attribute" : true
             }
           },
           "title" : {
-            "type" : ["string"],
+            "type" : "string",
             "xml": {
               "name": "xml-title"
             }

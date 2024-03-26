@@ -3,10 +3,10 @@
   "components" : {
     "schemas" : {
       "DuplicateNameTest" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "foo" : {
-            "type" : ["integer"]
+            "type" : "integer"
           }
         }
       }

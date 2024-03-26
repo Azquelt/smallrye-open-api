@@ -9,7 +9,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "type" : ["string"]
+                  "type" : "string"
                 }
               }
             }
@@ -26,7 +26,7 @@
             "content" : {
               "*/*" : {
                 "schema" : {
-                  "type" : ["string"]
+                  "type" : "string"
                 }
               }
             }

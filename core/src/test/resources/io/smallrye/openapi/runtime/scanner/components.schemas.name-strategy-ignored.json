@@ -3,14 +3,14 @@
   "components": {
     "schemas": {
       "NameStrategyBean2": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "simpleString1": {
-            "type": ["string"]
+            "type": "string"
           },
           "anotherField": {
             "format": "int32",
-            "type": ["integer"]
+            "type": "integer"
           }
         }
       }

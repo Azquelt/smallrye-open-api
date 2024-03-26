@@ -10,7 +10,7 @@
             "required": true,
             "schema": {
               "pattern": "[0-9]{1,3}",
-              "type": ["string"]
+              "type": "string"
             }
           },
           {
@@ -19,7 +19,7 @@
             "required": true,
             "schema": {
               "format": "int32",
-              "type": ["integer"]
+              "type": "integer"
             }
           },
           {
@@ -28,7 +28,7 @@
             "required": true,
             "schema": {
               "pattern": "[A-Z]+",
-              "type": ["string"]
+              "type": "string"
             }
           },
           {
@@ -37,7 +37,7 @@
             "required": true,
             "schema": {
               "pattern": "[a-zA-Z]+",
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -47,7 +47,7 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }

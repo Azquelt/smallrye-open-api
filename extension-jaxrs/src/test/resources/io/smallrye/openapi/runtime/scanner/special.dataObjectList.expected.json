@@ -2,29 +2,29 @@
   "components" : {
     "schemas" : {
       "test.io.smallrye.openapi.runtime.scanner.entities.SpecialCaseTestContainer" : {
-        "type" : ["array"],
+        "type" : "array",
         "items" : {
           "required" : [ "cardNumber", "cardholderName", "cvv", "expiryDate", "issuer" ],
-          "type" : ["object"],
+          "type" : "object",
           "properties" : {
             "cardNumber" : {
-              "type" : ["string"],
+              "type" : "string",
               "example" : "**********1234"
             },
             "cardholderName" : {
-              "type" : ["string"],
+              "type" : "string",
               "example" : "Joe Smith"
             },
             "cvv" : {
-              "type" : ["string"],
+              "type" : "string",
               "example" : "0322"
             },
             "expiryDate" : {
-              "type" : ["string"],
+              "type" : "string",
               "example" : "04/19"
             },
             "issuer" : {
-              "type" : ["string"],
+              "type" : "string",
               "example" : "VISA"
             }
           },

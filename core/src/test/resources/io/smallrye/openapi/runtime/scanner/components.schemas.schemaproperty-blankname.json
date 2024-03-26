@@ -3,10 +3,10 @@
   "components" : {
     "schemas" : {
       "BlankNameTest" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "" : {
-            "type" : ["string"]
+            "type" : "string"
           }
         }
       }

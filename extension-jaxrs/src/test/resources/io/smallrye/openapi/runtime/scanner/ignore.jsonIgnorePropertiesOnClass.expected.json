@@ -2,13 +2,13 @@
   "components": {
     "schemas": {
       "test.io.smallrye.openapi.runtime.scanner.entities.IgnoreTestContainer": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "parentNamePresent": {
-            "type": ["string"]
+            "type": "string"
           },
           "shouldBePresent": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

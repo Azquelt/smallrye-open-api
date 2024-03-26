@@ -9,11 +9,11 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": ["object"],
+                  "type": "object",
                   "additionalProperties": {
                     "format": "uuid",
                     "pattern": "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}",
-                    "type": ["string"]
+                    "type": "string"
                   }
                 }
               }
@@ -29,7 +29,7 @@
             "name": "g1",
             "in": "query",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -38,7 +38,7 @@
             "application/json": {
               "schema": {
                 "format": "int32",
-                "type": ["integer"]
+                "type": "integer"
               }
             }
           }
@@ -50,7 +50,7 @@
               "application/json": {
                 "schema": {
                   "format": "int32",
-                  "type": ["integer"]
+                  "type": "integer"
                 }
               }
             }
@@ -65,7 +65,7 @@
             "name": "q1",
             "in": "query",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -76,7 +76,7 @@
               "*/*": {
                 "schema": {
                   "format": "int32",
-                  "type": ["integer"]
+                  "type": "integer"
                 }
               }
             }

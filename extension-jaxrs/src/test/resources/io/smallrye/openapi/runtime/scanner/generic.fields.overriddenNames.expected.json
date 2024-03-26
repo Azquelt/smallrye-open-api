@@ -2,28 +2,28 @@
   "components" : {
     "schemas" : {
       "test.io.smallrye.openapi.runtime.scanner.entities.GenericTypeTestContainer" : {
-        "type": ["object"],
+        "type": "object",
         "required" : [
           "dasherized-name-required"
         ],
         "properties" : {
           "dasherized-name" : {
-            "type" : ["string"]
+            "type" : "string"
           },
           "dasherized-name-required" : {
-            "type" : ["string"]
+            "type" : "string"
           },
           "snake_case_name" : {
-            "type" : ["string"]
+            "type" : "string"
           },
           "camelCaseNameCustom" : {
-            "type" : ["string"]
+            "type" : "string"
           },
           "camelCaseNameDefault1" : {
-            "type" : ["string"]
+            "type" : "string"
           },
           "camelCaseNameDefault2" : {
-            "type" : ["string"]
+            "type" : "string"
           }
         }
       }

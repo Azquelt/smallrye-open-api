@@ -9,12 +9,12 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               },
               "application/yaml": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }

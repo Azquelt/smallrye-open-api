@@ -21,10 +21,10 @@
   "components": {
     "schemas": {
       "Foo": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "name": {
-            "type": ["string"]
+            "type": "string"
           },
           "bar": {
             "$ref": "#/components/schemas/Bar"
@@ -32,10 +32,10 @@
         }
       },
       "Bar": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "note": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

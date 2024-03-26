@@ -2,10 +2,10 @@
   "components" : {
     "schemas" : {
       "test.io.smallrye.openapi.runtime.scanner.entities.JsonIgnoreOnFieldExample" : {
-        "type": ["object"],
+        "type": "object",
         "properties" : {
           "thisFieldShouldAppear" : {
-            "type" : ["string"]
+            "type" : "string"
           }
         }
       }

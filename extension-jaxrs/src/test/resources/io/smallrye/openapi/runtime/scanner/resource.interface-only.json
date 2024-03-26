@@ -9,7 +9,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }

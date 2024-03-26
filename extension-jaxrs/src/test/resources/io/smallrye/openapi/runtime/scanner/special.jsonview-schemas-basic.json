@@ -64,13 +64,13 @@
   "components": {
     "schemas": {
       "BeanName_Internal_Public": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "id": {
-            "type": ["string"]
+            "type": "string"
           },
           "name": {
-            "type": ["string"]
+            "type": "string"
           },
           "inner1": {
             "$ref": "#/components/schemas/Inner1_Internal_Public"
@@ -78,10 +78,10 @@
         }
       },
       "BeanName_Public": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "name": {
-            "type": ["string"]
+            "type": "string"
           },
           "inner1": {
             "$ref": "#/components/schemas/Inner1_Public"
@@ -89,13 +89,13 @@
         }
       },
       "BeanName_WriteOnly_Public": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "name": {
-            "type": ["string"]
+            "type": "string"
           },
           "secret": {
-            "type": ["string"]
+            "type": "string"
           },
           "inner1": {
             "$ref": "#/components/schemas/Inner1_WriteOnly_Public"
@@ -103,10 +103,10 @@
         }
       },
       "Inner1_Internal_Public": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "value": {
-            "type": ["string"]
+            "type": "string"
           },
           "inner2": {
             "$ref": "#/components/schemas/Inner2"
@@ -114,10 +114,10 @@
         }
       },
       "Inner1_Public": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "value": {
-            "type": ["string"]
+            "type": "string"
           },
           "inner2": {
             "$ref": "#/components/schemas/Inner2"
@@ -125,10 +125,10 @@
         }
       },
       "Inner1_WriteOnly_Public": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "value": {
-            "type": ["string"]
+            "type": "string"
           },
           "inner2": {
             "$ref": "#/components/schemas/Inner2"
@@ -136,10 +136,10 @@
         }
       },
       "Inner2": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "value": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

@@ -10,16 +10,16 @@
               "schema": {
                 "anyOf": [
                   {
-                    "type": ["array"],
+                    "type": "array",
                     "items": {
-                      "type": ["integer"],
+                      "type": "integer",
                       "format": "int32"
                     }
                   },
                   {
-                    "type": ["array"],
+                    "type": "array",
                     "items": {
-                      "type": ["integer"],
+                      "type": "integer",
                       "format": "int64"
                     }
                   }
@@ -36,16 +36,16 @@
                 "schema": {
                   "oneOf": [
                     {
-                      "type": ["array"],
+                      "type": "array",
                       "items": {
-                        "type": ["number"],
+                        "type": "number",
                         "format": "float"
                       }
                     },
                     {
-                      "type": ["array"],
+                      "type": "array",
                       "items": {
-                        "type": ["number"],
+                        "type": "number",
                         "format": "double"
                       }
                     }

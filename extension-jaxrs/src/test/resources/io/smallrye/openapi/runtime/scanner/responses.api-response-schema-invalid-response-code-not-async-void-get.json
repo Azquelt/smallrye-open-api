@@ -30,13 +30,13 @@
   "components": {
     "schemas": {
       "Pet": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "id": {
-            "type": ["string"]
+            "type": "string"
           },
           "name": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

@@ -2,7 +2,7 @@
   "components" : {
     "schemas" : {
       "BuzzLinkedList" : {
-        "type": ["object"],
+        "type": "object",
         "properties" : {
           "next" : {
             "$ref" : "#/components/schemas/BuzzLinkedList"

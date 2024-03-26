@@ -9,7 +9,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -19,7 +19,7 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }
@@ -35,7 +35,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -45,7 +45,7 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }
@@ -61,7 +61,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -85,7 +85,7 @@
           "content": {
             "text/plain": {
               "schema": {
-                "type": ["object"],
+                "type": "object",
                 "properties": {
                   "name4": {
                     "type": ["string", "null"]
@@ -118,7 +118,7 @@
             "required": false,
             "schema": {
               "format": "int64",
-              "type": ["integer"]
+              "type": "integer"
             }
           }
         ],
@@ -126,7 +126,7 @@
           "content": {
             "text/plain": {
               "schema": {
-                "type": ["string"]
+                "type": "string"
               }
             }
           },
@@ -155,7 +155,7 @@
             "required": false,
             "schema": {
               "format": "double",
-              "type": ["number"]
+              "type": "number"
             }
           },
           {
@@ -163,7 +163,7 @@
             "in": "query",
             "required": false,
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -189,7 +189,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -199,7 +199,7 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }
@@ -241,7 +241,7 @@
             "in": "query",
             "required": true,
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -251,7 +251,7 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }
@@ -263,7 +263,7 @@
   "components": {
     "schemas": {
       "NestedBean": {
-        "type": ["object"],
+        "type": "object",
         "required": [ "title" ],
         "properties": {
           "title": {
@@ -272,7 +272,7 @@
         }
       },
       "multipurpose-bean": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "age": {
             "format": "double",
@@ -287,14 +287,14 @@
                 "$ref": "#/components/schemas/NestedBean"
               },
               {
-                "type": ["null"]
+                "type": "null"
               }
             ]
           }
         }
       },
       "OptionalWrapper": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "value": {
             "type": ["string", "null"]

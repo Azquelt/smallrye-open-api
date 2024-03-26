@@ -2,16 +2,16 @@
   "components": {
     "schemas": {
       "Baz": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "an_integer_value": {
             "format": "int32",
-            "type": ["integer"]
+            "type": "integer"
           }
         }
       },
       "Bar": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "theQ": {
           },

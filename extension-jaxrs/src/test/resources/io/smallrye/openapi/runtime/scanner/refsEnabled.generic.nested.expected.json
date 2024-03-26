@@ -6,19 +6,19 @@
           "bar",
           "foo"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "bar": {
-            "type": ["string"]
+            "type": "string"
           },
           "foo": {
             "maxLength": 123456,
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
       "KustomPairKustomPairStringStringInteger": {
-        "type": ["object"],
+        "type": "object",
         "required": [
           "bar",
           "foo"
@@ -26,10 +26,10 @@
         "properties": {
           "bar": {
             "format": "int32",
-            "type": ["integer"]
+            "type": "integer"
           },
           "foo": {
-            "type": ["object"],
+            "type": "object",
             "maxLength": 123456,
             "$ref": "#/components/schemas/KustomPairStringString"
           }

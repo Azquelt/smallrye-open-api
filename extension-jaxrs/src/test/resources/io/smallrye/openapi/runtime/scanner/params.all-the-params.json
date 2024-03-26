@@ -8,7 +8,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": ["integer"],
+            "type": "integer",
             "format": "int32"
           }
         },
@@ -17,7 +17,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": ["string"]
+            "type": "string"
           }
         },
         {
@@ -26,14 +26,14 @@
           "style": "matrix",
           "required": true,
           "schema": {
-            "type": ["object"],
+            "type": "object",
             "properties": {
               "matrixF1": {
-                "type": ["string"],
+                "type": "string",
                 "default": "BEAN1"
               },
               "matrixF2": {
-                "type": ["string"],
+                "type": "string",
                 "default": "BEAN2"
               }
             }
@@ -44,7 +44,7 @@
           "in": "cookie",
           "deprecated": true,
           "schema": {
-            "type": ["string"],
+            "type": "string",
             "default": "COOKIE1"
           }
         }
@@ -56,7 +56,7 @@
             "in": "query",
             "deprecated": true,
             "schema": {
-              "type": ["integer"],
+              "type": "integer",
               "format": "int64"
             }
           },
@@ -64,7 +64,7 @@
             "name": "q2",
             "in": "query",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -88,7 +88,7 @@
             "in": "header",
             "deprecated": true,
             "schema": {
-              "type": ["integer"],
+              "type": "integer",
               "format": "int32"
             }
           },
@@ -96,7 +96,7 @@
             "name": "h2",
             "in": "header",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -104,18 +104,18 @@
           "content": {
             "application/x-www-form-urlencoded": {
               "schema": {
-                "type": ["object"],
+                "type": "object",
                 "required": [
                   "f2"
                 ],
                 "properties": {
                   "f1": {
-                    "type": ["integer"],
+                    "type": "integer",
                     "format": "int32",
                     "default": 42
                   },
                   "f2": {
-                    "type": ["string"],
+                    "type": "string",
                     "default": "f2-default"
                   }
                 }
@@ -150,7 +150,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": ["integer"],
+            "type": "integer",
             "format": "int32"
           }
         },
@@ -159,7 +159,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": ["string"]
+            "type": "string"
           }
         },
         {
@@ -168,14 +168,14 @@
           "style": "matrix",
           "required": true,
           "schema": {
-            "type": ["object"],
+            "type": "object",
             "properties": {
               "matrixF1": {
-                "type": ["string"],
+                "type": "string",
                 "default": "BEAN1"
               },
               "matrixF2": {
-                "type": ["string"],
+                "type": "string",
                 "default": "BEAN2"
               }
             }
@@ -186,7 +186,7 @@
           "in": "cookie",
           "deprecated": true,
           "schema": {
-            "type": ["string"],
+            "type": "string",
             "default": "COOKIE1"
           }
         }
@@ -198,7 +198,7 @@
             "in": "query",
             "deprecated": true,
             "schema": {
-              "type": ["integer"],
+              "type": "integer",
               "format": "int64"
             }
           },
@@ -206,7 +206,7 @@
             "name": "q2",
             "in": "query",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -216,7 +216,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": ["array"],
+                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/Widget"
                   }
@@ -231,13 +231,13 @@
   "components": {
     "schemas": {
       "Widget": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "id": {
-            "type": ["string"]
+            "type": "string"
           },
           "name": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

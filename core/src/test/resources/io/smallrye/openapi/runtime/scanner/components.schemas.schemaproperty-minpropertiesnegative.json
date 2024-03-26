@@ -3,11 +3,11 @@
   "components" : {
     "schemas" : {
       "MinPropertiesNegative" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "test" : {
             "minProperties" : -2,
-            "type" : ["object"]
+            "type" : "object"
           }
         }
       }

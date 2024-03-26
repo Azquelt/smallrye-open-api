@@ -8,7 +8,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": ["string"],
+            "type": "string",
             "default": "BEAN"
           }
         }
@@ -32,13 +32,13 @@
   "components": {
     "schemas": {
       "Widget": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "id": {
-            "type": ["string"]
+            "type": "string"
           },
           "name": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

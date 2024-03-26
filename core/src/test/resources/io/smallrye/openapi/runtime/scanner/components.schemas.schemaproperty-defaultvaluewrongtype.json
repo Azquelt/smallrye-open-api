@@ -3,11 +3,11 @@
   "components" : {
     "schemas" : {
       "DefaultValueWrongType" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "test" : {
             "default" : "foo",
-            "type" : ["integer"]
+            "type" : "integer"
           }
         }
       }

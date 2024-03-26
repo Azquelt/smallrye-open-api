@@ -3,11 +3,11 @@
   "components" : {
     "schemas" : {
       "MaxItemsNegative" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "test" : {
             "maxItems" : -2,
-            "type" : ["array"]
+            "type" : "array"
           }
         }
       }

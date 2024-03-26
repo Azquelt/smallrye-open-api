@@ -8,7 +8,7 @@
             "name": "X-Custom-Header",
             "in": "header",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -30,13 +30,13 @@
   "components": {
     "schemas": {
       "Widget": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "id": {
-            "type": ["string"]
+            "type": "string"
           },
           "name": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

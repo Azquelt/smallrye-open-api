@@ -8,7 +8,7 @@
           "in": "path",
           "required": true,
           "schema": {
-            "type": ["string"],
+            "type": "string",
             "maxLength": 10
           }
         },
@@ -19,13 +19,13 @@
           "explode": true,
           "required": true,
           "schema": {
-            "type": ["object"],
+            "type": "object",
             "properties": {
               "c1": {
-                "type": ["string"]
+                "type": "string"
               },
               "c2": {
-                "type": ["string"]
+                "type": "string"
               }
             }
           }
@@ -39,15 +39,15 @@
             "style": "matrix",
             "required": true,
             "schema": {
-              "type": ["object"],
+              "type": "object",
               "properties": {
                 "m1": {
-                  "type": ["integer"],
+                  "type": "integer",
                   "format": "int32",
                   "default": "default-m1"
                 },
                 "m2": {
-                  "type": ["integer"],
+                  "type": "integer",
                   "format": "int32",
                   "maximum": 200,
                   "default": 100
@@ -74,13 +74,13 @@
   "components": {
     "schemas": {
       "Widget": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "id": {
-            "type": ["string"]
+            "type": "string"
           },
           "name": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

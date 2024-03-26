@@ -9,7 +9,7 @@
           "required" : true,
           "schema" : {
             "format" : "int64",
-            "type" : ["integer"]
+            "type" : "integer"
           }
         } ],
         "responses" : {
@@ -27,7 +27,7 @@
           "required" : true,
           "schema" : {
             "format" : "int64",
-            "type" : ["integer"]
+            "type" : "integer"
           }
         } ],
         "responses" : {
@@ -54,7 +54,7 @@
             "schema": {
               "format": "int32",
               "minimum": 100,
-              "type": ["integer"]
+              "type": "integer"
             }
           },
           {
@@ -62,7 +62,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           }
         ],
@@ -88,7 +88,7 @@
             "in": "path",
             "required": true,
             "schema": {
-              "type": ["string"]
+              "type": "string"
             },
             "x-custom-info": "value for param3"
           }
@@ -115,14 +115,14 @@
           "required" : true,
           "schema" : {
             "format" : "int32",
-            "type" : ["integer"]
+            "type" : "integer"
           }
         }, {
           "name" : "param4",
           "in" : "path",
           "required" : true,
           "schema" : {
-            "type" : ["string"]
+            "type" : "string"
           }
         } ],
         "responses" : {
@@ -143,13 +143,13 @@
   "components": {
     "schemas": {
       "Widget": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "id": {
-            "type": ["string"]
+            "type": "string"
           },
           "name": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

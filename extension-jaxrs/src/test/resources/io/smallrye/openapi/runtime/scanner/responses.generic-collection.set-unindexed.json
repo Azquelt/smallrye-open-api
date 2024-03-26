@@ -9,7 +9,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": ["array"],
+                  "type": "array",
                   "uniqueItems": true,
                   "items": {
                     "$ref": "#/components/schemas/Fruit"
@@ -36,7 +36,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": ["array"],
+                  "type": "array",
                   "uniqueItems": true,
                   "items": {
                     "$ref": "#/components/schemas/Fruit"
@@ -63,7 +63,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": ["array"],
+                  "type": "array",
                   "uniqueItems": true,
                   "items": {
                     "$ref": "#/components/schemas/Fruit"
@@ -79,19 +79,19 @@
   "components": {
     "schemas": {
       "Seed": {
-        "type": ["object"]
+        "type": "object"
       },
       "Fruit": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "description": {
-            "type": ["string"]
+            "type": "string"
           },
           "name": {
-            "type": ["string"]
+            "type": "string"
           },
           "seeds": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/Seed"
             }

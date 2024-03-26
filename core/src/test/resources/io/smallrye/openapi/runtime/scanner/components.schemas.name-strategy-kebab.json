@@ -3,14 +3,14 @@
   "components": {
     "schemas": {
       "NameStrategyKebab": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "simple-string-one": {
-            "type": ["string"]
+            "type": "string"
           },
           "another-field": {
             "format": "int32",
-            "type": ["integer"]
+            "type": "integer"
           }
         }
       }

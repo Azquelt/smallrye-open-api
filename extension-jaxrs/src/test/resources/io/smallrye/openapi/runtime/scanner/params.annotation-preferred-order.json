@@ -29,7 +29,7 @@
               "default": 3,
               "maximum": 20,
               "minimum": 1,
-              "type": ["integer"]
+              "type": "integer"
             }
           },
           {
@@ -48,7 +48,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }
@@ -62,46 +62,46 @@
       "collection": {
         "name": "collection",
         "schema": {
-          "type": ["string"]
+          "type": "string"
         }
       },
       "fields": {
         "name": "fields",
         "schema": {
-          "type": ["array"],
+          "type": "array",
           "items": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
       "namespace": {
         "name": "namespace",
         "schema": {
-          "type": ["string"]
+          "type": "string"
         }
       },
       "page-state": {
         "name": "page-state",
         "schema": {
-          "type": ["boolean"]
+          "type": "boolean"
         }
       },
       "profile": {
         "name": "profile",
         "schema": {
-          "type": ["boolean"]
+          "type": "boolean"
         }
       },
       "raw": {
         "name": "raw",
         "schema": {
-          "type": ["boolean"]
+          "type": "boolean"
         }
       },
       "where": {
         "name": "where",
         "schema": {
-          "type": ["object"]
+          "type": "object"
         }
       }
     }

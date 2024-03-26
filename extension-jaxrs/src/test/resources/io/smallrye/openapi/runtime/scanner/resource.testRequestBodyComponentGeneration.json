@@ -77,10 +77,10 @@
   "components": {
     "schemas": {
       "DifferentObject": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "differentName": {
-            "type": ["string"]
+            "type": "string"
           },
           "myId" : {
             "$ref" : "#/components/schemas/UUID"
@@ -88,10 +88,10 @@
         }
       },
       "SomeObject": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "someName": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
@@ -100,7 +100,7 @@
         "title" : "UUID",
         "description" : "Universally Unique Identifier",
         "pattern" : "^[a-f0-9]{8}-?[a-f0-9]{4}-?[1-5][a-f0-9]{3}-?[89ab][a-f0-9]{3}-?[a-f0-9]{12}$",
-        "type" : ["string"],
+        "type" : "string",
         "example" : "de8681db-b4d6-4c47-a428-4b959c1c8e9a"
       }
     },

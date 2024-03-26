@@ -6,7 +6,7 @@
         "required": [
           "description"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "id": {
             "format": "int64",
@@ -16,7 +16,7 @@
             "type": ["string", "null"]
           },
           "description": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

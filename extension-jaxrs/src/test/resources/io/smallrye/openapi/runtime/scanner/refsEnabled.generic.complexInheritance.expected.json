@@ -2,28 +2,28 @@
   "components": {
     "schemas": {
       "Bazzy": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "hellofrombazzy": {
-            "type": ["string"]
+            "type": "string"
           },
           "an_integer_value": {
             "format": "int32",
-            "type": ["integer"]
+            "type": "integer"
           }
         }
       },
       "Foo": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "theQ": {
-            "type": ["string"]
+            "type": "string"
           },
           "theT": {
             "$ref": "#/components/schemas/Bazzy"
           },
           "ultimateTShouldBeQ": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

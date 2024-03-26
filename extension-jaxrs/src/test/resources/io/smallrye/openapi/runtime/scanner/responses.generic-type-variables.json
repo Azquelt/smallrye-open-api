@@ -9,7 +9,7 @@
             "content": {
               "*/*": {
                 "schema": {
-                  "type": ["object"],
+                  "type": "object",
                   "additionalProperties": {
                     "$ref": "#/components/schemas/Apple"
                   }
@@ -27,10 +27,10 @@
             "name": "ids",
             "in": "query",
             "schema": {
-              "type": ["array"],
+              "type": "array",
               "items": {
                 "format": "int32",
-                "type": ["integer"]
+                "type": "integer"
               }
             }
           }
@@ -41,7 +41,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": ["array"],
+                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/Apple"
                   }
@@ -84,7 +84,7 @@
             "name": "q1",
             "in": "query",
             "schema": {
-              "type": ["string"],
+              "type": "string",
               "description": "Description for q1's schema"
             }
           }
@@ -107,10 +107,10 @@
   "components": {
     "schemas": {
       "Apple": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "name": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

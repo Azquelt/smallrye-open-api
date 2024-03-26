@@ -10,7 +10,7 @@
             "schema": {
               "format": "int32",
               "default": 10,
-              "type": ["integer"]
+              "type": "integer"
             }
           }
         ],
@@ -20,7 +20,7 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }
@@ -36,7 +36,7 @@
             "in": "query",
             "schema": {
               "default": true,
-              "type": ["boolean"]
+              "type": "boolean"
             }
           }
         ],
@@ -46,7 +46,7 @@
             "content": {
               "text/xml": {
                 "schema": {
-                  "type": ["string"]
+                  "type": "string"
                 }
               }
             }

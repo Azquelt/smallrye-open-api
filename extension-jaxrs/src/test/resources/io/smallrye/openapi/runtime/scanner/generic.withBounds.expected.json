@@ -2,7 +2,7 @@
   "components" : {
     "schemas" : {
       "test.io.smallrye.openapi.runtime.scanner.entities.GenericTypeTestContainer" : {
-        "type": ["object"],
+        "type": "object",
         "required" : [ "bar", "foo" ],
         "properties" : {
           "bar" : {
@@ -10,7 +10,7 @@
           "foo" : {
             "format" : "int32",
             "maxLength" : 123456,
-            "type" : ["integer"]
+            "type" : "integer"
           }
         }
       }

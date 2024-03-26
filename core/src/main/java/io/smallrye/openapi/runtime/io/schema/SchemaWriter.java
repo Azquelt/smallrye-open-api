@@ -2,6 +2,7 @@ package io.smallrye.openapi.runtime.io.schema;
 
 import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_DESCRIPTION;
 import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_TITLE;
+import static io.smallrye.openapi.runtime.io.schema.SchemaConstant.PROP_TYPE;
 
 import java.util.List;
 import java.util.Map;
@@ -108,7 +109,15 @@ public class SchemaWriter {
     private static JsonNode getMapNode(Map<String, ?> map, JsonNodeCreator factory) {
         ObjectNode result = factory.objectNode();
         for (Map.Entry<String, ?> entry : map.entrySet()) {
-            result.set(entry.getKey(), getObjectNode(entry.getValue(), factory));
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if (PROP_TYPE.equals(entry.getKey())) {
+                // Flatten one-entry type lists
+                if (value instanceof List && ((List<?>) value).size() == 1) {
+                    value = ((List<?>) value).get(0);
+                }
+            }
+            result.set(key, getObjectNode(value, factory));
         }
         return result;
     }

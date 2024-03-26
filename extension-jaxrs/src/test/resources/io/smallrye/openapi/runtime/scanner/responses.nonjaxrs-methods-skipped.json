@@ -37,18 +37,18 @@
   "components": {
     "schemas": {
       "Reference": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "name": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
       "ReferencesResponse": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "references": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/Reference"
             }

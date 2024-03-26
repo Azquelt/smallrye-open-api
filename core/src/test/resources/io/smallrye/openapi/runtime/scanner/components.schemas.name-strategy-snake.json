@@ -3,20 +3,20 @@
   "components": {
     "schemas": {
       "NameStrategyBean1": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "another-string": {
-            "type": ["string"],
+            "type": "string",
             "description": "Customize name locally"
           },
           "simple_integer_value": {
             "format": "int32",
             "maximum": 10,
-            "type": ["integer"],
+            "type": "integer",
             "description": "Schema present, but name defaults to global config"
           },
           "simple_string_value": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

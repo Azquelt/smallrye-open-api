@@ -2,23 +2,23 @@
   "components": {
     "schemas": {
       "BazEnum": {
-        "type": ["string"],
+        "type": "string",
         "enum": [
           "Gold",
           "Green"
         ]
       },
       "Baz": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "an_integer_value": {
             "format": "int32",
-            "type": ["integer"]
+            "type": "integer"
           }
         }
       },
       "Bar": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "theQ": {
             
@@ -36,14 +36,14 @@
           "contactPhone",
           "name"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "contactPhone": {
-            "type": ["string"],
+            "type": "string",
             "example": "1-888-1234-567"
           },
           "name": {
-            "type": ["string"],
+            "type": "string",
             "example": "Acme Air"
           }
         },
@@ -59,39 +59,39 @@
           "price",
           "status"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "airline": {
             "$ref": "#/components/schemas/Airline"
           },
           "airportFrom": {
-            "type": ["string"],
+            "type": "string",
             "example": "YYZ"
           },
           "airportTo": {
-            "type": ["string"],
+            "type": "string",
             "example": "LAX"
           },
           "dateTime": {
             "pattern": "dateTime",
-            "type": ["string"],
+            "type": "string",
             "example": "2016-03-05 18:00"
           },
           "number": {
-            "type": ["string"],
+            "type": "string",
             "example": "AC190"
           },
           "price": {
-            "type": ["string"],
+            "type": "string",
             "example": "US$350"
           },
           "status": {
-            "type": ["string"],
+            "type": "string",
             "example": "On Schedule"
           }
         },
         "additionalProperties": {
-          "type": ["string"]
+          "type": "string"
         }
       },
       "CreditCard": {
@@ -102,26 +102,26 @@
           "expiryDate",
           "issuer"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "cardNumber": {
-            "type": ["string"],
+            "type": "string",
             "example": "**********1234"
           },
           "cardholderName": {
-            "type": ["string"],
+            "type": "string",
             "example": "Joe Smith"
           },
           "cvv": {
-            "type": ["string"],
+            "type": "string",
             "example": "0322"
           },
           "expiryDate": {
-            "type": ["string"],
+            "type": "string",
             "example": "04/19"
           },
           "issuer": {
-            "type": ["string"],
+            "type": "string",
             "example": "VISA"
           }
         },
@@ -135,10 +135,10 @@
           "returningFlight",
           "seatPreference"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "airMiles": {
-            "type": ["string"],
+            "type": "string",
             "example": "32126319"
           },
           "creditCard": {
@@ -151,39 +151,39 @@
             "$ref": "#/components/schemas/Flight"
           },
           "seatPreference": {
-            "type": ["string"],
+            "type": "string",
             "example": "window"
           }
         }
       },
       "Bazzy": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "hellofrombazzy": {
-            "type": ["string"]
+            "type": "string"
           },
           "an_integer_value": {
             "format": "int32",
-            "type": ["integer"]
+            "type": "integer"
           }
         }
       },
       "Foo": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "theQ": {
-            "type": ["string"]
+            "type": "string"
           },
           "theT": {
             "$ref": "#/components/schemas/Bazzy"
           },
           "ultimateTShouldBeQ": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
       "FuzzStringObject": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "qAgain": {
             
@@ -195,13 +195,13 @@
             "description": "Ah, Q, my favourite variable!"
           },
           "tAgain2": {
-            "type": ["string"]
+            "type": "string"
           },
           "tAgain4": {
-            "type": ["string"]
+            "type": "string"
           },
           "tValue": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
@@ -210,34 +210,34 @@
           "bar",
           "foo"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "bar": {
             "format": "int32",
-            "type": ["integer"]
+            "type": "integer"
           },
           "foo": {
-            "type": ["object"],
+            "type": "object",
             "maxLength": 123456,
             "$ref": "#/components/schemas/FuzzStringObject"
           }
         }
       },
       "FuzzKustomPairFuzzStringObjectIntegerDouble": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "qAgain": {
             "format": "double",
-            "type": ["number"]
+            "type": "number"
           },
           "qAgain3": {
             "format": "double",
-            "type": ["number"]
+            "type": "number"
           },
           "qValue": {
             "format": "double",
             "description": "Ah, Q, my favourite variable!",
-            "type": ["number"]
+            "type": "number"
           },
           "tAgain2": {
             "$ref": "#/components/schemas/KustomPairFuzzStringObjectInteger"
@@ -251,21 +251,21 @@
         }
       },
       "FooExtendsFoo": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "theQ": {
-            "type": ["string"]
+            "type": "string"
           },
           "theT": {
             "$ref": "#/components/schemas/Bazzy"
           },
           "ultimateTShouldBeQ": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
       "FuzzStringExtendsFoo": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "qAgain": {
             "$ref": "#/components/schemas/FooExtendsFoo"
@@ -274,18 +274,18 @@
             "$ref": "#/components/schemas/FooExtendsFoo"
           },
           "qValue": {
-            "type": ["object"],
+            "type": "object",
             "description": "Ah, Q, my favourite variable!",
             "$ref": "#/components/schemas/FooExtendsFoo"
           },
           "tAgain2": {
-            "type": ["string"]
+            "type": "string"
           },
           "tAgain4": {
-            "type": ["string"]
+            "type": "string"
           },
           "tValue": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
@@ -294,14 +294,14 @@
           "bar",
           "foo"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "bar": {
             
           },
           "foo": {
             "maxLength": 123456,
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
@@ -310,14 +310,14 @@
           "bar",
           "foo"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "bar": {
             "format": "int32",
-            "type": ["integer"]
+            "type": "integer"
           },
           "foo": {
-            "type": ["object"],
+            "type": "object",
             "maxLength": 123456,
             "$ref": "#/components/schemas/KustomPairStringString"
           }
@@ -328,19 +328,19 @@
           "bar",
           "foo"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "bar": {
-            "type": ["string"]
+            "type": "string"
           },
           "foo": {
             "maxLength": 123456,
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
       "BuzzLinkedList": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "next": {
             "$ref": "#/components/schemas/BuzzLinkedList"
@@ -352,15 +352,15 @@
           "bar",
           "foo"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "bar": {
             "format": "int32",
-            "type": ["integer"]
+            "type": "integer"
           },
           "foo": {
             "maxLength": 123456,
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
@@ -375,53 +375,53 @@
           "seatPreference",
           "unsafeList"
         ],
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "array": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               "format": "int32",
-              "type": ["integer"]
+              "type": "integer"
             }
           },
           "awkwardMap": {
-            "type": ["object"],
+            "type": "object",
             "additionalProperties": {
-              "type": ["string"]
+              "type": "string"
             }
           },
           "awkwardMap2": {
-            "type": ["object"],
+            "type": "object",
             "additionalProperties": {
               "$ref": "#/components/schemas/BazEnum"
             }
           },
           "barExtends": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/Bar"
             }
           },
           "barSuper": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               
             }
           },
           "bareCollection": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               
             }
           },
           "bareEnum": {
-            "type": ["array"],
+            "type": "array",
             "items": {
-              "type": ["object"]
+              "type": "object"
             }
           },
           "blahMap": {
-            "type": ["object"],
+            "type": "object",
             "additionalProperties": {
               
             }
@@ -430,7 +430,7 @@
             "$ref": "#/components/schemas/Booking"
           },
           "ccList": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/CreditCard"
             }
@@ -439,7 +439,7 @@
             "$ref": "#/components/schemas/FuzzKustomPairFuzzStringObjectIntegerDouble"
           },
           "creditCardMap": {
-            "type": ["object"],
+            "type": "object",
             "additionalProperties": {
               "$ref": "#/components/schemas/CreditCard"
             }
@@ -451,7 +451,7 @@
             "$ref": "#/components/schemas/Foo"
           },
           "fooArray": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               "$ref": "#/components/schemas/Bar"
             }
@@ -460,28 +460,28 @@
             "$ref": "#/components/schemas/FuzzStringExtendsFoo"
           },
           "longArray": {
-            "type": ["array"],
+            "type": "array",
             "items": {
               "format": "int64",
-              "type": ["integer"]
+              "type": "integer"
             }
           },
           "nesting": {
             "$ref": "#/components/schemas/KustomPairKustomPairStringStringInteger"
           },
           "password": {
-            "type": ["string"],
+            "type": "string",
             "format": "password"
           },
           "primitiveFoo": {
             "format": "int32",
             "maximum": 9001,
-            "type": ["integer"]
+            "type": "integer"
           },
           "rawArray": {
-            "type": ["array"],
+            "type": "array",
             "items": {
-              "type": ["object"]
+              "type": "object"
             }
           },
           "rootNode": {
@@ -489,33 +489,33 @@
           },
           "seatPreference": {
             "maxLength": 999,
-            "type": ["string"],
+            "type": "string",
             "example": "window"
           },
           "simpleParameterizedType": {
             "$ref": "#/components/schemas/KustomPairStringInteger"
           },
           "unsafeList": {
-            "type": ["array"],
+            "type": "array",
             "items" : {
             
             }
           },
           "voidField": {
-            "type": ["object"]
+            "type": "object"
           },
           "writeOnlyInteger": {
             "format": "int32",
-            "type": ["integer"],
+            "type": "integer",
             "writeOnly": true
           },
           "array2d": {
-            "type": ["array"],
+            "type": "array",
             "items": {
-              "type": ["array"],
+              "type": "array",
               "items": {
                 "format": "int32",
-                "type": ["integer"]
+                "type": "integer"
               }
             }
           }

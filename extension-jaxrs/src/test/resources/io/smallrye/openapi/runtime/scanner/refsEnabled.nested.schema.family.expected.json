@@ -2,7 +2,7 @@
   "components" : {
     "schemas" : {
       "NestedSchemaParent" : {
-        "type": ["object"],
+        "type": "object",
         "properties" : {
           "child1" : {
             "$ref": "#/components/schemas/NestedSchemaSiblingA"
@@ -13,24 +13,24 @@
         }
       },
       "NestedSchemaSiblingA" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "name" : {
-            "type": ["string"]
+            "type": "string"
           },
           "title" : {
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
       "NestedSchemaSiblingB" : {
-        "type" : ["object"],
+        "type" : "object",
         "properties" : {
           "name" : {
-            "type": ["string"]
+            "type": "string"
           },
           "favoriteNumber" : {
-            "type": ["integer"],
+            "type": "integer",
             "format": "int64"
           }
         }

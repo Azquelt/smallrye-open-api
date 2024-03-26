@@ -21,21 +21,21 @@
             "in": "query",
             "schema": {
               "format": "int64",
-              "type": ["integer"]
+              "type": "integer"
             }
           },
           {
             "name": "name",
             "in": "query",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           },
           {
             "name": "namedQuery",
             "in": "query",
             "schema": {
-              "type": ["string"]
+              "type": "string"
             }
           },
           {
@@ -44,7 +44,7 @@
             "schema": {
               "format": "int32",
               "default": 0,
-              "type": ["integer"]
+              "type": "integer"
             }
           },
           {
@@ -53,16 +53,16 @@
             "schema": {
               "format": "int32",
               "default": 20,
-              "type": ["integer"]
+              "type": "integer"
             }
           },
           {
             "name": "sort",
             "in": "query",
             "schema": {
-              "type": ["array"],
+              "type": "array",
               "items": {
-                "type": ["string"]
+                "type": "string"
               }
             }
           }
@@ -73,7 +73,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": ["array"],
+                  "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/Person"
                   }
@@ -121,7 +121,7 @@
               "application/json": {
                 "schema": {
                   "format": "int64",
-                  "type": ["integer"]
+                  "type": "integer"
                 }
               }
             }
@@ -141,7 +141,7 @@
             "required": true,
             "schema": {
               "format": "int64",
-              "type": ["integer"]
+              "type": "integer"
             }
           }
         ],
@@ -169,7 +169,7 @@
             "required": true,
             "schema": {
               "format": "int64",
-              "type": ["integer"]
+              "type": "integer"
             }
           }
         ],
@@ -205,7 +205,7 @@
             "required": true,
             "schema": {
               "format": "int64",
-              "type": ["integer"]
+              "type": "integer"
             }
           }
         ],
@@ -236,18 +236,18 @@
   "components": {
     "schemas": {
       "Person": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "name": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       },
       "Product": {
-        "type": ["object"],
+        "type": "object",
         "properties": {
           "name": {
-            "type": ["string"]
+            "type": "string"
           }
         }
       }

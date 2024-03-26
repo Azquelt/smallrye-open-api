@@ -9,7 +9,7 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": ["object"]
+                  "type": "object"
                 }
               }
             }
