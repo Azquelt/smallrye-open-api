@@ -288,10 +288,10 @@ public class OpenApiDataObjectScanner {
             }
         }
     }
-    
+
     private static boolean hasNonNullType(Schema schema) {
         List<Schema.SchemaType> types = schema.getType();
-        
+
         return types != null && types.stream().anyMatch(t -> t != SchemaType.NULL);
     }
 

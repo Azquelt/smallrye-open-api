@@ -462,7 +462,7 @@ public class AnnotationTargetProcessor implements RequirementHandler {
             Schema::getProperties,
             Schema::getRef,
             Schema::getRequired,
-//            AnnotationTargetProcessor::getTypeSetWithoutNull,
+            //            AnnotationTargetProcessor::getTypeSetWithoutNull,
             Schema::getUniqueItems,
             Schema::getXml);
 

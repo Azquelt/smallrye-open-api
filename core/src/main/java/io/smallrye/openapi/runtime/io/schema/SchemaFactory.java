@@ -147,7 +147,7 @@ public class SchemaFactory {
         if (isAnnotationMissingOrHidden(annotation, defaults)) {
             return schema;
         }
-        
+
         String ref = readAttr(annotation, OpenApiConstants.REF, defaults);
         if (ref != null) {
             schema.setRef(ref);
