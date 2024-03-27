@@ -256,12 +256,14 @@ public class OpenApiDataObjectScanner {
             } else {
                 // Ignore the returned ref, the currentSchema will be further modified with added properties
                 Schema ref = SchemaFactory.schemaRegistration(context, currentType, currentSchema);
-                if (!currentSchema.getType().contains(Schema.SchemaType.OBJECT)) {
+                if (!currentSchema.getType().contains(Schema.SchemaType.OBJECT) && ref.getRef() != null) {
+                    SchemaImpl.clear(entrySchema);
                     entrySchema.setRef(ref.getRef());
                 }
             }
 
-            if (currentSchema.getType().contains(Schema.SchemaType.OBJECT)) {
+            List<Schema.SchemaType> types = currentSchema.getType();
+            if (types != null && types.contains(Schema.SchemaType.OBJECT)) {
                 // Only 'object' type schemas should have properties of their own
                 ScannerLogging.logger.gettingFields(currentType, currentClass);
 

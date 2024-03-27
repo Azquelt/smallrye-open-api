@@ -157,6 +157,12 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
         }
         throw new UnsupportedOperationException("Can't copy a different impl");
     }
+    
+    public static void clear(Schema schema) {
+        SchemaImpl impl = (SchemaImpl) schema;
+        impl.data.clear();
+        impl.booleanValue = null;
+    }
 
     private static <K, V> Map<K, V> copyOf(Map<K, V> map) {
         Map<K, V> clone = new HashMap<>();
