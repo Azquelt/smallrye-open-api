@@ -9,9 +9,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.fasterxml.jackson.databind.node.JsonNodeFactory;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import io.smallrye.openapi.api.util.MergeUtil;
 import io.smallrye.openapi.runtime.util.ModelUtil;
 
@@ -20,14 +17,9 @@ import io.smallrye.openapi.runtime.util.ModelUtil;
  */
 public abstract class JsonWrappingImpl implements ModelImpl {
 
-    /**
-     * JsonNodeFactory which doesn't normalize decimals
-     */
-    protected static final JsonNodeFactory factory = new JsonNodeFactory(true);
-
     protected final HashMap<String, Object> data = new HashMap<>();
 
-    protected JsonWrappingImpl(ObjectNode node) {
+    protected JsonWrappingImpl() {
     }
 
     /**

@@ -58,11 +58,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
@@ -74,7 +71,6 @@ import io.smallrye.openapi.api.models.ExternalDocumentationImpl;
 import io.smallrye.openapi.api.models.JsonWrappingImpl;
 import io.smallrye.openapi.api.models.ModelImpl;
 import io.smallrye.openapi.api.util.MergeUtil;
-import io.smallrye.openapi.runtime.io.JsonUtil;
 import io.smallrye.openapi.runtime.io.Referenceable;
 import io.smallrye.openapi.runtime.io.externaldocs.ExternalDocsConstant;
 import io.smallrye.openapi.runtime.io.schema.SchemaConstant;
@@ -157,7 +153,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
         }
         throw new UnsupportedOperationException("Can't copy a different impl");
     }
-    
+
     public static void clear(Schema schema) {
         SchemaImpl impl = (SchemaImpl) schema;
         impl.data.clear();
@@ -206,7 +202,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      * @param name the name
      */
     public SchemaImpl(String name) {
-        super(JsonUtil.objectNode());
+        super();
         this.name = name;
     }
 
@@ -225,7 +221,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      * @param booleanValue the boolean value
      */
     private SchemaImpl(boolean booleanValue) {
-        super(null);
+        super();
         this.booleanValue = booleanValue;
     }
 
@@ -1098,10 +1094,10 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setExtensions(Map<String, Object> extensions) {
         assertObjectSchema();
-        
+
         // Remove all extension fields
         data.keySet().removeIf(k -> k.startsWith("x-"));
-        
+
         // Add all the new extensions
         if (extensions != null) {
             extensions.forEach((k, v) -> {
