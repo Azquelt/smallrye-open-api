@@ -1357,9 +1357,8 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     }
 
     @Override
-    @Deprecated
     public void setBooleanSchema(Boolean booleanSchema) {
-        throw new UnsupportedOperationException("Can't set BooleanSchema");
+        booleanValue = booleanSchema;
     }
 
     @Override
@@ -1484,7 +1483,9 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setAll(Map<String, ?> allProperties) {
         data.clear();
-        allProperties.forEach(this::setProperty);
+        if (allProperties != null) {
+            allProperties.forEach(this::setProperty);
+        }
     }
 
 }
