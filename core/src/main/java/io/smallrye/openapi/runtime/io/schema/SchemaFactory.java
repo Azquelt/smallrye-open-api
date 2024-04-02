@@ -189,7 +189,7 @@ public class SchemaFactory {
 
         final SchemaType type = readSchemaType(annotation, schema, defaults);
         schema.setType(type);
-        schema.setExample(parseSchemaAttr(context, annotation, SchemaConstant.PROP_EXAMPLE, defaults, type));
+        schema.setExamples(wrapInList(parseSchemaAttr(context, annotation, SchemaConstant.PROP_EXAMPLE, defaults, type)));
         schema.setDefaultValue(
                 parseSchemaAttr(context, annotation, SchemaConstant.PROP_DEFAULT_VALUE, defaults, type));
         schema.setDiscriminator(
@@ -438,6 +438,14 @@ public class SchemaFactory {
         } catch (IllegalArgumentException e) {
             // This will only occur for `org.eclipse.microprofile.openapi.annotations.enums.SchemaType#DEFAULT`.
             return null;
+        }
+    }
+
+    static <T> List<T> wrapInList(T value) {
+        if (value == null) {
+            return null;
+        } else {
+            return Collections.singletonList(value);
         }
     }
 
