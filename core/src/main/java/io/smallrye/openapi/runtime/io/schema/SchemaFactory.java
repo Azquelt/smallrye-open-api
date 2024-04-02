@@ -166,12 +166,24 @@ public class SchemaFactory {
         schema.setTitle(readAttr(annotation, SchemaConstant.PROP_TITLE, defaults));
         schema.setMultipleOf(SchemaFactory.<Double, BigDecimal> readAttr(annotation, SchemaConstant.PROP_MULTIPLE_OF,
                 BigDecimal::valueOf, defaults));
-        schema.setMaximum(SchemaFactory.readAttr(annotation, SchemaConstant.PROP_MAXIMUM,
-                SchemaFactory::tolerantParseBigDecimal, defaults));
-        schema.setMinimum(SchemaFactory.readAttr(annotation, SchemaConstant.PROP_MINIMUM,
-                SchemaFactory::tolerantParseBigDecimal, defaults));
-        schema.setExclusiveMaximum(readAttr(annotation, SchemaConstant.PROP_EXCLUSIVE_MAXIMUM, defaults));
-        schema.setExclusiveMinimum(readAttr(annotation, SchemaConstant.PROP_EXCLUSIVE_MINIMUM, defaults));
+        BigDecimal maximum = SchemaFactory.readAttr(annotation, SchemaConstant.PROP_MAXIMUM,
+                SchemaFactory::tolerantParseBigDecimal, defaults);
+        BigDecimal minimum = SchemaFactory.readAttr(annotation, SchemaConstant.PROP_MINIMUM,
+                SchemaFactory::tolerantParseBigDecimal, defaults);
+        if (maximum != null) {
+            if (Boolean.TRUE.equals(readAttr(annotation, SchemaConstant.PROP_EXCLUSIVE_MAXIMUM, defaults))) {
+                schema.setExclusiveMaximum(maximum);
+            } else {
+                schema.setMaximum(maximum);
+            }
+        }
+        if (minimum != null) {
+            if (Boolean.TRUE.equals(readAttr(annotation, SchemaConstant.PROP_EXCLUSIVE_MINIMUM, defaults))) {
+                schema.setExclusiveMinimum(minimum);
+            } else {
+                schema.setMinimum(minimum);
+            }
+        }
         schema.setMaxLength(readAttr(annotation, SchemaConstant.PROP_MAX_LENGTH, defaults));
         schema.setMinLength(readAttr(annotation, SchemaConstant.PROP_MIN_LENGTH, defaults));
         schema.setPattern(readAttr(annotation, SchemaConstant.PROP_PATTERN, defaults));
