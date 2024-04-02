@@ -60,6 +60,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.microprofile.openapi.models.ExternalDocumentation;
 import org.eclipse.microprofile.openapi.models.media.Discriminator;
@@ -95,6 +96,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     private static final SchemaImpl TRUE_SCHEMA = new SchemaImpl(true);
     private static final SchemaImpl FALSE_SCHEMA = new SchemaImpl(false);
+    private static final Set<String> NON_MERGABLE_PROPERTIES = Collections.singleton(SchemaConstant.PROP_EXAMPLES);
 
     // Non-standard
     private String name;
@@ -107,6 +109,11 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
      * The boolean value of this schema. {@code null} in most cases where the schema is an object
      */
     private Boolean booleanValue;
+
+    @Override
+    protected Set<String> getNonMergableCollections() {
+        return NON_MERGABLE_PROPERTIES;
+    }
 
     @Override
     public JsonWrappingImpl mergeFrom(JsonWrappingImpl other) {
@@ -1088,7 +1095,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
 
     @Override
     public void removeExtension(String name) {
-        removeProperty(name);
+        setProperty(name, null);
     }
 
     @Override
@@ -1454,6 +1461,27 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
         if (!isBooleanSchema()) {
             super.removeFromMapProperty(propertyName, key);
         }
+    }
+
+    @Override
+    public Object get(String propertyName) {
+        return getProperty(propertyName, Object.class);
+    }
+
+    @Override
+    public void set(String propertyName, Object value) {
+        setProperty(propertyName, value);
+    }
+
+    @Override
+    public Map<String, ?> getAll() {
+        return Collections.unmodifiableMap(data);
+    }
+
+    @Override
+    public void setAll(Map<String, ?> allProperties) {
+        data.clear();
+        allProperties.forEach(this::setProperty);
     }
 
 }

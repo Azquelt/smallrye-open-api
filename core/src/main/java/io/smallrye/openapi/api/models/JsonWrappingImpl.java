@@ -31,7 +31,7 @@ public abstract class JsonWrappingImpl implements ModelImpl {
      * @return the merged object
      */
     public JsonWrappingImpl mergeFrom(JsonWrappingImpl other) {
-        mergeMap(data, other.data);
+        mergeMap(data, other.data, getNonMergableCollections());
         return this;
     }
 
@@ -39,7 +39,7 @@ public abstract class JsonWrappingImpl implements ModelImpl {
         return data;
     }
 
-    private static <T> void mergeMap(Map<String, T> into, Map<String, T> from) {
+    private static <T> void mergeMap(Map<String, T> into, Map<String, T> from, Set<String> nonMergableNames) {
         for (Entry<String, T> entry : from.entrySet()) {
             String name = entry.getKey();
             T value = entry.getValue();
@@ -47,9 +47,9 @@ public abstract class JsonWrappingImpl implements ModelImpl {
             if (oldValue == null || oldValue.getClass() != value.getClass()) {
                 into.put(name, value);
             } else {
-                if (oldValue instanceof Map) {
-                    mergeMap((Map<String, Object>) oldValue, (Map<String, Object>) value);
-                } else if (oldValue instanceof List) {
+                if (oldValue instanceof Map && !nonMergableNames.contains(name)) {
+                    mergeMap((Map<String, Object>) oldValue, (Map<String, Object>) value, nonMergableNames);
+                } else if (oldValue instanceof List && !nonMergableNames.contains(name)) {
                     mergeList((List<Object>) oldValue, (List<Object>) value);
                 } else if (oldValue instanceof ModelImpl) {
                     into.put(name, MergeUtil.mergeObjects(oldValue, value));
@@ -153,6 +153,15 @@ public abstract class JsonWrappingImpl implements ModelImpl {
     protected <T> void removeFromMapProperty(String propertyName, String key) {
         Map<String, T> map = (Map<String, T>) data.get(propertyName);
         ModelUtil.remove(map, key);
+    }
+
+    /**
+     * Return a list of properties whose values should not be merged even if they're collections
+     *
+     * @return a list of properties which should be overwritten rather than merged
+     */
+    protected Set<String> getNonMergableCollections() {
+        return Collections.emptySet();
     }
 
 }
