@@ -142,7 +142,7 @@ public class SchemaConstant {
         PROPERTIES_DATA_TYPES.put(SchemaConstant.PROP_MIN_PROPERTIES, type(Integer.class));
         PROPERTIES_DATA_TYPES.put(SchemaConstant.PROP_REQUIRED, listOf(type(String.class)));
         PROPERTIES_DATA_TYPES.put(SchemaConstant.PROP_NOT, type(Schema.class));
-        PROPERTIES_DATA_TYPES.put(SchemaConstant.PROP_PROPERTIES, mapOf(type(String.class)));
+        PROPERTIES_DATA_TYPES.put(SchemaConstant.PROP_PROPERTIES, mapOf(type(Schema.class)));
         PROPERTIES_DATA_TYPES.put(SchemaConstant.PROP_ADDITIONAL_PROPERTIES, type(Schema.class));
         PROPERTIES_DATA_TYPES.put(SchemaConstant.PROP_DESCRIPTION, type(String.class));
         PROPERTIES_DATA_TYPES.put(SchemaConstant.PROP_FORMAT, type(String.class));
