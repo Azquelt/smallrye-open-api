@@ -265,12 +265,13 @@ public class SchemaReader {
             case BINARY:
                 return node.textValue();
             case NUMBER:
-                if (node.canConvertToInt())
-                    return node.intValue();
-                if (node.canConvertToLong())
-                    return node.longValue();
-                if (node.canConvertToExactIntegral())
+                if (node.canConvertToExactIntegral()) {
+                    if (node.canConvertToInt())
+                        return node.intValue();
+                    if (node.canConvertToLong())
+                        return node.longValue();
                     return node.bigIntegerValue();
+                }
                 return node.decimalValue();
             case BOOLEAN:
                 return node.booleanValue();
