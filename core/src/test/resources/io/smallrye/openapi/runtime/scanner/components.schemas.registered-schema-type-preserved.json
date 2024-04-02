@@ -8,7 +8,7 @@
           "apiVersion": {
             "description": "The API version",
             "type": "string",
-            "example": "v3"
+            "examples": ["v3"]
           },
           "context": {
             "description": "Optional context-value for request/response correlation",
@@ -17,7 +17,7 @@
           "requestId": {
             "description": "Unique request-id (used for logging)",
             "type": "string",
-            "example": "F176f717c7a71"
+            "examples": ["F176f717c7a71"]
           },
           "data": {
             "type": "object",
@@ -42,7 +42,7 @@
           "currentItemCount": {
             "format": "int32",
             "type": "integer",
-            "example": 1
+            "examples": [1]
           }
         }
       },
@@ -58,7 +58,7 @@
           "currentItemCount": {
             "format": "int32",
             "type": "integer",
-            "example": 1
+            "examples": [1]
           }
         }
       },
@@ -80,7 +80,7 @@
           "apiVersion": {
             "description": "The API version",
             "type": "string",
-            "example": "v3"
+            "examples": ["v3"]
           },
           "context": {
             "description": "Optional context-value for request/response correlation",
@@ -89,7 +89,7 @@
           "requestId": {
             "description": "Unique request-id (used for logging)",
             "type": "string",
-            "example": "F176f717c7a71"
+            "examples": ["F176f717c7a71"]
           }
         }
       },
@@ -99,7 +99,7 @@
           "apiVersion": {
             "description": "The API version",
             "type": "string",
-            "example": "v3"
+            "examples": ["v3"]
           },
           "context": {
             "description": "Optional context-value for request/response correlation",
@@ -108,7 +108,7 @@
           "requestId": {
             "description": "Unique request-id (used for logging)",
             "type": "string",
-            "example": "F176f717c7a71"
+            "examples": ["F176f717c7a71"]
           },
           "data": {
             "description": "The business data object"
