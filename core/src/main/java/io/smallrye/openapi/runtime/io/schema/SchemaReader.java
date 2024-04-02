@@ -196,7 +196,7 @@ public class SchemaReader {
                 result.add(readJson(element, desiredType.content));
             }
             return result;
-        } else if (node.isValueNode() && desiredType.type == DataType.Type.OBJECT) {
+        } else if (desiredType.type == DataType.Type.OBJECT) {
             return readValue(node, desiredType.clazz);
         } else {
             return readJson(node);
