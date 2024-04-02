@@ -102,8 +102,8 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     private String name;
     private int modCount;
     private List<Schema> typeObservers;
-    // Was setNullable called with a non-null value
-    private boolean nullableRequested = false;
+    // Value set via setNullable, unless overwritten by call to setType(List)
+    private Boolean nullable = null;
 
     /**
      * The boolean value of this schema. {@code null} in most cases where the schema is an object
@@ -625,7 +625,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setType(List<SchemaType> types) {
         incrementModCount();
-        nullableRequested = false;
+        nullable = null;
         setListProperty(PROP_TYPE, types);
 
         if (typeObservers != null) {
@@ -820,15 +820,18 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public Boolean getNullable() {
         List<SchemaType> types = getType();
-        boolean nullPermitted = types != null ? types.contains(SchemaType.NULL) : false;
-        // Retain old tri-state behaviour of getNullable
-        // If setNullable has not been called and null is not permitted, return null rather than false
-        if (nullPermitted) {
-            return true;
-        } else if (nullableRequested) {
-            return false;
+        if (types != null) {
+            boolean nullPermitted = types.contains(SchemaType.NULL);
+            // Retain old tri-state behaviour of getNullable
+            // If setNullable has not been called and null is not permitted, return null rather than false
+            if (!nullPermitted && nullable == null) {
+                return null;
+            } else {
+                return nullPermitted;
+            }
         } else {
-            return null;
+            // If types is unset, return any value passed to setNullable
+            return nullable;
         }
     }
 
@@ -838,7 +841,7 @@ public class SchemaImpl extends JsonWrappingImpl implements Schema, ModelImpl {
     @Override
     public void setNullable(Boolean nullable) {
         incrementModCount();
-        nullableRequested = nullable != null;
+        this.nullable = nullable;
         if (nullable == Boolean.TRUE) {
             List<SchemaType> types = getType();
             if (types == null || !types.contains(SchemaType.NULL)) {
