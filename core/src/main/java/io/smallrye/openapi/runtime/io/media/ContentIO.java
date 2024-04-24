@@ -13,7 +13,6 @@ import io.smallrye.openapi.runtime.io.IOContext;
 import io.smallrye.openapi.runtime.io.IoLogging;
 import io.smallrye.openapi.runtime.io.ModelIO;
 import io.smallrye.openapi.runtime.io.Names;
-import io.smallrye.openapi.runtime.io.extensions.ExtensionIO;
 
 public class ContentIO<V, A extends V, O extends V, AB, OB> extends ModelIO<Content, V, A, O, AB, OB> {
 
@@ -31,11 +30,8 @@ public class ContentIO<V, A extends V, O extends V, AB, OB> extends ModelIO<Cont
         PARAMETER
     }
 
-    private final MediaTypeIO<V, A, O, AB, OB> mediaTypeIO;
-
-    public ContentIO(IOContext<V, A, O, AB, OB> context, ExtensionIO<V, A, O, AB, OB> extensionIO) {
+    public ContentIO(IOContext<V, A, O, AB, OB> context) {
         super(context, Names.CONTENT, Names.create(Content.class));
-        mediaTypeIO = new MediaTypeIO<>(context, this, extensionIO);
     }
 
     public Content read(AnnotationValue annotations, Direction direction) {
@@ -51,7 +47,7 @@ public class ContentIO<V, A extends V, O extends V, AB, OB> extends ModelIO<Cont
 
         for (AnnotationInstance annotation : annotations) {
             String contentType = value(annotation, OpenApiConstants.PROP_MEDIA_TYPE);
-            MediaType mediaTypeModel = mediaTypeIO.read(annotation);
+            MediaType mediaTypeModel = mediaTypeIO().read(annotation);
 
             if (contentType == null) {
                 for (String mimeType : getDefaultMimeTypes(direction)) {
@@ -92,7 +88,7 @@ public class ContentIO<V, A extends V, O extends V, AB, OB> extends ModelIO<Cont
         Content content = new ContentImpl();
 
         jsonIO().properties(node)
-                .forEach(property -> content.addMediaType(property.getKey(), mediaTypeIO.readValue(property.getValue())));
+                .forEach(property -> content.addMediaType(property.getKey(), mediaTypeIO().readValue(property.getValue())));
 
         return content;
     }
@@ -101,7 +97,7 @@ public class ContentIO<V, A extends V, O extends V, AB, OB> extends ModelIO<Cont
     public Optional<O> write(Content model) {
         return optionalJsonObject(model).map(node -> {
             if (model.getMediaTypes() != null) {
-                model.getMediaTypes().forEach((key, mediaType) -> setIfPresent(node, key, mediaTypeIO.write(mediaType)));
+                model.getMediaTypes().forEach((key, mediaType) -> setIfPresent(node, key, mediaTypeIO().write(mediaType)));
             }
             return node;
         }).map(jsonIO()::buildObject);

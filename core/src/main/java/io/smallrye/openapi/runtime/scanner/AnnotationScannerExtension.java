@@ -31,11 +31,11 @@ public interface AnnotationScannerExtension {
         private Default(AnnotationScannerContext scannerContext) {
             this.scannerContext = scannerContext;
 
-            if (scannerContext.getIoContext().jsonIO() == null) {
-                scannerContext.getIoContext().jsonIO(JsonIO.newInstance(scannerContext.getConfig()));
+            if (scannerContext.io().jsonIO() == null) {
+                scannerContext.io().jsonIO(JsonIO.newInstance(scannerContext.getConfig()));
             }
 
-            jsonIO = scannerContext.getIoContext().jsonIO();
+            jsonIO = scannerContext.io().jsonIO();
         }
 
         @Override
@@ -81,7 +81,7 @@ public interface AnnotationScannerExtension {
         @Override
         public Schema parseSchema(String jsonSchema) {
             Object schemaModel = jsonIO.fromString(jsonSchema, Format.JSON);
-            return scannerContext.io().schemas().readValue(schemaModel);
+            return scannerContext.io().schemaIO().readValue(schemaModel);
         }
     }
 
