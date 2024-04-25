@@ -178,6 +178,10 @@ public interface OpenApiConfig {
         return getConfigValue(OpenApiConstants.INFO_TERMS, String.class, () -> null);
     }
 
+    default String getInfoSummary() {
+        return getConfigValue(OpenApiConstants.INFO_SUMMARY, String.class, () -> null);
+    }
+
     default String getInfoContactEmail() {
         return getConfigValue(OpenApiConstants.INFO_CONTACT_EMAIL, String.class, () -> null);
     }
