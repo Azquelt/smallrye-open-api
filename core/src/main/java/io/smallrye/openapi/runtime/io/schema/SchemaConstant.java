@@ -136,7 +136,7 @@ public class SchemaConstant {
         Map<String, DataType> propertiesDataTypes30 = new HashMap<>();
         Map<String, DataType> propertiesDataTypes = new HashMap<>();
 
-        propertiesDataTypes30.put(ReferenceIO.REF, type(String.class));
+        // PROP_TYPE and REF are not listed because they require special processing to read
         propertiesDataTypes30.put(SchemaConstant.PROP_DISCRIMINATOR, type(Discriminator.class));
         propertiesDataTypes30.put(SchemaConstant.PROP_TITLE, type(String.class));
         propertiesDataTypes30.put(SchemaConstant.PROP_DEFAULT, type(Object.class));

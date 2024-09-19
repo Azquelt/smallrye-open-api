@@ -143,6 +143,16 @@ public class SchemaIO<V, A extends V, O extends V, AB, OB> extends MapModelIO<Sc
                 dataMap.put(PROP_TYPE, readJson(typeNode, listOf(type(Schema.SchemaType.class))));
             }
         }
+        
+        // Call setRef directly if required since it does additional processing
+        V refNode = jsonIO().getValue(node, REF);
+        if (refNode != null) {
+            if (jsonIO().isString(refNode)) {
+                schema.setRef(jsonIO().asString(refNode));
+            } else {
+                dataMap.put(PROP_REF, jsonIO().fromJson(refNode));
+            }
+        }
 
         // Read known fields
         for (Map.Entry<String, DataType> entry : SchemaConstant.PROPERTIES_DATA_TYPES.entrySet()) {
@@ -188,6 +198,16 @@ public class SchemaIO<V, A extends V, O extends V, AB, OB> extends MapModelIO<Sc
                 schema.setExclusiveMaximum(maximum);
             } else {
                 schema.setMaximum(maximum);
+            }
+        }
+        
+        // Call setRef directly if required since it does additional processing
+        V refNode = jsonIO().getValue(node, REF);
+        if (refNode != null) {
+            if (jsonIO().isString(refNode)) {
+                schema.setRef(jsonIO().asString(refNode));
+            } else {
+                dataMap.put(PROP_REF, jsonIO().fromJson(refNode));
             }
         }
 
